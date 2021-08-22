@@ -7,4 +7,4 @@
 !/src/compiled/.gitkeep
 /src/test.ts
 /signals/*
-!/src/signals/.gitkeep
+!/signals/.gitkeep
