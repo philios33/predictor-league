@@ -1,0 +1,10 @@
+/node_modules/
+/keys/*
+!/keys/.gitkeep
+/dist
+/serverDist
+/src/compiled/*
+!/src/compiled/.gitkeep
+/src/test.ts
+/signals/*
+!/src/signals/.gitkeep

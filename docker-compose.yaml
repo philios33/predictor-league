@@ -1,0 +1,16 @@
+version: "3.5"
+services:
+  predictor:
+    build: .
+    volumes:
+      - type: bind
+        source: ./signals
+        target: /home/node/signals
+    restart: always
+    networks:
+      - master
+networks:
+  master:
+    name: master
+
+  

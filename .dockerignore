@@ -1,0 +1,7 @@
+/node_modules/
+
+/dist
+/serverDist
+/src/compiled/*
+!/src/compiled/.gitkeep
+/src/test.ts

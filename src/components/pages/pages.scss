@@ -1,0 +1,229 @@
+.home {
+    text-align: center;
+    width: 100%;
+
+    .content {
+        margin: 0px auto;
+        width: 300px;
+    }
+}
+
+
+a.link {
+    padding: 0px 10px 20px;
+    display: inline-block;
+}
+
+.predictions {
+    font-size: 12px;
+    text-align: center;
+    // width: 100%;
+    padding: 0px 10px;
+
+    ul {
+        padding: 0px;
+        margin: 0px;
+        li {
+            list-style: none;
+        }
+    }
+
+    table {
+        margin: 0 auto;
+        border-collapse: collapse;
+        
+        tr {
+            
+            th,td {
+                padding: 5px;
+
+                &.matchTeams {
+                    text-align: left;
+                    // padding: 5px;
+                }
+                &.kickOff {
+                    text-align: center;
+                    border-left: 1px solid black;
+                    // padding: 5px;
+                }
+                &.finalScore {
+                    text-align: center;
+                    border-left: 1px solid black;
+                    // padding: 5px;
+                }
+                &.myPredictions, &.otherPredictions {
+                    padding: 0px;
+                    text-align: left;
+                    border-left: 1px solid black;
+                    > div {
+                        padding: 5px;
+
+                        &.error {
+                            background-color: lighten(red, 10%);
+                        }
+                        &.incomplete {
+                            background-color: lighten(red, 40%);
+                        }
+                        &.saving {
+                            background-color: lighten(orange, 40%);
+                        }
+                        &.ok {
+                            background-color: lighten(green, 40%);
+                        }
+                          
+                    }
+
+                    .statusMessage {
+                        display: inline-block;
+                        font-size: 12px;
+                        button {
+                            font-size: 12px;
+                        }
+                    }
+
+                }
+
+                input {
+                    text-align: center;
+                    width: 40px;
+                    font-size: larger;
+                    
+                }
+                input[type=checkbox] {
+                    width: 15px;
+                }
+            }
+            th {
+                &.myPredictions, &.otherPredictions {
+                    padding: 5px;
+                }
+            }
+
+            &.totals {
+                td {
+                    font-weight: bold;
+                    text-align: right;
+                }
+            }
+        }
+    }
+}
+
+div.fullWidthScroller {
+    width: 100%;
+    overflow-x: auto;
+}
+
+div.warning {
+    font-weight: bold;
+    color: orange;
+}
+table.predictions {
+    
+    .incorrect {
+        background-color: lighten(red, 40%);
+        &.withBanker {
+            background-color: lighten(red, 30%);
+            border: 4px gold solid;
+        }
+    }
+    .noPrediction {
+        background-color: lighten(grey, 30%);
+    }
+    .correctResult {
+        background-color: lighten(green, 40%);
+        &.withBanker {
+            background-color: lighten(green, 30%);
+            border: 4px gold solid;
+        }
+    }
+    .correctGoalDifference {
+        background-color: lighten(green, 30%);
+        &.withBanker {
+            background-color: lighten(green, 20%);
+            border: 4px gold solid;
+        }
+    }
+    .correctScore {
+        background-color: lighten(green, 20%);
+        &.withBanker {
+            background-color: lighten(green, 10%);
+            border: 4px gold solid;
+        }
+    }
+    
+}
+
+span.points {
+    text-align: right;
+    font-size: smaller;
+    display: inline-block;
+    width: 60px;
+}
+
+.results {
+    text-align: center;
+    font-size: 12px;
+    width: 100%;
+    padding: 0px 10px;
+
+    table {
+        border-collapse: collapse;
+        margin: 10px auto 20px;
+        tr {
+            td,th {
+                border: 1px solid black;
+                padding: 3px;
+                &.totalPoints {
+                    font-weight: bold;
+                }
+                
+            }
+
+            &.myUser {
+                td {
+                    background-color: lighten(blue, 30%);
+                }
+            }
+        }
+    }
+}
+
+@media all and (min-width: 800px) {
+    .predictions {
+        padding: 0px;
+        font-size: 16px;
+    }
+    .results {
+        padding: 0px;
+        font-size: 16px;
+    }
+}
+
+
+// Loading
+
+div.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+}
+div.loading:after {
+    content: " ";
+    display: block;
+    width: 16px;
+    height: 16px;
+    margin: 2px;
+    border-radius: 50%;
+    border: 6px solid black;
+    border-color: black transparent black transparent;
+    animation: loading 1.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+}
+@keyframes loading {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
