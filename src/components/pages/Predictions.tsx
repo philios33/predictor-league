@@ -23,6 +23,7 @@ function Predictions(props: Props) {
         kickedOff: number // Matches kicked off
         results: number // Matches with results
         future: number // Matches in the far future
+        total: number // Total in this week
     }} = {};
 
     const initWeek = (weekId) => {
@@ -33,6 +34,7 @@ function Predictions(props: Props) {
                 kickedOff: 0,
                 results: 0,
                 future: 0,
+                total: 0,
             }
         }
     }
@@ -54,6 +56,7 @@ function Predictions(props: Props) {
                 }
             }
 
+            weekFreq[match.weekId].total++;
             if (hasFinalScore) {
                 // RESULT
                 weekFreq[match.weekId].results++;
@@ -95,8 +98,8 @@ function Predictions(props: Props) {
             {upcomingWeeks.length > 0 ? (
                 <ul>
                     {upcomingWeeks.map((week) => 
-                        <li key={week.id}><Link to={"/predictions/" + encodeURIComponent(week.id)}>Week {week.id}</Link>  <small>({week.upcoming + week.kickedOff + week.results} matches)</small></li>
-                    )}
+                        <li key={week.id}><Link to={"/predictions/" + encodeURIComponent(week.id)}>Week {week.id}</Link>  <small>({week.total} matches)</small></li>
+                    ).reverse()}
                 </ul>
             ) : (
                 <p>None</p>
@@ -105,9 +108,9 @@ function Predictions(props: Props) {
             <h3>Recent weeks</h3>
             {finishedWeeks.length > 0 ? (
                 <ul>
-                    {finishedWeeks.reverse().map((week) => 
-                        <li key={week.id}><Link to={"/predictions/" + encodeURIComponent(week.id)}>Week {week.id}</Link> <small>({week.results} matches)</small></li>
-                    )}
+                    {finishedWeeks.map((week) => 
+                        <li key={week.id}><Link to={"/predictions/" + encodeURIComponent(week.id)}>Week {week.id}</Link> <small>({week.total} matches)</small></li>
+                    ).reverse()}
                 </ul>
             ) : (
                 <p>None</p>
