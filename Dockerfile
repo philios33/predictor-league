@@ -10,8 +10,8 @@ COPY ./server ./server/
 COPY .babelrc tsconfig.json tsconfigServer.json webpack*.ts ./
 COPY ./keys ./keys/
 
-
-# TODO Break the cache here by copying a special file
+# Break the cache here by copying the special signals file to trigger a redeploy, even if code hasn't changed
+COPY ./signals/redeploy.txt ./signals/redeploy.txt
 
 RUN npm run buildData
 RUN npm run buildResults
