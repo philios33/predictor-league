@@ -2,7 +2,7 @@
 
 cd "$(dirname "$0")"
 
-docker exec -i -t predictor-league_predictor_1 node /home/node/serverDist/redeployChecker.js
+docker exec predictor-league_predictor_1 node /home/node/serverDist/redeployChecker.js
 
 retVal=$?
 if [ $retVal -eq 5 ]; then
