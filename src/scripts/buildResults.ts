@@ -229,7 +229,7 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
     // Also kinda important for the fixtures themselves to have all of the predictions data if those fixtures have kicked off
 
     // If the match has kicked off or has a result, show the full prediction
-    // Else show a hidden prediction
+    // Else show a hidden prediction (NO: see below)
 
     // No points are calculated yet
     for (const fixture of sortedFixtures) {
@@ -238,7 +238,8 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
             const prediction = playerData.predictions[fixture.homeTeam]?.against[fixture.awayTeam];
             if (prediction) {
                 if (new Date(fixture.kickOff) > now || fixture.finalScore === null) {
-                    // Absolutely no point in storing this fact
+                    // Absolutely no point in storing this fact because the predictions data is not cached and is very dynamic in comparison
+                    // So we don't cache the fact that somebody has made a prediction for a future game
                     /*
                     fixture.playerPredictions[player] = {
                         prediction: {
@@ -248,6 +249,8 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
                     }
                     */
                 } else {
+
+                    // Prediction becomes visible here
                     fixture.playerPredictions[player] = {
                         prediction,
                         points: null,
@@ -319,9 +322,20 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
         
     }
 
+    let nextKickoff: null | Date = null;
+    for (const fixture of sortedFixtures) {
+        const kickOff = new Date(fixture.kickOff);
+        if (kickOff > now) {
+            if (nextKickoff === null || kickOff < nextKickoff) {
+                nextKickoff = kickOff;
+            }
+        }
+    }
+
     return {
         mergedPhases,
         startOfWeekStandings,
+        nextRedeploy: nextKickoff ? nextKickoff.toISOString() : null, // This is the date of when the website should next auto redeploy.  Schedule at the next kick off time since this could release some predictions.
     }
 
 

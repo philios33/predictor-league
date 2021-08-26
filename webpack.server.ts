@@ -2,9 +2,12 @@ const nodeExternals = require('webpack-node-externals');
 const path = require('path');
 
 const serverConfig = {
-    entry: './server/index.ts',
+    entry: {
+        index: './server/index.ts',
+        redeployChecker: './server/redeployChecker.ts',
+    },
     output: {
-        filename: './index.js', // <-- Important
+        filename: './[name].js', // <-- Important
         libraryTarget: 'this', // <-- Important
         path: path.resolve(__dirname, 'serverDist'),
         clean: true,

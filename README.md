@@ -5,9 +5,11 @@ This is a website to help with predictor points calculations.  Players can login
 
 ## Docker commands
 
-docker build -t predictor .
+sudo docker build -t predictor .
 
-docker run -t -i -p 8081:8081 predictor
+sudo docker run -v `pwd`/signals:/home/node/signals -t -i -p 8081:8081 predictor
 
-docker-compose up --build
+## Server startup command
+
+sudo docker-compose up --build
 

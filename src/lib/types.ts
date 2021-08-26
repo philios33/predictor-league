@@ -181,6 +181,7 @@ export type WeekResults = {
 export type BuiltResults = {
     mergedPhases: Array<MergedPhase>
     startOfWeekStandings: {[key: string]: StartOfWeekStanding}
+    nextRedeploy: null | string
 }
 
 export type StartOfWeekStanding = {
