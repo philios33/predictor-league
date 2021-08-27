@@ -9,6 +9,8 @@ import { getThisWeek, savePrediction, validatePlayerSecret } from '../src/lib/ap
 import GoogleAuth from '../src/lib/googleAuth';
 import moment from 'moment-mini';
 
+export {}
+
 const credentialsFile = __dirname + "/../keys/credentials.json";
 const gauth = new GoogleAuth(credentialsFile);
 
@@ -88,13 +90,16 @@ app.post("/loginService", async (req, res) => {
     }
 });
 
-const validateJWTToUser = (token?: string) => {
+const validateJWTToUser = (token?: string): string => {
     if (token) {
         const decoded = jwt.verify(token, SECRET_SIGNING_KEY, {
             algorithms: ['HS256'],
             audience: 'predictor',
             complete: true,
         }) as jwt.Jwt;
+        if (!decoded.payload.sub) {
+            throw new Error("Missing sub");
+        }
         return decoded.payload.sub;
     } else {
         throw new Error("Not logged in");

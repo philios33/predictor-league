@@ -26,7 +26,7 @@ function Predictions(props: Props) {
         total: number // Total in this week
     }} = {};
 
-    const initWeek = (weekId) => {
+    const initWeek = (weekId: string) => {
         if (!(weekId in weekFreq)) {
             weekFreq[weekId] = {
                 id: weekId,

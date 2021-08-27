@@ -43,7 +43,12 @@ export async function getWeekFixtures(gauth: GoogleAuth, weekId: string, withSco
             userMeta: UserMeta
         }
     };
-    const players = {};
+    const players: {
+        [key: string]: {
+            points: PointsRow | null;
+            userMeta: UserMeta;
+        };
+    } = {};
     for(const player of withPredictions) {
         const playerData = await getAllUserPredictions(gauth, player);
         playerPredictions[player] = {

@@ -9,7 +9,7 @@ import { getLogin } from './Home';
 
 function PredictionsWeek() {
 
-    const { weekId } = useParams();
+    const { weekId } = useParams() as {weekId: string};
 
     const [weekData, setWeekData] = useState(null as null | WeekFixtures);
     const [dataError, setDataError] = useState(null as null | string);
@@ -48,7 +48,7 @@ function PredictionsWeek() {
             
     }
 
-    const clickedRefresh = (e) => {
+    const clickedRefresh = (e: any) => {
         e.preventDefault();
         loadPredictions();
     }

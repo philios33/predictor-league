@@ -74,17 +74,17 @@ export const getAllUserPredictions = async (gauth: GoogleAuth, user: string) : P
     }
 
     // Parse the extra meta rows
-    const metaFields = {
+    const metaFields: {[key: string]: string} = {
         "Email Address": "email",
         "Secret Key": "secret",
-    }
+    };
     const meta = raw.slice(21);
     const metaResult = {} as {[key: string]: string};
     for (const metaLine of meta) {
-        const key = metaLine[0];
-        const value = metaLine[1];
+        const key: string = metaLine[0];
+        const value: string = metaLine[1];
         if (key in metaFields) {
-            const keyId = metaFields[key];
+            const keyId: string = metaFields[key];
             metaResult[keyId] = value;
         } else {
             throw new Error("Unknown meta key: " + key);

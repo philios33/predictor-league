@@ -19,7 +19,7 @@ const serverConfig = {
                 test: /\.tsx?$/,
                 loader: 'ts-loader',
                 options: {
-                    transpileOnly: true
+                    // transpileOnly: true
                 }
             }
         ]

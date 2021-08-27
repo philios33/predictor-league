@@ -45,7 +45,7 @@ prodConfig.optimization = {
 }
 */
 
-prodConfig.plugins = prodConfig.plugins.filter(p => {
+prodConfig.plugins = prodConfig.plugins.filter((p: any) => {
     if (p instanceof webpack.HotModuleReplacementPlugin) {
         return false;
     } else if (p instanceof webpack.DefinePlugin) {

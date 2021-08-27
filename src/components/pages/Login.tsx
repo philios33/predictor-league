@@ -5,7 +5,7 @@ import { Redirect } from 'react-router-dom';
 
 function Login() {
 
-    const { origUser, origPass } = useParams();
+    const { origUser, origPass } = useParams() as {origUser: string, origPass: string};
 
     useEffect(() => {
         if (origUser || origPass) {
@@ -35,11 +35,11 @@ function Login() {
         password: "",
     } as FormState);
 
-    const handleForm = (e, type) => {
+    const handleForm = (e: any, type: "username" | "password") => {
         e.preventDefault();
         const value = e.target.value;
         setFormState(oldState => {
-            const newState = {...oldState};
+            const newState: FormState = {...oldState};
             newState[type] = value;
             return newState;
         })

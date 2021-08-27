@@ -7,6 +7,9 @@ import { getCachedResults } from '../src/lib/predictor/cachedResults';
 import GoogleAuth from '../src/lib/googleAuth';
 import { getRedeployValue, setRedeployValue } from '../src/lib/predictor/redeploy';
 import fs from 'fs';
+import { BuiltResults } from '../src/lib/types';
+
+export {}
 
 const credentialsFile = __dirname + "/../keys/credentials.json";
 const gauth = new GoogleAuth(credentialsFile);
@@ -19,11 +22,13 @@ const gauth = new GoogleAuth(credentialsFile);
 
     // Auto redeploy?
     const cachedResults = getCachedResults();
-    const nextRedeploy = new Date(cachedResults.nextRedeploy);
-    const now = new Date();
-    if (nextRedeploy < now) {
-        // Trigger it now
-        await setRedeployValue(gauth, "Auto redeploy due to kickoff at " + nextRedeploy.toISOString());
+    if (cachedResults.nextRedeploy !== null) {
+        const nextRedeploy = new Date(cachedResults.nextRedeploy);
+        const now = new Date();
+        if (nextRedeploy < now) {
+            // Trigger it now
+            await setRedeployValue(gauth, "Auto redeploy due to kickoff at " + nextRedeploy.toISOString());
+        }
     }
 
     // Triggered redeploy?

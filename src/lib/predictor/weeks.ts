@@ -1,4 +1,5 @@
-
+export {}
+/*
 import { sheets } from '@googleapis/sheets';
 import GoogleAuth from '../googleAuth';
 import { WeekDates } from '../types';
@@ -87,3 +88,4 @@ export const getAllWeeks = async (gauth: GoogleAuth, useCache: boolean = true) :
 
     return weeks;
 }
+*/
