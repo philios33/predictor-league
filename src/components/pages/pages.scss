@@ -37,13 +37,17 @@ a.link {
             th,td {
                 padding: 5px;
 
-                &.matchTeams {
+                &.homeTeam {
+                    text-align: right;
+                    // padding: 5px;
+                }
+                &.awayTeam {
                     text-align: left;
                     // padding: 5px;
                 }
                 &.kickOff {
                     text-align: center;
-                    border-left: 1px solid black;
+                    border-right: 1px solid black;
                     // padding: 5px;
                 }
                 &.finalScore {
@@ -54,7 +58,7 @@ a.link {
                 &.myPredictions, &.otherPredictions {
                     padding: 0px;
                     text-align: left;
-                    border-left: 1px solid black;
+                    // border-left: 1px solid black;
                     > div {
                         padding: 5px;
 
@@ -114,7 +118,7 @@ div.fullWidthScroller {
     overflow-x: auto;
 }
 
-div.warning {
+.warning {
     font-weight: bold;
     color: orange;
 }

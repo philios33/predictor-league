@@ -69,6 +69,19 @@ export type PointsRow = {
     totalPoints: number
 }
 
+export type ConcisePointsRow = {
+    predicted: number
+    missed: number
+
+    correctScoresTotal: number
+    correctGDTotal: number
+    correctOutcomeTotal: number
+    incorrectTotal: number
+    regularPoints: number
+    bankerPoints: number
+    totalPoints: number
+}
+
 export type SimplePointsRow = {
     predicted: number
     totalPoints: number
@@ -156,6 +169,7 @@ export type MergedPhase = {
     isFirstPhaseOfWeek: boolean // If is first, draw the jokers table
     isLastPhaseOfWeek: boolean // If not last, specify the part X text
     isOngoing: boolean // Use this to change the description at the top to make it clear that the rankings table is not complete, e.g. "Current Standings (Week 3 ongoing)" instead of "After week 3"
+    isStarted: boolean // We only show started phases in the results feed
 
     fixtureGroups: Array<FixtureGroup>
     points: {[key: string]: PointsRow} // Cumulative players points for the fixtures in this merged phase
@@ -188,7 +202,7 @@ export type BuiltResults = {
 export type StartOfWeekStanding = {
     snapshotTime: string
     rankings: Array<Player>
-    leagueTables: LeagueTables
+    leagueTables: Top4LeagueTables
     // bankerMultipliers: {[key: string]: number}
 }
 
@@ -196,6 +210,10 @@ export type LeagueTables = {
     homeOnly: LeagueTable
     awayOnly: LeagueTable
     all: LeagueTable
+}
+
+export type Top4LeagueTables = {
+    top4: LeagueTable
 }
 
 export type LeagueTable = Array<{

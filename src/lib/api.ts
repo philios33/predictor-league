@@ -119,7 +119,7 @@ export async function getWeekFixtures(gauth: GoogleAuth, weekId: string, withSco
 
                 // Check the computed results to find out our banker power here (default to 2)
                 // const bankerMultiplier = results.startOfWeekStandings[weekId]?.bankerMultipliers[playerName] || 2;
-                const bankerMultiplier = getBankerMultiplier(fixture.homeTeam, fixture.awayTeam, results.startOfWeekStandings[weekId].leagueTables);
+                const bankerMultiplier = getBankerMultiplier(fixture.weekId, fixture.homeTeam, fixture.awayTeam, results.startOfWeekStandings[fixture.weekId].leagueTables);
                 
                 const points = calculatePoints(prediction, fixture.finalScore, bankerMultiplier);
                 if (playerName in fixture.playerPredictions) {

@@ -62,4 +62,24 @@
 
 }
 
+.refreshRequired {
+  width: 250px;
+  background-color: yellow;
+  color: black;
+  border: red 1px solid;
+  position: fixed;
+  top: 0px;
+  right: 0px;
+  padding: 10px;
 
+  button {
+    background-color: #339933;
+    color: white;
+    cursor: pointer;
+    border: 2px solid #66bb66;
+    border-bottom: 2px solid #117711;
+    border-right: 2px solid #117711;
+    margin: 5px;
+    padding: 5px 10px;
+  }
+}

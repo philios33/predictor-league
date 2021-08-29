@@ -1,4 +1,4 @@
-import { FinalScore, HiddenPrediction, LeagueTables, MatchResultType, PointsRow, Prediction } from "./types";
+import { FinalScore, HiddenPrediction, LeagueTables, MatchResultType, PointsRow, Prediction, Top4LeagueTables } from "./types";
 
 const calculateFinalScoreType = (finalScore: FinalScore) : "homeWin" | "draw" | "awayWin" => {
     if (finalScore.homeTeam > finalScore.awayTeam) {
@@ -147,19 +147,25 @@ export const calculatePoints = (prediction: null | Prediction | HiddenPrediction
     return points;
 }
 
-export function addPoints(currentPoints: null | PointsRow, thisPoints: PointsRow) : PointsRow {
-    if (typeof currentPoints === "undefined") {
-        return thisPoints;
+export function addPoints(currentPoints: null | PointsRow, thisPoints?: PointsRow) : PointsRow {
+    
+    if (typeof thisPoints === "undefined" || thisPoints === null) {
+        // This points is null
+        if (typeof currentPoints === "undefined" || currentPoints === null) {
+            // Current points is also null
+            return getZeroPointsRow();
+        } else {
+            return currentPoints;
+        }
+    } else {
+        if (typeof currentPoints === "undefined" || currentPoints === null) {
+            // Current points is null
+            return thisPoints;
+        } else {
+            // Both set, continue with calculation
+        }
     }
-    if (currentPoints === null) {
-        return thisPoints;
-    }
-    if (thisPoints === null) {
-        throw new Error("thisPoints Cant possibly be null");
-    }
-    if (typeof thisPoints === "undefined") {
-        throw new Error("thisPoints Cant possibly be undefined");
-    }
+    
     return {
         predicted: currentPoints.predicted + thisPoints.predicted,
         missed: currentPoints.missed + thisPoints.missed,
@@ -216,24 +222,20 @@ export function getZeroPointsRow(): PointsRow {
 }
 
 
-export const getBankerMultiplier = (homeTeam: string, awayTeam: string, tables: LeagueTables) => {
-    // If any of the fixtures teams is in the top 4, *2, otherwise *3
-    const home = tables.all.find(t => t.name === homeTeam);
-    const away = tables.all.find(t => t.name === awayTeam);
-    if (!home || home === null || !away || away === null) {
-        // Probably the first week
+export const getBankerMultiplier = (weekId: string, homeTeam: string, awayTeam: string, tables: Top4LeagueTables) => {
+    if (weekId === "1") {
+        // Week 1 was *2 multipliers for all matches
         return 2;
     }
 
-    if (home.rank !== null) {
-        if (home.rank <= 4) {
-            return 2;
-        }
+    // If any of the fixtures teams is in the top 4, *2, otherwise *3
+    const home = tables.top4.find(t => t.name === homeTeam);
+    if (typeof home !== "undefined" && home !== null && home.rank && home.rank <= 4) {
+        return 2;
     }
-    if (away.rank !== null) {
-        if (away.rank <= 4) {
-            return 2;
-        }
+    const away = tables.top4.find(t => t.name === awayTeam);
+    if (typeof away !== "undefined" && away !== null && away.rank && away.rank <= 4) {
+        return 2;
     }
     return 3;
 }

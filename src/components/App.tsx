@@ -15,11 +15,27 @@ import Home, { getLogin } from './pages/Home';
 
 import './pages/pages.scss';
 import Login from './pages/Login';
+import { startVersionChecking, stopVersionChecking } from '../lib/versionChecker';
 
 
 const GithubUrl = "https://github.com/philios33/predictor-league";
 
 function App() {    
+
+    const [refreshRequired, setRefreshRequired] = useState(false);
+
+    useEffect(() => {
+        startVersionChecking(() => {
+            setRefreshRequired(true);
+        });
+        return () => {
+            stopVersionChecking();
+        }
+    }, []);
+
+    const doRefresh = () => {
+        location.reload();
+    }
 
     const login = getLogin();
 
@@ -29,6 +45,12 @@ function App() {
                 <h1>Predictor League</h1>
                 {login !== null && <p>Logged in as: <strong>{login.username}</strong></p>}
             </header>
+
+            {refreshRequired && (
+                <div className="refreshRequired">
+                    The website has been updated.  Please <button onClick={() => doRefresh()}>Refresh</button>
+                </div>
+            )}
 
             <Router>
                 <div>

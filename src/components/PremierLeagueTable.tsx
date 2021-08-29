@@ -1,16 +1,12 @@
 import moment from 'moment-mini';
 import React, { useEffect, useState } from 'react';
-import { LeagueTables } from "../lib/types";
+import { LeagueTable, LeagueTables } from "../lib/types";
 
 type Props = {
-    data: LeagueTables
-    minRank: number
-    maxRank: number
+    data: LeagueTable
     name: string
     snapshotAt: string
 }
-
-type TableType = "all" | "homeOnly" | "awayOnly";
 
 const renderDateTime = (dateString: string) => {
     return moment(dateString).format("Do MMM H:mm");
@@ -18,16 +14,7 @@ const renderDateTime = (dateString: string) => {
 
 function PremierLeagueTable(props: Props) {    
 
-    // const [tableType, setTableType] = useState('all' as TableType);
-    
-    /*
-    const handleTableTypeChange = (type: TableType) => {
-        setTableType(type)
-    }
-    */
-
-    const tableType = "all";
-    const rankings = props.data[tableType].filter((t) => t.rank !== null && t.rank >= props.minRank && t.rank <= props.maxRank);
+    const rankings = props.data;
     return (
         <div className="premierLeagueTable">
             <p className="tableName">{props.name}</p>

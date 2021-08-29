@@ -4,8 +4,10 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import moment from 'moment-mini';
-import { PredictionFixture, WeekFixtures } from '../../lib/types';
+import { BuiltResults, PredictionFixture, WeekFixtures } from '../../lib/types';
 import { getLogin } from './Home';
+import PremierLeagueTable from '../PremierLeagueTable';
+import results from '../../compiled/results.json';
 
 function PredictionsWeek() {
 
@@ -478,33 +480,59 @@ function PredictionsWeek() {
         }
 
         if (isMyPredictions && kickOff > now && fixture.finalScore === null) {
-            return <div className={editingClass}>
-                <input type="number" disabled={isSaving || isError} value={homeGoalsTxt} max={20} min={0} onChange={(e) => {setPrediction("homeTeam", e.target.value, fixture.homeTeam, fixture.awayTeam)}} />
-                &nbsp;-&nbsp;
-                <input type="number" disabled={isSaving || isError} value={awayGoalsTxt} max={20} min={0} onChange={(e) => {setPrediction("awayTeam", e.target.value, fixture.homeTeam, fixture.awayTeam)}} /> 
-                <input type="checkbox" disabled={isSaving || isError || isSavingJoker || hasAlreadyUsedJoker} title="Banker" checked={isBanker} onChange={(e) => {setPrediction("isBanker", e.target.checked, fixture.homeTeam, fixture.awayTeam)}} /> 
+            return <tr className={editingClass}>
+                <td className="kickOff">{renderDateTime(fixture.kickOff)}</td>
+                <td className="homeTeam">{fixture.homeTeam}</td>
+                <td className="myPredictions">
+                    <>
+                        <input type="number" disabled={isSaving || isError} value={homeGoalsTxt} max={20} min={0} onChange={(e) => {setPrediction("homeTeam", e.target.value, fixture.homeTeam, fixture.awayTeam)}} />
+                        &nbsp;-&nbsp;
+                        <input type="number" disabled={isSaving || isError} value={awayGoalsTxt} max={20} min={0} onChange={(e) => {setPrediction("awayTeam", e.target.value, fixture.homeTeam, fixture.awayTeam)}} /> 
+                    </>
+                </td>
+                <td className="awayTeam">{fixture.awayTeam}</td>
+                <td className="bankerCol">
+                    <input type="checkbox" disabled={isSaving || isError || isSavingJoker || hasAlreadyUsedJoker} title="Banker" checked={isBanker} onChange={(e) => {setPrediction("isBanker", e.target.checked, fixture.homeTeam, fixture.awayTeam)}} />
+                </td>
+                <td className="finalScore">? - ?</td>
+                <td className="points">
+                    {isSaving && (
+                        <div className="loading" />
+                    )}
 
-                {isSaving && (
-                    <div className="loading" />
-                )}
+                    { errorMessage && (
+                        <div className="statusMessage">
+                            <span>{errorMessage}</span>
+                            <button onClick={(e) => {retrySave(fixture.homeTeam, fixture.awayTeam)}}>Retry</button>
+                            <button onClick={(e) => {undoSave(fixture.homeTeam, fixture.awayTeam)}}>Undo</button>
+                        </div>
+                    )}
+                </td>
+            </tr>
 
-                {pointsTxt !== "" && (<span className="points">{pointsTxt}</span>)}
-                { errorMessage && (
-                    <div className="statusMessage">
-                        <span>{errorMessage}</span>
-                        <button onClick={(e) => {retrySave(fixture.homeTeam, fixture.awayTeam)}}>Retry</button>
-                        <button onClick={(e) => {undoSave(fixture.homeTeam, fixture.awayTeam)}}>Undo</button>
-                    </div>
-                )}
-            </div>
         } else {
-            return <div className={resultClass}>
-                <input disabled={true} value={homeGoalsTxt} readOnly={true} />
-                &nbsp;-&nbsp;
-                <input disabled={true} value={awayGoalsTxt} readOnly={true}/> 
-                <input disabled={true} type="checkbox" title="Banker" checked={isBanker} readOnly={true} /> 
-                {pointsTxt !== "" && (<span className="points">{pointsTxt}</span>)}
-            </div>
+
+            return <tr className={resultClass}>
+                <td className="kickOff">{renderDateTime(fixture.kickOff)}</td>
+                <td className="homeTeam">{fixture.homeTeam}</td>
+                <td className="myPredictions">
+                    <>
+                        <input disabled={true} value={homeGoalsTxt} readOnly={true} />
+                        &nbsp;-&nbsp;
+                        <input disabled={true} value={awayGoalsTxt} readOnly={true} /> 
+                    </>
+                </td>
+                <td className="awayTeam">{fixture.awayTeam}</td>
+                <td className="bankerCol">
+                    <input disabled={true} type="checkbox" title="Banker" checked={isBanker} readOnly={true} />
+                </td>
+                <td className="finalScore">{fixture.finalScore ? (
+                    <>{fixture.finalScore.homeTeam} - {fixture.finalScore.awayTeam}</>
+                ) : (
+                    <>? - ?</>
+                )}</td>
+                <td className="points">{pointsTxt !== "" && (<span className="points">{pointsTxt}</span>)}</td>
+            </tr>
         }
     }
 
@@ -543,11 +571,21 @@ function PredictionsWeek() {
             }
         }
     }
+
+    
      
     return (
         <div className="predictions">
             <h2>Predictions {weekData && <small>- {weekData.loggedInAs} {weekData.week.name}</small>}</h2>
             
+            {weekId !== "1" && (
+                weekId in results.startOfWeekStandings ? (
+                    <PremierLeagueTable data={(results as BuiltResults).startOfWeekStandings[weekId].leagueTables.top4} name={"Top 4 at start of week"} snapshotAt={(results as BuiltResults).startOfWeekStandings[weekId].snapshotTime} />
+                ) : (
+                    <p className="warning">We don't yet know the standings at the start of this week.  Come back later to find out which matches are *2 bankers and which are *3.</p>
+                )
+            )}
+
             <Link className="link" to="/predictions" >Back</Link>
             <a className="link" href="#" onClick={clickedRefresh}>Refresh</a>
 
@@ -565,26 +603,18 @@ function PredictionsWeek() {
                         <table className="predictions">
                             <thead>
                                 <tr>
-                                    <th className="matchTeams">Match</th>
                                     <th className="kickOff">Kick off</th>
+                                    <th className="homeTeam">Home team</th>
+                                    <th className="vsCol">vs</th>
+                                    <th className="awayTeam">Away team</th>
+                                    <th className="bankerCol">Banker</th>
                                     <th className="finalScore">Result</th>
-                                    <th className="myPredictions">Your prediction</th>
+                                    <th className="points"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {weekData.fixtures.map((fixture,i) => (
-                                    <tr key={i}>
-                                        <td className="matchTeams">{fixture.homeTeam} vs {fixture.awayTeam}</td>
-                                        <td className="kickOff">{renderDateTime(fixture.kickOff)}</td>
-                                        <td className="finalScore">{fixture.finalScore ? (
-                                            <>{fixture.finalScore.homeTeam} - {fixture.finalScore.awayTeam}</>
-                                        ) : (
-                                            <>? - ?</>
-                                        )}</td>
-                                        <td className="myPredictions">
-                                            {renderPredictionInputs(fixture, weekData.loggedInAs as string, true, savingPredictions)}
-                                        </td>                                        
-                                    </tr>
+                                    renderPredictionInputs(fixture, weekData.loggedInAs as string, true, savingPredictions)                                                                              
                                 ))}
                                 <tr className="totals">
                                     <td>{weekData.fixtures.length} matches</td>

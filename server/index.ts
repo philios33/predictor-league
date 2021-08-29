@@ -7,6 +7,7 @@ import jwt from 'jsonwebtoken';
 
 import { getThisWeek, savePrediction, validatePlayerSecret } from '../src/lib/api';
 import GoogleAuth from '../src/lib/googleAuth';
+import buildDetails from '../src/compiled/build.json';
 import moment from 'moment-mini';
 
 export {}
@@ -60,6 +61,12 @@ app.use(express.static(DIST_DIR, {
     maxAge: "1y",
     immutable: true,
 }));
+
+// Other services
+
+app.get("/version", async(req, res) => {
+    res.send(buildDetails);
+});
 
 app.post("/loginService", async (req, res) => {
     try {

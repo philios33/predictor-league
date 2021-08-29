@@ -138,74 +138,74 @@ function Results() {
            <h2>Results</h2>
 
            {(results.mergedPhases.map(phase => (
-
-                <div key={phase.weekId + "_" + phase.phaseId}>
-                    <hr />
-                    {phase.isOngoing ? (
-                        <p>Part way through week {phase.weekId}.</p>
-                    ) : (
-                        phase.isLastPhaseOfWeek ? (
-                            <p>Week {phase.weekId} is completed.</p>
+                phase.isStarted && (
+                    <div key={phase.weekId + "_" + phase.phaseId}>
+                        <hr />
+                        {phase.isOngoing ? (
+                            <p>Part way through week {phase.weekId}.</p>
                         ) : (
-                            <p>Week {phase.weekId} fixtures will continue later in the season.</p>
-                        )
-                    )}
+                            phase.isLastPhaseOfWeek ? (
+                                <p>Week {phase.weekId} is completed.</p>
+                            ) : (
+                                <p>Week {phase.weekId} fixtures will continue later in the season.</p>
+                            )
+                        )}
 
-                    {getStandingsTable(phase.cumRankings, user)}
-                    
-                    <div className="fullWidthScroller">
-                        <table className="predictions">
-                            <thead>
-                                <tr>
-                                    <th>Date / Time</th>
-                                    <th>Match</th>
-                                    <th>Score</th>
-                                    {players.map(player => (
-                                        <th>{player}</th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {phase.fixtureGroups.map(fg => (
-                                    <>
-                                        {fg.fixtures.map(fixture => (
-                                            <tr key={fixture.homeTeam + "_" + fixture.awayTeam}>
-                                                <td>{renderDateTime(fg.kickOff)}</td>
-                                                <td>{fixture.homeTeam + " vs " + fixture.awayTeam}</td>
-                                                <td>{fixture.finalScore && (fixture.finalScore.homeTeam + " - " + fixture.finalScore.awayTeam)}</td>
-                                                {players.map(player => (
-                                                    renderPlayerPredictionTd(fixture.playerPredictions[player])
-                                                ))}
-                                            </tr>
+                        {getStandingsTable(phase.cumRankings, user)}
+                        
+                        <div className="fullWidthScroller">
+                            <table className="predictions">
+                                <thead>
+                                    <tr>
+                                        <th>Date / Time</th>
+                                        <th>Match</th>
+                                        <th>Score</th>
+                                        {players.map(player => (
+                                            <th>{player}</th>
                                         ))}
-                                    </>
-                                ))}
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td>Total</td>
-                                    {players.map(player => (
-                                        <td>
-                                            <strong>{phase.points[player].totalPoints >= 0 && "+"}{phase.points[player].totalPoints}</strong>
-                                        </td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {phase.fixtureGroups.map(fg => (
+                                        <>
+                                            {fg.fixtures.map(fixture => (
+                                                <tr key={fixture.homeTeam + "_" + fixture.awayTeam}>
+                                                    <td>{renderDateTime(fg.kickOff)}</td>
+                                                    <td>{fixture.homeTeam + " vs " + fixture.awayTeam}</td>
+                                                    <td>{fixture.finalScore && (fixture.finalScore.homeTeam + " - " + fixture.finalScore.awayTeam)}</td>
+                                                    {players.map(player => (
+                                                        renderPlayerPredictionTd(fixture.playerPredictions[player])
+                                                    ))}
+                                                </tr>
+                                            ))}
+                                        </>
                                     ))}
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td>Total</td>
+                                        {players.map(player => (
+                                            <td>
+                                                <strong>{phase.points[player].totalPoints >= 0 && "+"}{phase.points[player].totalPoints}</strong>
+                                            </td>
+                                        ))}
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
-                    {(phase.isFirstPhaseOfWeek && phase.isLastPhaseOfWeek) ? (
-                        <p>Week {phase.weekId} starting.</p>
-                    ) : (
-                        <p>Week {phase.weekId} part {phase.phaseId} starting.</p>
-                    )}
-                    
-                    {(phase.weekId !== "1") && (
-                        <PremierLeagueTable data={results.startOfWeekStandings[phase.weekId].leagueTables} snapshotAt={results.startOfWeekStandings[phase.weekId].snapshotTime} minRank={1} maxRank={4} name={"Top 4 at the start of week " + phase.weekId} />
-                    )}
-                    
-                </div>
-                
+                        {(phase.isFirstPhaseOfWeek && phase.isLastPhaseOfWeek) ? (
+                            <p>Week {phase.weekId} starting.</p>
+                        ) : (
+                            <p>Week {phase.weekId} part {phase.phaseId} starting.</p>
+                        )}
+                        
+                        {(phase.weekId !== "1") && (
+                            <PremierLeagueTable data={results.startOfWeekStandings[phase.weekId].leagueTables.top4} snapshotAt={results.startOfWeekStandings[phase.weekId].snapshotTime} name={"Top 4 at the start of week " + phase.weekId} />
+                        )}
+                        
+                    </div>
+                )
            )).reverse())}
         </div>
     );

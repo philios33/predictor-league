@@ -3,10 +3,11 @@ import GoogleAuth from "../lib/googleAuth";
 
 import { getCachedMatchSchedule, getCachedMatchScores } from "../lib/predictor/cached";
 
-import { BuiltResults, CumulativeTeamPoints, FinalScore, FixtureGroup, HomeAwayPoints, LeagueTable, LeagueTables, MergedPhase, Penalty, Phase, Player, PointsRow, PredictionFixture, SimplePointsRow, StartOfWeekStanding, TeamMatchesAgainstPredictions, TeamPointsRow, WeekResults } from "../lib/types";
+import { BuiltResults, ConcisePointsRow, CumulativeTeamPoints, FinalScore, FixtureGroup, HomeAwayPoints, LeagueTable, LeagueTables, MergedPhase, Penalty, Phase, Player, PointsRow, PredictionFixture, SimplePointsRow, StartOfWeekStanding, TeamMatchesAgainstPredictions, TeamPointsRow, Top4LeagueTables, WeekResults } from "../lib/types";
 import fs from 'fs';
 import { getPlayerNames } from '../lib/players';
 import { getAllUserPredictions } from "../lib/predictor/predictions";
+import moment from "moment-mini";
 
 
 const credentialsFile = __dirname + "/../../keys/credentials.json";
@@ -85,17 +86,28 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
     let weekPhases: Array<Phase> = [];
 
     let currentPhase: null | Phase = null;
-    let lastPhase: null | Phase = null;
+    // let lastPhase: null | Phase = null;
+    let lastWeekId: null | string = null;
 
     for (const fixture of sortedFixtures) {
+
+        if (lastWeekId !== null && fixture.weekId !== lastWeekId) {
+            // Break if next match is a new week after the final week
+            break;
+        }
+
         // We also want to only process up to the match results that we have
         // When the next fixture to process has no results, stop processing
         if (fixture.finalScore === null) {
             // Mark this as the last phase.  When this phase completes, we break!
-            
-            // console.log("Finished processing results, " + fixture.homeTeam + " vs " + fixture.awayTeam + " on " + fixture.kickOff + " has no final score yet");
+            /*
+            console.log("Finishing off processing results, " + fixture.homeTeam + " vs " + fixture.awayTeam + " at " + fixture.kickOff + " has no final score yet");
+            console.log("The last phase will be", currentPhase);
+            */
+
             // break;
-            lastPhase = currentPhase;
+            // lastPhase = currentPhase;
+            lastWeekId = fixture.weekId;
         } else {
             // console.log("YES", fixture.homeTeam + " vs " + fixture.awayTeam );
         }
@@ -124,9 +136,7 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
                 // console.log("Another KO time in the same week " + fixture.weekId);
             }
         } else {
-            if (lastPhase) {
-                break;
-            }
+            
             // It's a different week from the last match, increment the phase id
             // Another phase required
             if (fixture.weekId in weeksNextPhase) {
@@ -146,6 +156,8 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
             fixtures: [fixture],
         };
         weekPhases.push(currentPhase);
+
+       
     }
 
     // Merge the phases that happen next to each other with the same weekId and phaseId
@@ -176,6 +188,7 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
             isFirstPhaseOfWeek: false,
             isLastPhaseOfWeek: false,
             isOngoing: false,
+            isStarted: false,
 
             fixtureGroups: [{
                 kickOff: phase.kickOff,
@@ -272,6 +285,11 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
     for (const phase of mergedPhases) {
         // Process the matches by merged phase
 
+        // Initialise the phase points map
+        for (const player of players) {
+            phase.points[player] = getZeroPointsRow();
+        }
+
         if (!(phase.weekId in startOfWeekStandings)) {
             // It's the start of a week, work out the standings and store it against this week id
             const rankings = generateRankings(cumPoints);
@@ -279,19 +297,28 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
                 snapshotTime: phase.fixtureGroups[0].kickOff,
                 rankings: rankings,
                 // bankerMultipliers: calculateBankerMultipliers(phase, rankings),
-                leagueTables: calculateLeagueTables(phase, cumTeamPoints),
+                leagueTables: calculateLeagueTables(cumTeamPoints),
             }
         }
 
-        for (const fixtureGroup of phase.fixtureGroups) {
-            for (const fixture of fixtureGroup.fixtures) {
-                if (fixture.finalScore !== null) {
+        let matchesKickedOff = 0;
+        let matchResults = 0;
+        let totalMatches = 0;
 
+        for (const fixtureGroup of phase.fixtureGroups) {
+            let manualWeeksTriggered: Array<string> = [];
+            for (const fixture of fixtureGroup.fixtures) {
+                totalMatches++;
+                if (new Date(fixture.kickOff) < now) {
+                    matchesKickedOff++;
+                }
+                if (fixture.finalScore !== null) {
+                    matchResults++;
                     applyTeamStats(cumTeamPoints, fixture.homeTeam, fixture.awayTeam, fixture.finalScore.homeTeam, fixture.finalScore.awayTeam);
 
                     for (const player of players) {
 
-                        const bankerMultiplier = getBankerMultiplier(fixture.homeTeam, fixture.awayTeam, startOfWeekStandings[phase.weekId].leagueTables);
+                        const bankerMultiplier = getBankerMultiplier(fixture.weekId, fixture.homeTeam, fixture.awayTeam, startOfWeekStandings[fixture.weekId].leagueTables);
 
                         if (!(player in fixture.playerPredictions)) {
                             fixture.playerPredictions[player] = {
@@ -303,6 +330,7 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
                         
                         const points = calculatePoints(prediction, fixture.finalScore, bankerMultiplier);
                         phase.points[player] = addPoints(phase.points[player], points);
+                        cumPoints[player]  = addPoints(cumPoints[player], points);
 
                         fixture.playerPredictions[player].points = {
                             type: calculateResultType(prediction, fixture.finalScore),
@@ -311,20 +339,51 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
                             totalPoints: points.totalPoints,
                         }
                     }
-                } else {
-                    phase.isOngoing = true;
+
+                    // Insert hardcoded checks for manually triggered week start times after these specific matches
+                    // NOTE: Make sure the matches are the last matches of the phase
+                    const hardcodedWeekStartsAfter: {[key: string]: Array<string>} = {
+                        // E.g. Trigger week 4 start immediately after Liverpool vs Chelsea FT
+                        // "Liverpool vs Chelsea": ["4"]
+                    }
+                    const matchKey = fixture.homeTeam + " vs " + fixture.awayTeam;
+
+                    if (matchKey in hardcodedWeekStartsAfter) {
+                        for (const weekId of hardcodedWeekStartsAfter[matchKey]) {
+                            console.log("Week " + weekId + " triggered manually after " + matchKey);
+                        }
+                        manualWeeksTriggered.push(...hardcodedWeekStartsAfter[matchKey]);
+                    }
+
                 }
+            }
+
+            for (const weekId of manualWeeksTriggered) {
+                const timeNow = moment(fixtureGroup.kickOff).add(2, "hours").toISOString();
+                if (!(weekId in startOfWeekStandings)) {
+                    // It's the start of a week (triggered manually after this game), work out the standings and store it against this week id
+                    const rankings = generateRankings(cumPoints);
+                    startOfWeekStandings[weekId] = {
+                        snapshotTime: timeNow,
+                        rankings: rankings,
+                        leagueTables: calculateLeagueTables(cumTeamPoints),
+                    }
+                }
+            }
+
+        }
+
+        if (matchesKickedOff > 0) {
+            phase.isStarted = true;
+            if (matchResults < totalMatches) {
+                phase.isOngoing = true;
             }
         }
 
         // All fixture groups have been processed for this merged phase
-        // So add the phase.points to cumulative points
-        for (const player of players) {
-            cumPoints[player]  = addPoints(cumPoints[player], phase.points[player]);
-        }
 
         // Now work out the rankings for this phase
-        phase.phaseRankings = generateRankings(phase.points);
+        // phase.phaseRankings = generateRankings(phase.points);
         phase.cumRankings = generateRankings(cumPoints);
         
     }
@@ -453,16 +512,16 @@ const mergeStats = (home: HomeAwayPoints, away: HomeAwayPoints, penalties: Array
     return result;
 }
 
-const calculateLeagueTables = (phase: MergedPhase, cumTeamPoints: {[key:string]: TeamPointsRow}): LeagueTables => {
+const calculateLeagueTables = (cumTeamPoints: {[key:string]: TeamPointsRow}): Top4LeagueTables => {
     // Just rank all the teams based on their current team points variable
     return {
-        homeOnly: calculateLeagueTable(cumTeamPoints, "homeOnly"),
-        awayOnly: calculateLeagueTable(cumTeamPoints, "awayOnly"),
-        all: calculateLeagueTable(cumTeamPoints, "all"),
+        // homeOnly: calculateLeagueTable(cumTeamPoints, "homeOnly"),
+        // awayOnly: calculateLeagueTable(cumTeamPoints, "awayOnly"),
+        top4: calculateLeagueTable(cumTeamPoints, "all", 4),
     }
 }
 
-const calculateLeagueTable = (cumTeamPoints: {[key:string]: TeamPointsRow}, type: "homeOnly" | "awayOnly" | "all"): LeagueTable => {
+const calculateLeagueTable = (cumTeamPoints: {[key:string]: TeamPointsRow}, type: "homeOnly" | "awayOnly" | "all", rankUnder: number): LeagueTable => {
     const rankings: LeagueTable = Object.values(cumTeamPoints).map(team => {
         // Merge the home, away & any deductions in to a single row
         return {
@@ -531,7 +590,13 @@ const calculateLeagueTable = (cumTeamPoints: {[key:string]: TeamPointsRow}, type
         }
     }
 
-    return rankings;
+    return rankings.filter(team => {
+        if (team.rank === null) {
+            return false;
+        } else {
+            return team.rank <= rankUnder;
+        }
+    });
 }
 
 const arePointsDifferent = (a: HomeAwayPoints, b: HomeAwayPoints): boolean => {
@@ -542,6 +607,21 @@ const arePointsDifferent = (a: HomeAwayPoints, b: HomeAwayPoints): boolean => {
         || (a.goalsFor !== b.goalsFor)
         || (a.goalsAgainst !== b.goalsAgainst)
         || (a.points !== b.points)
+}
+
+const convertToConcisePointsRow = (pointsRow: PointsRow) : ConcisePointsRow => {
+    return {
+        predicted: pointsRow.predicted,
+        missed: pointsRow.missed,
+
+        correctScoresTotal: pointsRow.correctScoresTotal,
+        correctGDTotal: pointsRow.correctGDTotal,
+        correctOutcomeTotal: pointsRow.correctOutcomeTotal,
+        incorrectTotal: pointsRow.incorrectTotal,
+        regularPoints: pointsRow.regularPoints,
+        bankerPoints: pointsRow.bankerPoints,
+        totalPoints: pointsRow.totalPoints,
+    }
 }
 
 const generateRankings = (cumPoints: {[key: string]: PointsRow}) : Array<Player> => {
@@ -562,7 +642,7 @@ const generateRankings = (cumPoints: {[key: string]: PointsRow}) : Array<Player>
         playersRank.push({
             name: player,
             rank: 1,
-            points: points,
+            points: convertToConcisePointsRow(points),
         });
     }
 
