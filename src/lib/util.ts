@@ -1,4 +1,4 @@
-import { FinalScore, HiddenPrediction, MatchResultType, PointsRow, Prediction } from "./types";
+import { FinalScore, HiddenPrediction, LeagueTables, MatchResultType, PointsRow, Prediction } from "./types";
 
 const calculateFinalScoreType = (finalScore: FinalScore) : "homeWin" | "draw" | "awayWin" => {
     if (finalScore.homeTeam > finalScore.awayTeam) {
@@ -213,4 +213,27 @@ export function getZeroPointsRow(): PointsRow {
         bankerPoints: 0,
         totalPoints: 0,
     }
+}
+
+
+export const getBankerMultiplier = (homeTeam: string, awayTeam: string, tables: LeagueTables) => {
+    // If any of the fixtures teams is in the top 4, *2, otherwise *3
+    const home = tables.all.find(t => t.name === homeTeam);
+    const away = tables.all.find(t => t.name === awayTeam);
+    if (!home || home === null || !away || away === null) {
+        // Probably the first week
+        return 2;
+    }
+
+    if (home.rank !== null) {
+        if (home.rank <= 4) {
+            return 2;
+        }
+    }
+    if (away.rank !== null) {
+        if (away.rank <= 4) {
+            return 2;
+        }
+    }
+    return 3;
 }

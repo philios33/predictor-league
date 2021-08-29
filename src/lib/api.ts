@@ -1,3 +1,4 @@
+
 import GoogleAuth from "./googleAuth";
 import { getPlayerNames } from "./players";
 import { getCachedMatchSchedule, getCachedMatchScores } from "./predictor/cached";
@@ -5,7 +6,7 @@ import { getCachedResults } from "./predictor/cachedResults";
 import { writePrediction } from "./predictor/matches";
 import { getAllUserPredictions } from "./predictor/predictions";
 import { CompiledSchedule, HiddenPrediction, PointsRow, Prediction, PredictionFixture, TeamMatchesAgainstPredictions, TeamMatchesAgainstScores, UserMeta, WeekFixtures } from "./types";
-import { addPoints, calculatePoints, calculateResultType } from "./util";
+import { addPoints, calculatePoints, calculateResultType, getBankerMultiplier } from "./util";
 
 
 
@@ -117,7 +118,8 @@ export async function getWeekFixtures(gauth: GoogleAuth, weekId: string, withSco
                 }
 
                 // Check the computed results to find out our banker power here (default to 2)
-                const bankerMultiplier = results.startOfWeekStandings[weekId]?.bankerMultipliers[playerName] || 2;
+                // const bankerMultiplier = results.startOfWeekStandings[weekId]?.bankerMultipliers[playerName] || 2;
+                const bankerMultiplier = getBankerMultiplier(fixture.homeTeam, fixture.awayTeam, results.startOfWeekStandings[weekId].leagueTables);
                 
                 const points = calculatePoints(prediction, fixture.finalScore, bankerMultiplier);
                 if (playerName in fixture.playerPredictions) {

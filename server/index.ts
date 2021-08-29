@@ -12,6 +12,8 @@ import moment from 'moment-mini';
 export {}
 
 const credentialsFile = __dirname + "/../keys/credentials.json";
+console.log("CREDENTIALS FILE PATH 1", credentialsFile);
+
 const gauth = new GoogleAuth(credentialsFile);
 
 const signingSecretFile = __dirname + "/../keys/signing.key";
@@ -153,7 +155,7 @@ app.get("*", function (req, res) {
 });
 
 (async () => {
-    console.log("Logging in...");
+    console.log("Logging in... index.ts");
     await gauth.start();
     console.log("Logged in!");
     app.listen(PORT);

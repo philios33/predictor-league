@@ -11,6 +11,7 @@
     "prebuildClient": "npm run buildCriticalCss",
     "buildClient": "webpack --mode production --config webpack.prod.ts",
     "buildServer": "webpack --mode production --config webpack.server.ts",
+    "buildAll": "npm run buildData && npm run buildResults && npm run buildClient && npm run buildServer",
     "build": "echo 'Choose your build type'",
     "serve": "node ./serverDist/index.js"
   },

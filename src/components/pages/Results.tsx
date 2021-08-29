@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import compiledResults from '../../compiled/results.json' ;
 import { getPlayerNames } from '../../lib/players';
 import { Player, BuiltResults, PointsRow, PlayerPrediction } from '../../lib/types';
+import PremierLeagueTable from '../PremierLeagueTable';
 
 
 const results: BuiltResults = compiledResults as BuiltResults;
@@ -165,19 +166,8 @@ function Results() {
                                 </tr>
                             </thead>
                             <tbody>
-                                    <tr>
-                                            <td></td>
-                                            <td></td>
-                                            <td>Total</td>
-                                            {players.map(player => (
-                                                <td>
-                                                    <strong>{phase.points[player].totalPoints >= 0 && "+"}{phase.points[player].totalPoints}</strong>
-                                                </td>
-                                            ))}
-                                    </tr>
                                 {phase.fixtureGroups.map(fg => (
                                     <>
-                                        
                                         {fg.fixtures.map(fixture => (
                                             <tr key={fixture.homeTeam + "_" + fixture.awayTeam}>
                                                 <td>{renderDateTime(fg.kickOff)}</td>
@@ -189,7 +179,17 @@ function Results() {
                                             </tr>
                                         ))}
                                     </>
-                                )).reverse()}
+                                ))}
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td>Total</td>
+                                    {players.map(player => (
+                                        <td>
+                                            <strong>{phase.points[player].totalPoints >= 0 && "+"}{phase.points[player].totalPoints}</strong>
+                                        </td>
+                                    ))}
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -199,28 +199,10 @@ function Results() {
                     ) : (
                         <p>Week {phase.weekId} part {phase.phaseId} starting.</p>
                     )}
-
-                    <p>Based on the standings at {renderDateTime(results.startOfWeekStandings[phase.weekId].snapshotTime)} (the start of week {phase.weekId}), the following banker multipliers will apply:</p>
                     
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Player</th>
-                                <th>Rank position</th>
-                                <th>Banker Power</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {results.startOfWeekStandings[phase.weekId].rankings.map(player => (
-                                <tr>
-                                    <td>{player.name}</td>
-                                    <td>{player.rank}</td>
-                                    <td>x{results.startOfWeekStandings[phase.weekId].bankerMultipliers[player.name]}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                        
+                    {(phase.weekId !== "1") && (
+                        <PremierLeagueTable data={results.startOfWeekStandings[phase.weekId].leagueTables} snapshotAt={results.startOfWeekStandings[phase.weekId].snapshotTime} minRank={1} maxRank={4} name={"Top 4 at the start of week " + phase.weekId} />
+                    )}
                     
                 </div>
                 

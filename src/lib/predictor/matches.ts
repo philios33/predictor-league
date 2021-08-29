@@ -139,8 +139,7 @@ export const getMatchScores = async (gauth: GoogleAuth) : Promise<CompiledScores
     for(const teamName of teamNames) {
         const tm = teamMatches[teamName];
         if (tm.raw) {
-            for(const value of tm.raw) {
-                const arrayIndex = tm.raw.indexOf(value);
+            for (const [arrayIndex, value] of tm.raw.entries()) {
                 const awayTeamName = teamNames[arrayIndex];
                 if (value === "") {
                     // Skip this empty value

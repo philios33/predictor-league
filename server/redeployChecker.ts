@@ -16,7 +16,7 @@ const gauth = new GoogleAuth(credentialsFile);
 
 (async () => {
 
-    console.log("Logging in...");
+    console.log("Logging in... redeployChecker.ts");
     await gauth.start();
     console.log("Logged in!");
 

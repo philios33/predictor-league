@@ -121,34 +121,34 @@ div.warning {
 table.predictions {
     
     .incorrect {
-        background-color: lighten(red, 40%);
+        background-color: #fcc;
         &.withBanker {
-            background-color: lighten(red, 30%);
-            border: 4px gold solid;
+            background-color: #f55;
+            border: 4px #ffff00 solid;
         }
     }
     .noPrediction {
         background-color: lighten(grey, 30%);
     }
     .correctResult {
-        background-color: lighten(green, 40%);
+        background-color: #8dffad;
         &.withBanker {
-            background-color: lighten(green, 30%);
-            border: 4px gold solid;
+            background-color: #1aff1a;
+            border: 4px #ffff00 solid;
         }
     }
     .correctGoalDifference {
-        background-color: lighten(green, 30%);
+        background-color: #1aff1a;
         &.withBanker {
-            background-color: lighten(green, 20%);
-            border: 4px gold solid;
+            background-color: #00c600;
+            border: 4px #ffff00 solid;
         }
     }
     .correctScore {
-        background-color: lighten(green, 20%);
+        background-color: #00c600;
         &.withBanker {
-            background-color: lighten(green, 10%);
-            border: 4px gold solid;
+            background-color: #009000;
+            border: 4px #ffff00 solid;
         }
     }
     

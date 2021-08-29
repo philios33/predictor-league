@@ -1,9 +1,9 @@
-import { addPoints, calculatePoints, calculateResultType, getZeroPointsRow } from "../lib/util";
+import { addPoints, calculatePoints, calculateResultType, getBankerMultiplier, getZeroPointsRow } from "../lib/util";
 import GoogleAuth from "../lib/googleAuth";
 
 import { getCachedMatchSchedule, getCachedMatchScores } from "../lib/predictor/cached";
 
-import { BuiltResults, FinalScore, FixtureGroup, MergedPhase, Phase, Player, PointsRow, PredictionFixture, SimplePointsRow, StartOfWeekStanding, TeamMatchesAgainstPredictions, WeekResults } from "../lib/types";
+import { BuiltResults, CumulativeTeamPoints, FinalScore, FixtureGroup, HomeAwayPoints, LeagueTable, LeagueTables, MergedPhase, Penalty, Phase, Player, PointsRow, PredictionFixture, SimplePointsRow, StartOfWeekStanding, TeamMatchesAgainstPredictions, TeamPointsRow, WeekResults } from "../lib/types";
 import fs from 'fs';
 import { getPlayerNames } from '../lib/players';
 import { getAllUserPredictions } from "../lib/predictor/predictions";
@@ -16,7 +16,7 @@ const gauth = new GoogleAuth(credentialsFile);
 const players = getPlayerNames();
 
 (async () => {
-    console.log("Logging in...");
+    console.log("Logging in... buildResults.ts");
     await gauth.start();
     console.log("Logged in!");
     
@@ -262,6 +262,9 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
 
     // Points calculation is below
 
+    // We ALSO need to calculate the PL table too
+    const cumTeamPoints: CumulativeTeamPoints = {};
+
     const cumPoints: {[key:string]: PointsRow} = {};
     // const cumPhasePoints: {[key:string]: PointsRow} = {};
     const startOfWeekStandings: {[key: string]: StartOfWeekStanding} = {};
@@ -275,16 +278,20 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
             startOfWeekStandings[phase.weekId] = {
                 snapshotTime: phase.fixtureGroups[0].kickOff,
                 rankings: rankings,
-                bankerMultipliers: calculateBankerMultipliers(phase, rankings),
+                // bankerMultipliers: calculateBankerMultipliers(phase, rankings),
+                leagueTables: calculateLeagueTables(phase, cumTeamPoints),
             }
         }
 
         for (const fixtureGroup of phase.fixtureGroups) {
             for (const fixture of fixtureGroup.fixtures) {
                 if (fixture.finalScore !== null) {
+
+                    applyTeamStats(cumTeamPoints, fixture.homeTeam, fixture.awayTeam, fixture.finalScore.homeTeam, fixture.finalScore.awayTeam);
+
                     for (const player of players) {
 
-                        const bankerMultiplier = startOfWeekStandings[phase.weekId].bankerMultipliers[player];
+                        const bankerMultiplier = getBankerMultiplier(fixture.homeTeam, fixture.awayTeam, startOfWeekStandings[phase.weekId].leagueTables);
 
                         if (!(player in fixture.playerPredictions)) {
                             fixture.playerPredictions[player] = {
@@ -294,7 +301,7 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
                         }
                         const prediction = fixture.playerPredictions[player].prediction;
                         
-                        const points = calculatePoints(prediction, fixture.finalScore, bankerMultiplier); // Note: 3rd argument is banker multiplier which depends on previous weeks positions
+                        const points = calculatePoints(prediction, fixture.finalScore, bankerMultiplier);
                         phase.points[player] = addPoints(phase.points[player], points);
 
                         fixture.playerPredictions[player].points = {
@@ -341,19 +348,200 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
 
 }
 
-const calculateBankerMultipliers = (phase: MergedPhase, players: Array<Player>) : {[key: string]: number} => {
-    const bankerMultipliers: {[key: string]: number} = {};
 
-    // Now check the rankings of previous week
-    for (const player of players) {
-        if (player.rank <= 4) {
-            bankerMultipliers[player.name] = 2;
-        } else {
-            bankerMultipliers[player.name] = 3;
+
+const getZeroHomeAwayPoints = () : HomeAwayPoints => {
+    return {
+        played: 0,
+        wins: 0,
+        draws: 0,
+        losses: 0,
+        goalsFor: 0,
+        goalsAgainst: 0,
+        points: 0,
+    }
+}
+
+const getZeroTeamPointsRow = (name: string): TeamPointsRow => {
+    return {
+        name: name,
+        home: getZeroHomeAwayPoints(),
+        away: getZeroHomeAwayPoints(),
+        penalties: [],
+        rank: null
+    }
+}
+
+const applyTeamStats = (cumTeamPoints: CumulativeTeamPoints, homeTeam: string, awayTeam: string, homeGoals: number, awayGoals: number) => {
+    
+    if (!(homeTeam in cumTeamPoints)) {
+        cumTeamPoints[homeTeam] = getZeroTeamPointsRow(homeTeam);
+    }
+    if (!(awayTeam in cumTeamPoints)) {
+        cumTeamPoints[awayTeam] = getZeroTeamPointsRow(awayTeam);
+    }
+    
+    const teamHome = cumTeamPoints[homeTeam];
+    const teamAway = cumTeamPoints[awayTeam];
+    
+    teamHome.home.played++;
+    teamHome.home.goalsFor += homeGoals;
+    teamHome.home.goalsAgainst += awayGoals;
+
+    teamAway.away.played++;
+    teamAway.away.goalsFor += awayGoals;
+    teamAway.away.goalsAgainst += homeGoals;
+
+    if (homeGoals > awayGoals) {
+        // Home win
+        teamHome.home.wins++;
+        teamHome.home.points += 3;
+        teamAway.away.losses++;
+    } else if (homeGoals < awayGoals) {
+        // Away win
+        teamHome.home.losses++;
+        teamAway.away.wins++;
+        teamAway.away.points += 3;
+    } else {
+        // Draw
+        teamHome.home.draws++;
+        teamHome.home.points += 1;
+        teamAway.away.draws++;
+        teamAway.away.points += 1;
+    }
+    
+}
+
+const mergeStats = (home: HomeAwayPoints, away: HomeAwayPoints, penalties: Array<Penalty>, type: "homeOnly" | "awayOnly" | "all"): HomeAwayPoints => {
+    const result: HomeAwayPoints = {
+        played: 0,
+        wins: 0,
+        draws: 0,
+        losses: 0,
+        goalsFor: 0,
+        goalsAgainst: 0,
+        points: 0,
+    }
+
+    if (type === "all" || type === "homeOnly") {
+        result.played += home.played;
+        result.wins += home.wins;
+        result.draws += home.draws;
+        result.losses += home.losses;
+        result.goalsFor += home.goalsFor;
+        result.goalsAgainst += home.goalsAgainst;
+        result.points += home.points;
+    }
+
+    if (type === "all" || type === "awayOnly") {
+        result.played += away.played;
+        result.wins += away.wins;
+        result.draws += away.draws;
+        result.losses += away.losses;
+        result.goalsFor += away.goalsFor;
+        result.goalsAgainst += away.goalsAgainst;
+        result.points += away.points;
+    }
+
+    if (type === "all") {
+        // Only the joint table includes penalties
+        for (const pen of penalties) {
+            result.points -= pen.deduction;
         }
     }
 
-    return bankerMultipliers;
+    return result;
+}
+
+const calculateLeagueTables = (phase: MergedPhase, cumTeamPoints: {[key:string]: TeamPointsRow}): LeagueTables => {
+    // Just rank all the teams based on their current team points variable
+    return {
+        homeOnly: calculateLeagueTable(cumTeamPoints, "homeOnly"),
+        awayOnly: calculateLeagueTable(cumTeamPoints, "awayOnly"),
+        all: calculateLeagueTable(cumTeamPoints, "all"),
+    }
+}
+
+const calculateLeagueTable = (cumTeamPoints: {[key:string]: TeamPointsRow}, type: "homeOnly" | "awayOnly" | "all"): LeagueTable => {
+    const rankings: LeagueTable = Object.values(cumTeamPoints).map(team => {
+        // Merge the home, away & any deductions in to a single row
+        return {
+            name: team.name,
+            rank: null,
+            stats: mergeStats(team.home, team.away, team.penalties, type),
+        }
+    }).sort((a,b) => {
+        // Compare two teams stats first by points, then Goal Difference, then Goals Scored
+        // TODO Probably need to do head to head too, but I'm not doing that here
+        if (a.stats.points < b.stats.points) {
+            return 1;
+        } else if (a.stats.points > b.stats.points) {
+            return -1;
+        } else {
+            // Equals points
+            const gdA = a.stats.goalsFor - a.stats.goalsAgainst;
+            const gdB = b.stats.goalsFor - b.stats.goalsAgainst;
+            if (gdA < gdB) {
+                return 1;
+            } else if (gdA > gdB) {
+                return -1;
+            } else {
+                // Equal GD
+                if (a.stats.goalsFor < b.stats.goalsFor) {
+                    return 1;
+                } else if (a.stats.goalsFor > b.stats.goalsFor) {
+                    return -1;
+                } else {
+                    // Equal everything
+                    return 0;
+                }
+            }
+        }
+    });
+
+    // Populate rankings here by starting at rank 1 and giving the next rank if the next team is different
+    let nextRank = 1;
+    let lastRank = 0;
+    let lastTeam: HomeAwayPoints = {
+        points: 0,
+        goalsFor: 0,
+        goalsAgainst: 0,
+        draws: 0,
+        losses: 0,
+        played: 0,
+        wins: 0,
+    };
+    for (const team of rankings) {
+        if (nextRank === 1) {
+            team.rank = 1;
+            lastRank = 1;
+            lastTeam = team.stats;
+            nextRank++;
+        } else {
+            if (arePointsDifferent(team.stats, lastTeam)) {
+                // Use next rank
+                team.rank = nextRank;
+                lastRank = nextRank;
+                lastTeam = team.stats;
+            } else {
+                // Use the same rank
+                team.rank = lastRank;
+            }
+            nextRank++;
+        }
+    }
+
+    return rankings;
+}
+
+const arePointsDifferent = (a: HomeAwayPoints, b: HomeAwayPoints): boolean => {
+    return (a.played !== b.played)
+        || (a.wins !== b.wins)
+        || (a.draws !== b.draws)
+        || (a.losses !== b.losses)
+        || (a.goalsFor !== b.goalsFor)
+        || (a.goalsAgainst !== b.goalsAgainst)
+        || (a.points !== b.points)
 }
 
 const generateRankings = (cumPoints: {[key: string]: PointsRow}) : Array<Player> => {

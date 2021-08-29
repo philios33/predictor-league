@@ -188,5 +188,43 @@ export type BuiltResults = {
 export type StartOfWeekStanding = {
     snapshotTime: string
     rankings: Array<Player>
-    bankerMultipliers: {[key: string]: number}
+    leagueTables: LeagueTables
+    // bankerMultipliers: {[key: string]: number}
 }
+
+export type LeagueTables = {
+    homeOnly: LeagueTable
+    awayOnly: LeagueTable
+    all: LeagueTable
+}
+
+export type LeagueTable = Array<{
+    name: string
+    rank: null | number
+    stats: HomeAwayPoints
+}>
+
+export type HomeAwayPoints = {
+    played: number
+    wins: number
+    draws: number
+    losses: number
+    goalsFor: number
+    goalsAgainst: number
+    points: number
+}
+
+export type TeamPointsRow = {
+    name: string
+    rank: null | number
+    home: HomeAwayPoints
+    away: HomeAwayPoints
+    penalties: Array<Penalty>
+}
+
+export type Penalty = {
+    deduction: number
+    reason: string
+}
+
+export type CumulativeTeamPoints = {[key:string]: TeamPointsRow}

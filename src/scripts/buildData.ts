@@ -18,7 +18,7 @@ const players = getPlayerNames();
 
 
 (async () => {
-    console.log("Logging in...");
+    console.log("Logging in... buildData.ts");
     await gauth.start();
     console.log("Logged in!");
 
