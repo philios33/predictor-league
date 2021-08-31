@@ -8,6 +8,7 @@ import { BuiltResults, PredictionFixture, WeekFixtures } from '../../lib/types';
 import { getLogin } from './Home';
 import PremierLeagueTable from '../PremierLeagueTable';
 import results from '../../compiled/results.json';
+import { getLogo24 } from '../../lib/logo';
 
 function PredictionsWeek() {
 
@@ -482,7 +483,7 @@ function PredictionsWeek() {
         if (isMyPredictions && kickOff > now && fixture.finalScore === null) {
             return <tr className={editingClass}>
                 <td className="kickOff">{renderDateTime(fixture.kickOff)}</td>
-                <td className="homeTeam">{fixture.homeTeam}</td>
+                <td className="homeTeam">{fixture.homeTeam}<img className="teamLogo" src={getLogo24(fixture.homeTeam)} alt={fixture.homeTeam} /></td>
                 <td className="myPredictions">
                     <>
                         <input type="number" disabled={isSaving || isError} value={homeGoalsTxt} max={20} min={0} onChange={(e) => {setPrediction("homeTeam", e.target.value, fixture.homeTeam, fixture.awayTeam)}} />
@@ -490,7 +491,7 @@ function PredictionsWeek() {
                         <input type="number" disabled={isSaving || isError} value={awayGoalsTxt} max={20} min={0} onChange={(e) => {setPrediction("awayTeam", e.target.value, fixture.homeTeam, fixture.awayTeam)}} /> 
                     </>
                 </td>
-                <td className="awayTeam">{fixture.awayTeam}</td>
+                <td className="awayTeam"><img className="teamLogo" src={getLogo24(fixture.awayTeam)} alt={fixture.awayTeam} />{fixture.awayTeam}</td>
                 <td className="bankerCol">
                     <input type="checkbox" disabled={isSaving || isError || isSavingJoker || hasAlreadyUsedJoker} title="Banker" checked={isBanker} onChange={(e) => {setPrediction("isBanker", e.target.checked, fixture.homeTeam, fixture.awayTeam)}} />
                 </td>
@@ -514,7 +515,7 @@ function PredictionsWeek() {
 
             return <tr className={resultClass}>
                 <td className="kickOff">{renderDateTime(fixture.kickOff)}</td>
-                <td className="homeTeam">{fixture.homeTeam}</td>
+                <td className="homeTeam">{fixture.homeTeam}<img className="teamLogo" src={getLogo24(fixture.homeTeam)} alt={fixture.homeTeam} /></td>
                 <td className="myPredictions">
                     <>
                         <input disabled={true} value={homeGoalsTxt} readOnly={true} />
@@ -522,7 +523,7 @@ function PredictionsWeek() {
                         <input disabled={true} value={awayGoalsTxt} readOnly={true} /> 
                     </>
                 </td>
-                <td className="awayTeam">{fixture.awayTeam}</td>
+                <td className="awayTeam"><img className="teamLogo" src={getLogo24(fixture.awayTeam)} alt={fixture.awayTeam} />{fixture.awayTeam}</td>
                 <td className="bankerCol">
                     <input disabled={true} type="checkbox" title="Banker" checked={isBanker} readOnly={true} />
                 </td>

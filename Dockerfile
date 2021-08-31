@@ -13,6 +13,7 @@ COPY ./keys ./keys/
 # Break the cache here by copying the special signals file to trigger a redeploy, even if code hasn't changed
 COPY ./signals/redeploy.txt ./signals/redeploy.txt
 
+RUN npm run buildLogos
 RUN npm run buildData
 RUN npm run buildResults
 RUN npm run buildClient

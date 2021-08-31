@@ -250,20 +250,11 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
             const playerData = playerPredictions[player];
             const prediction = playerData.predictions[fixture.homeTeam]?.against[fixture.awayTeam];
             if (prediction) {
-                if (new Date(fixture.kickOff) > now || fixture.finalScore === null) {
-                    // Absolutely no point in storing this fact because the predictions data is not cached and is very dynamic in comparison
-                    // So we don't cache the fact that somebody has made a prediction for a future game
-                    /*
-                    fixture.playerPredictions[player] = {
-                        prediction: {
-                            type: "hidden"
-                        },
-                        points: null,
-                    }
-                    */
+                if (new Date(fixture.kickOff) > now) {
+                    // If the kick off is in the future, the prediction might change
+                    
                 } else {
-
-                    // Prediction becomes visible here
+                    // Prediction is now fixed and so it gets cached here and shown
                     fixture.playerPredictions[player] = {
                         prediction,
                         points: null,

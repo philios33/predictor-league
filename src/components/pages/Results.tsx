@@ -1,6 +1,7 @@
 import moment from 'moment-mini';
 import React, { useEffect, useState } from 'react';
 import compiledResults from '../../compiled/results.json' ;
+import { getLogo24 } from '../../lib/logo';
 import { getPlayerNames } from '../../lib/players';
 import { Player, BuiltResults, PointsRow, PlayerPrediction } from '../../lib/types';
 import PremierLeagueTable from '../PremierLeagueTable';
@@ -108,7 +109,7 @@ function Results() {
             if (player.prediction === null) {
                 // No prediction
                 return <td className={resultClass}>
-                    &lt;None&gt;
+                    -
                     <br/>
                     <span className="points">{player.points?.totalPoints} points</span>
                 </td>
@@ -117,8 +118,12 @@ function Results() {
                 // Real prediction
                 return <td className={resultClass}>
                     {player.prediction.homeTeam} - {player.prediction.awayTeam}
-                    <br/>
-                    <span className="points">{player.points?.totalPoints} points</span>
+                    {player.points && (
+                        <>
+                            <br/>
+                            <span className="points">{player.points.totalPoints} points</span>
+                        </>
+                    )}
                 </td>
 
             } else if (player.prediction.type === "hidden") {
@@ -127,11 +132,15 @@ function Results() {
                     ? - ?
                 </td>
 
+            } else {
+                return <div>{JSON.stringify(player.prediction, null, 4)}</div>
             }
         }
 
         // Unknown
-        return <td></td>
+        return <td>
+            -
+        </td>
     }
     return (
         <div className="results">
@@ -171,7 +180,7 @@ function Results() {
                                             {fg.fixtures.map(fixture => (
                                                 <tr key={fixture.homeTeam + "_" + fixture.awayTeam}>
                                                     <td>{renderDateTime(fg.kickOff)}</td>
-                                                    <td>{fixture.homeTeam + " vs " + fixture.awayTeam}</td>
+                                                    <td>{fixture.homeTeam} <img className="teamLogo" src={getLogo24(fixture.homeTeam)} alt={fixture.homeTeam} /> vs <img className="teamLogo" src={getLogo24(fixture.awayTeam)} alt={fixture.awayTeam} /> {fixture.awayTeam}</td>
                                                     <td>{fixture.finalScore && (fixture.finalScore.homeTeam + " - " + fixture.finalScore.awayTeam)}</td>
                                                     {players.map(player => (
                                                         renderPlayerPredictionTd(fixture.playerPredictions[player])

@@ -113,6 +113,19 @@ a.link {
     }
 }
 
+div.premierLeagueTable {
+    table {
+        td,th {
+            text-align: left;
+        }
+    }
+}
+img.teamLogo {
+    display: inline-flex;
+    vertical-align: bottom;
+    padding: 0px 5px;
+}
+
 div.fullWidthScroller {
     width: 100%;
     overflow-x: auto;

@@ -6,12 +6,13 @@
   "scripts": {
     "start": "webpack serve --config webpack.dev.ts",
     "buildCriticalCss": "sass ./src/critical.scss:./src/compiled/critical.css --style compressed --no-source-map",
+    "buildLogos": "ts-node ./src/scripts/buildLogos.ts",
     "buildData": "ts-node ./src/scripts/buildData.ts",
     "buildResults": "ts-node ./src/scripts/buildResults.ts",
     "prebuildClient": "npm run buildCriticalCss",
     "buildClient": "webpack --mode production --config webpack.prod.ts",
     "buildServer": "webpack --mode production --config webpack.server.ts",
-    "buildAll": "npm run buildData && npm run buildResults && npm run buildClient && npm run buildServer",
+    "buildAll": "npm run buildLogos && npm run buildData && npm run buildResults && npm run buildClient && npm run buildServer",
     "build": "echo 'Choose your build type'",
     "serve": "node ./serverDist/index.js"
   },
@@ -36,6 +37,7 @@
     "babel-loader": "^8.2.2",
     "css-loader": "^6.2.0",
     "html-webpack-plugin": "^5.3.2",
+    "jimp": "^0.16.1",
     "node-sass": "^6.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

@@ -1,5 +1,6 @@
 import moment from 'moment-mini';
 import React, { useEffect, useState } from 'react';
+import { getLogo24 } from '../lib/logo';
 import { LeagueTable, LeagueTables } from "../lib/types";
 
 type Props = {
@@ -36,7 +37,7 @@ function PremierLeagueTable(props: Props) {
                     {rankings.map(team =>
                         <tr key={team.name}>
                             <td>{team.rank}</td>
-                            <td>{team.name}</td>
+                            <td><img className="teamLogo" src={getLogo24(team.name)} alt={team.name} /> {team.name}</td>
                             <td>{team.stats.played}</td>
                             <td>{team.stats.wins}</td>
                             <td>{team.stats.draws}</td>
