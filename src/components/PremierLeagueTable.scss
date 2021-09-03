@@ -1,0 +1,30 @@
+.premierLeagueTable {
+    
+    table {
+        border-collapse: collapse;
+        margin: 10px auto 20px;
+        td,th {
+            text-align: left;
+            border: 1px solid black;
+            padding: 3px;
+        }
+    }
+
+    ul {
+        margin: 0px;
+        padding: 0px;
+
+        li {
+            display: inline-block;
+            margin: 10px 5px;
+            padding: 5px;
+            border: 1px solid black;
+            border-radius: 5px;
+
+            &.selected {
+                background-color: #aaf;
+            }
+        }
+    }
+    
+}

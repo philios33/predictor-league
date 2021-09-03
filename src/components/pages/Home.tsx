@@ -1,17 +1,6 @@
 import React from 'react';
+import { getLogin } from '../../lib/util';
 
-export const getLogin = () : {token: string, username: string} | null => {
-    const login = localStorage.getItem("login");
-    if (login !== null) {
-        const decoded = JSON.parse(login);
-        return {
-            token: decoded.token,
-            username: decoded.username,
-        }
-    } else {
-        return null;
-    }
-}
 
 function Home() {    
     const login = getLogin();

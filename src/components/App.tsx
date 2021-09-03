@@ -11,11 +11,12 @@ import buildDetails from '../compiled/build.json';
 import Results from './pages/Results';
 import Predictions from './pages/Predictions';
 import PredictionsWeek from './pages/PredictionsWeek';
-import Home, { getLogin } from './pages/Home';
+import Home from './pages/Home';
 
 import './pages/pages.scss';
 import Login from './pages/Login';
 import { startVersionChecking, stopVersionChecking } from '../lib/versionChecker';
+import { getLogin } from '../lib/util';
 
 
 const GithubUrl = "https://github.com/philios33/predictor-league";

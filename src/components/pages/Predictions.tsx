@@ -6,6 +6,7 @@ import { CompiledSchedule, CompiledScores } from '../../lib/types';
 
 import compiledSchedule from '../../compiled/schedule.json';
 import compiledScores from '../../compiled/scores.json';
+import StatusBox from '../StatusBox';
 
 type Props = {
     // weekOffset: number
@@ -98,7 +99,12 @@ function Predictions(props: Props) {
             {upcomingWeeks.length > 0 ? (
                 <ul>
                     {upcomingWeeks.map((week) => 
-                        <li key={week.id}><Link to={"/predictions/" + encodeURIComponent(week.id)}>Week {week.id}</Link>  <small>({week.total} matches)</small></li>
+                        <li key={week.id}>
+                            <Link to={"/predictions/" + encodeURIComponent(week.id)}>Week {week.id}</Link>
+                            &nbsp;
+                            <small>({week.total} matches)</small>
+                            <StatusBox weekId={week.id} />
+                        </li>
                     ).reverse()}
                 </ul>
             ) : (

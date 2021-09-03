@@ -303,13 +303,15 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
                 if (new Date(fixture.kickOff) < now) {
                     matchesKickedOff++;
                 }
+                fixture.bankerMultiplier = getBankerMultiplier(fixture.weekId, fixture.homeTeam, fixture.awayTeam, startOfWeekStandings[fixture.weekId].leagueTables);
+
                 if (fixture.finalScore !== null) {
                     matchResults++;
                     applyTeamStats(cumTeamPoints, fixture.homeTeam, fixture.awayTeam, fixture.finalScore.homeTeam, fixture.finalScore.awayTeam);
 
-                    for (const player of players) {
+                    
 
-                        const bankerMultiplier = getBankerMultiplier(fixture.weekId, fixture.homeTeam, fixture.awayTeam, startOfWeekStandings[fixture.weekId].leagueTables);
+                    for (const player of players) {   
 
                         if (!(player in fixture.playerPredictions)) {
                             fixture.playerPredictions[player] = {
@@ -319,7 +321,7 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
                         }
                         const prediction = fixture.playerPredictions[player].prediction;
                         
-                        const points = calculatePoints(prediction, fixture.finalScore, bankerMultiplier);
+                        const points = calculatePoints(prediction, fixture.finalScore, fixture.bankerMultiplier);
                         phase.points[player] = addPoints(phase.points[player], points);
                         cumPoints[player]  = addPoints(cumPoints[player], points);
 
@@ -503,16 +505,16 @@ const mergeStats = (home: HomeAwayPoints, away: HomeAwayPoints, penalties: Array
     return result;
 }
 
-const calculateLeagueTables = (cumTeamPoints: {[key:string]: TeamPointsRow}): Top4LeagueTables => {
+const calculateLeagueTables = (cumTeamPoints: {[key:string]: TeamPointsRow}): LeagueTables => {
     // Just rank all the teams based on their current team points variable
     return {
-        // homeOnly: calculateLeagueTable(cumTeamPoints, "homeOnly"),
-        // awayOnly: calculateLeagueTable(cumTeamPoints, "awayOnly"),
-        top4: calculateLeagueTable(cumTeamPoints, "all", 4),
+        homeOnly: calculateLeagueTable(cumTeamPoints, "homeOnly"),
+        awayOnly: calculateLeagueTable(cumTeamPoints, "awayOnly"),
+        all: calculateLeagueTable(cumTeamPoints, "all"),
     }
 }
 
-const calculateLeagueTable = (cumTeamPoints: {[key:string]: TeamPointsRow}, type: "homeOnly" | "awayOnly" | "all", rankUnder: number): LeagueTable => {
+const calculateLeagueTable = (cumTeamPoints: {[key:string]: TeamPointsRow}, type: "homeOnly" | "awayOnly" | "all"): LeagueTable => {
     const rankings: LeagueTable = Object.values(cumTeamPoints).map(team => {
         // Merge the home, away & any deductions in to a single row
         return {
@@ -581,13 +583,7 @@ const calculateLeagueTable = (cumTeamPoints: {[key:string]: TeamPointsRow}, type
         }
     }
 
-    return rankings.filter(team => {
-        if (team.rank === null) {
-            return false;
-        } else {
-            return team.rank <= rankUnder;
-        }
-    });
+    return rankings;
 }
 
 const arePointsDifferent = (a: HomeAwayPoints, b: HomeAwayPoints): boolean => {

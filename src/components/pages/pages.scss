@@ -96,6 +96,25 @@ a.link {
                 input[type=checkbox] {
                     width: 15px;
                 }
+
+                .rankBox {
+                    border: 1px solid grey;
+                    background-color: #acf;
+                    font-size: 10px;
+                    padding: 3px;
+                    vertical-align: middle;
+                    margin: 4px;
+                }
+
+                .multiplierBox {
+                    font-weight: bold;
+                }
+                .multiplierBox-2 {
+                    color: #44f;
+                }
+                .multiplierBox-3 {
+                    color: #4b4;
+                }
             }
             th {
                 &.myPredictions, &.otherPredictions {
@@ -113,13 +132,7 @@ a.link {
     }
 }
 
-div.premierLeagueTable {
-    table {
-        td,th {
-            text-align: left;
-        }
-    }
-}
+
 img.teamLogo {
     display: inline-flex;
     vertical-align: bottom;

@@ -2,6 +2,7 @@
 import path from 'path';
 import fs from 'fs';
 import express from 'express';
+import cors from 'cors';
 import compression from 'compression';
 import jwt from 'jsonwebtoken';
 
@@ -23,6 +24,9 @@ const SECRET_SIGNING_KEY = fs.readFileSync(signingSecretFile);
 const DIST_DIR = path.join(__dirname, "..", "dist");
 const PORT = 8081;
 const app = express();
+
+// Allow CORS
+app.use(cors());
 
 // Allow posting of json
 app.use(express.json());
@@ -118,8 +122,17 @@ const validateJWTToUser = (token?: string): string => {
 // These two do the reading and writing to the spreadsheet
 app.get("/service/getThisWeek/:id", async (req, res) => {
     try {
-        const user = validateJWTToUser(req.headers.authorization);
+        let user = validateJWTToUser(req.headers.authorization);
         const weekId = req.params.id;
+
+        // Special case where there is a param called playerName and the user is phil or mike, we allow to view the predictions
+        if (user === "Phil" || user === "Mike") {
+            if (req.query.playerName) {
+                // console.log(user + " is loading the predictions of " + req.query.playerName);
+                user = req.query.playerName as string;
+            }
+        }
+
         const data = await getThisWeek(gauth, weekId, user);
         res.send(data);
     } catch(e) {

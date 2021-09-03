@@ -27,6 +27,7 @@ export type PlayerPredictions = {
 export type PredictionFixture = {
     homeTeam: string
     awayTeam: string
+    bankerMultiplier?: number
     kickOff: string
     weekId: string
     finalScore: null | FinalScore
@@ -196,13 +197,12 @@ export type BuiltResults = {
     mergedPhases: Array<MergedPhase>
     startOfWeekStandings: {[key: string]: StartOfWeekStanding}
     nextRedeploy: string | null
-    cmon?: string | null
 }
 
 export type StartOfWeekStanding = {
     snapshotTime: string
     rankings: Array<Player>
-    leagueTables: Top4LeagueTables
+    leagueTables: LeagueTables
     // bankerMultipliers: {[key: string]: number}
 }
 

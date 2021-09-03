@@ -1,0 +1,21 @@
+.statusBox {
+    display: inline-block;
+    font-size: 10px;
+    border: 1px grey solid;
+    margin: 0px 10px;
+    padding: 5px;
+
+    .problem {
+        color: red;
+    }
+    .done {
+        color: green;
+    }
+
+    p, a, div {
+        display: inline-block;
+    }
+    a {
+        margin-left: 5px;
+    }
+}

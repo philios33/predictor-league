@@ -2,11 +2,14 @@ import moment from 'moment-mini';
 import React, { useEffect, useState } from 'react';
 import { getLogo24 } from '../lib/logo';
 import { LeagueTable, LeagueTables } from "../lib/types";
+import './PremierLeagueTable.scss';
 
 type Props = {
-    data: LeagueTable
+    data: LeagueTables
     name: string
     snapshotAt: string
+    maxRank: number
+    showTableTypeDropdown: boolean
 }
 
 const renderDateTime = (dateString: string) => {
@@ -15,10 +18,28 @@ const renderDateTime = (dateString: string) => {
 
 function PremierLeagueTable(props: Props) {    
 
-    const rankings = props.data;
+    type TableType = "homeOnly" | "awayOnly" | "all";
+    const [tableType, setTableType] = useState("all" as TableType);
+
+    const handleType = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, type: TableType) => {
+        e.preventDefault();
+        setTableType(type);
+    }
+
+    const rankings = props.data[tableType];
+
     return (
         <div className="premierLeagueTable">
             <p className="tableName">{props.name}</p>
+            
+            {props.showTableTypeDropdown && (
+                <ul>
+                    <li className={tableType === "all" ? "selected" : ""}><a onClick={(e) => handleType(e, "all")} href="#">Both</a></li>
+                    <li className={tableType === "homeOnly" ? "selected" : ""}><a onClick={(e) => handleType(e, "homeOnly")} href="#">Home Only</a></li>
+                    <li className={tableType === "awayOnly" ? "selected" : ""}><a onClick={(e) => handleType(e, "awayOnly")} href="#">Away Only</a></li>
+                </ul>
+            )}
+            
             <table>
                 <thead>
                     <tr>
@@ -34,7 +55,7 @@ function PremierLeagueTable(props: Props) {
                     </tr>
                 </thead>
                 <tbody>
-                    {rankings.map(team =>
+                    {rankings.filter(team => team.rank !== null && team.rank <= props.maxRank).map(team =>
                         <tr key={team.name}>
                             <td>{team.rank}</td>
                             <td><img className="teamLogo" src={getLogo24(team.name)} alt={team.name} /> {team.name}</td>

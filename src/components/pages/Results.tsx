@@ -210,7 +210,7 @@ function Results() {
                         )}
                         
                         {(phase.weekId !== "1") && (
-                            <PremierLeagueTable data={results.startOfWeekStandings[phase.weekId].leagueTables.top4} snapshotAt={results.startOfWeekStandings[phase.weekId].snapshotTime} name={"Top 4 at the start of week " + phase.weekId} />
+                            <PremierLeagueTable data={results.startOfWeekStandings[phase.weekId].leagueTables} snapshotAt={results.startOfWeekStandings[phase.weekId].snapshotTime} name={"Top 4 at the start of week " + phase.weekId} maxRank={4} showTableTypeDropdown={false} />
                         )}
                         
                     </div>

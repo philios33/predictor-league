@@ -58,6 +58,8 @@ prodConfig.plugins.push(
     new webpack.DefinePlugin({
         'process.env.NODE_DEBUG': JSON.stringify(false),
         'process.env.DEVMODE': JSON.stringify(false),
+
+        'process.env.SERVICE_ENDPOINT': JSON.stringify('/'),
     })
 );
 

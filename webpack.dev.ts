@@ -84,6 +84,7 @@ const config: Configuration = {
         new webpack.DefinePlugin({
             'process.env.NODE_DEBUG': JSON.stringify(false),
             'process.env.DEVMODE': JSON.stringify(true),
+            'process': JSON.stringify(false),
         }),
         /*
         new webpack.ProvidePlugin({

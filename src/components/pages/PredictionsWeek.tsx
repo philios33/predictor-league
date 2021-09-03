@@ -5,10 +5,12 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import moment from 'moment-mini';
 import { BuiltResults, PredictionFixture, WeekFixtures } from '../../lib/types';
-import { getLogin } from './Home';
 import PremierLeagueTable from '../PremierLeagueTable';
 import results from '../../compiled/results.json';
 import { getLogo24 } from '../../lib/logo';
+import { getBankerMultiplier, getLogin } from '../../lib/util';
+import AllPlayersWidget from '../AllPlayersWidget';
+import { config } from '../../config';
 
 function PredictionsWeek() {
 
@@ -29,11 +31,13 @@ function PredictionsWeek() {
                 throw new Error("Not logged in");
             }
 
+            console.log("CONFIG", config);
+            
             const result = await axios({
                 headers: {
                     authorization: login.token,
                 },
-                url: '/service/getThisWeek/' + encodeURIComponent(weekId),
+                url: config.serviceEndpoint + 'service/getThisWeek/' + encodeURIComponent(weekId),
                 timeout: 5000,
                 validateStatus: (s => [200,401].indexOf(s) !== -1),
             });
@@ -80,7 +84,7 @@ function PredictionsWeek() {
                 for(const fixture of weekData.fixtures) {
                     const matchKey = fixture.homeTeam + " vs " + fixture.awayTeam;
                     if (!(matchKey in newData)) {
-                        console.log("Setting up existing prediction as saving prediction", matchKey);
+                        // console.log("Setting up existing prediction as saving prediction", matchKey);
                         changes = true;
                         let sp: SavingPrediction = {
                             homeTeam: -1,
@@ -144,7 +148,7 @@ function PredictionsWeek() {
                 for (const match in oldValue) {
                     if (match !== matchKey) {
                         if (oldValue[match].isBanker) {
-                            console.log("Auto removed banker for", match);
+                            // console.log("Auto removed banker for", match);
                             oldValue[match] = {...oldValue[match], isBanker: false};
                         }
                     }
@@ -184,7 +188,7 @@ function PredictionsWeek() {
                 
                 const result = await axios({
                     method: 'POST',
-                    url: '/service/postPrediction/' + encodeURIComponent(weekId),
+                    url: config.serviceEndpoint + 'service/postPrediction/' + encodeURIComponent(weekId),
                     headers: {
                         authorization: login.token,
                         'content-type': 'application/json',
@@ -347,7 +351,7 @@ function PredictionsWeek() {
                 }
             });
             const c = sortedCandidates[0];
-            console.log("Saving ", c.homeTeam + " vs " + c.awayTeam);
+            // console.log("Saving ", c.homeTeam + " vs " + c.awayTeam);
             saveThisPrediction(c.homeTeam, c.awayTeam, c.homeGoals, c.awayGoals, c.isBanker);
         }
 
@@ -355,7 +359,6 @@ function PredictionsWeek() {
 
     const [hasAlreadyUsedJoker, setHasAlreadyUsedJoker] = useState(false);
     useEffect(() => {
-
         let alreadyUsedBanker = false;
         if (weekData && weekData.loggedInAs) {
             for (const fixture of weekData.fixtures) {
@@ -374,6 +377,19 @@ function PredictionsWeek() {
             }
         }
         setHasAlreadyUsedJoker(alreadyUsedBanker);
+    }, [weekData]);
+
+    // Determine which fixtures should be getting what multipliers
+    useEffect(() => {
+        if (weekData && weekData.loggedInAs) {
+            const weekId = weekData.week.id;
+            if (weekId in results.startOfWeekStandings) {
+                const table = (results as BuiltResults).startOfWeekStandings[weekId].leagueTables;
+                for (const fixture of weekData.fixtures) {
+                    fixture.bankerMultiplier = getBankerMultiplier(weekId, fixture.homeTeam, fixture.awayTeam, table);   
+                }
+            }
+        }
     }, [weekData]);
 
     const now = new Date();
@@ -483,7 +499,11 @@ function PredictionsWeek() {
         if (isMyPredictions && kickOff > now && fixture.finalScore === null) {
             return <tr className={editingClass}>
                 <td className="kickOff">{renderDateTime(fixture.kickOff)}</td>
-                <td className="homeTeam">{fixture.homeTeam}<img className="teamLogo" src={getLogo24(fixture.homeTeam)} alt={fixture.homeTeam} /></td>
+                <td className="homeTeam">
+                    <span className="rankBox">{renderNumericEnding(teamRankings[fixture.homeTeam])}</span>
+                    {fixture.homeTeam}
+                    <img className="teamLogo" src={getLogo24(fixture.homeTeam)} alt={fixture.homeTeam} />
+                </td>
                 <td className="myPredictions">
                     <>
                         <input type="number" disabled={isSaving || isError} value={homeGoalsTxt} max={20} min={0} onChange={(e) => {setPrediction("homeTeam", e.target.value, fixture.homeTeam, fixture.awayTeam)}} />
@@ -491,9 +511,18 @@ function PredictionsWeek() {
                         <input type="number" disabled={isSaving || isError} value={awayGoalsTxt} max={20} min={0} onChange={(e) => {setPrediction("awayTeam", e.target.value, fixture.homeTeam, fixture.awayTeam)}} /> 
                     </>
                 </td>
-                <td className="awayTeam"><img className="teamLogo" src={getLogo24(fixture.awayTeam)} alt={fixture.awayTeam} />{fixture.awayTeam}</td>
+                <td className="awayTeam">
+                    <img className="teamLogo" src={getLogo24(fixture.awayTeam)} alt={fixture.awayTeam} />
+                    {fixture.awayTeam}
+                    <span className="rankBox">{renderNumericEnding(teamRankings[fixture.awayTeam])}</span>
+                </td>
                 <td className="bankerCol">
                     <input type="checkbox" disabled={isSaving || isError || isSavingJoker || hasAlreadyUsedJoker} title="Banker" checked={isBanker} onChange={(e) => {setPrediction("isBanker", e.target.checked, fixture.homeTeam, fixture.awayTeam)}} />
+
+                    {fixture.bankerMultiplier && (
+                        <span className={"multiplierBox multiplierBox-" + fixture.bankerMultiplier}>*{fixture.bankerMultiplier}</span>
+                    )}
+                    
                 </td>
                 <td className="finalScore">? - ?</td>
                 <td className="points">
@@ -526,6 +555,10 @@ function PredictionsWeek() {
                 <td className="awayTeam"><img className="teamLogo" src={getLogo24(fixture.awayTeam)} alt={fixture.awayTeam} />{fixture.awayTeam}</td>
                 <td className="bankerCol">
                     <input disabled={true} type="checkbox" title="Banker" checked={isBanker} readOnly={true} />
+
+                    {fixture.bankerMultiplier && (
+                        <span className={"multiplierBox multiplierBox-" + fixture.bankerMultiplier}>*{fixture.bankerMultiplier}</span>
+                    )}
                 </td>
                 <td className="finalScore">{fixture.finalScore ? (
                     <>{fixture.finalScore.homeTeam} - {fixture.finalScore.awayTeam}</>
@@ -573,21 +606,52 @@ function PredictionsWeek() {
         }
     }
 
+
+    const teamRankings: {[key: string]: number} = {};
+    (results as BuiltResults).startOfWeekStandings[weekId].leagueTables.all.map(team => {
+        if (team.rank !== null) {
+            teamRankings[team.name] = team.rank;
+        }
+    });
+
+    const renderNumericEnding = (num: number) : string => {
+        if ([1,21].indexOf(num) !== -1) {
+            return num + "st";
+        } else if ([2,22].indexOf(num) !== -1) {
+            return num + "nd";
+        } else if ([3,23].indexOf(num) !== -1) {
+            return num + "rd";
+        } else {
+            return num + "th";
+        }
+    }
+
     
-     
+    const [isTableOpen, setIsTableOpen] = useState(false);
+    const tableExpandClicked = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        e.preventDefault();
+        setIsTableOpen(true);
+    }
+    
     return (
         <div className="predictions">
             <h2>Predictions {weekData && <small>- {weekData.loggedInAs} {weekData.week.name}</small>}</h2>
-            
+            <Link className="link" to="/predictions" >Back</Link>
+            <br/>
+
             {weekId !== "1" && (
                 weekId in results.startOfWeekStandings ? (
-                    <PremierLeagueTable data={(results as BuiltResults).startOfWeekStandings[weekId].leagueTables.top4} name={"Top 4 at start of week"} snapshotAt={(results as BuiltResults).startOfWeekStandings[weekId].snapshotTime} />
+                    isTableOpen ? (
+                        <PremierLeagueTable data={(results as BuiltResults).startOfWeekStandings[weekId].leagueTables} name={"League table at the start of this week"} snapshotAt={(results as BuiltResults).startOfWeekStandings[weekId].snapshotTime} maxRank={20} showTableTypeDropdown={true} />
+                    ) : (
+                        <a href="#" onClick={tableExpandClicked}>View table</a>
+                    )
                 ) : (
                     <p className="warning">We don't yet know the standings at the start of this week.  Come back later to find out which matches are *2 bankers and which are *3.</p>
                 )
             )}
 
-            <Link className="link" to="/predictions" >Back</Link>
+            
             <a className="link" href="#" onClick={clickedRefresh}>Refresh</a>
 
             { weekData === null && dataError === null && (
@@ -640,7 +704,9 @@ function PredictionsWeek() {
                     </>
                     
                 )
-           )}
+            )}
+
+            <AllPlayersWidget weekId={weekId} />
         </div>
     );
 }

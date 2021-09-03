@@ -1,5 +1,20 @@
 import { FinalScore, HiddenPrediction, LeagueTables, MatchResultType, PointsRow, Prediction, Top4LeagueTables } from "./types";
 
+
+
+export const getLogin = () : {token: string, username: string} | null => {
+    const login = localStorage.getItem("login");
+    if (login !== null) {
+        const decoded = JSON.parse(login);
+        return {
+            token: decoded.token,
+            username: decoded.username,
+        }
+    } else {
+        return null;
+    }
+}
+
 const calculateFinalScoreType = (finalScore: FinalScore) : "homeWin" | "draw" | "awayWin" => {
     if (finalScore.homeTeam > finalScore.awayTeam) {
         return "homeWin";
@@ -222,18 +237,19 @@ export function getZeroPointsRow(): PointsRow {
 }
 
 
-export const getBankerMultiplier = (weekId: string, homeTeam: string, awayTeam: string, tables: Top4LeagueTables) => {
+export const getBankerMultiplier = (weekId: string, homeTeam: string, awayTeam: string, tables: LeagueTables) => {
     if (weekId === "1") {
         // Week 1 was *2 multipliers for all matches
         return 2;
     }
 
     // If any of the fixtures teams is in the top 4, *2, otherwise *3
-    const home = tables.top4.find(t => t.name === homeTeam);
+
+    const home = tables.all.find(t => t.name === homeTeam);
     if (typeof home !== "undefined" && home !== null && home.rank && home.rank <= 4) {
         return 2;
     }
-    const away = tables.top4.find(t => t.name === awayTeam);
+    const away = tables.all.find(t => t.name === awayTeam);
     if (typeof away !== "undefined" && away !== null && away.rank && away.rank <= 4) {
         return 2;
     }

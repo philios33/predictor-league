@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { Redirect } from 'react-router-dom';
+import { config } from '../../config';
 
 function Login() {
 
@@ -67,7 +68,7 @@ function Login() {
 
             const result = await axios({
                 method: "POST",
-                url: "/loginService",
+                url: config.serviceEndpoint + "loginService",
                 data: {
                     username: formState.username,
                     password: formState.password,
