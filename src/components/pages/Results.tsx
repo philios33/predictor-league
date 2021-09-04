@@ -96,7 +96,7 @@ function Results() {
 
     const players = getPlayerNames();
 
-    const renderPlayerPredictionTd = (player?: PlayerPrediction) => {
+    const renderPlayerPredictionTd = (playerString: string, player?: PlayerPrediction) => {
 
         if (player) {
 
@@ -108,7 +108,7 @@ function Results() {
             // Do points and colours
             if (player.prediction === null) {
                 // No prediction
-                return <td className={resultClass}>
+                return <td key={playerString} className={resultClass}>
                     -
                     <br/>
                     <span className="points">{player.points?.totalPoints} points</span>
@@ -116,7 +116,7 @@ function Results() {
 
             } else if (player.prediction.type === "prediction") {
                 // Real prediction
-                return <td className={resultClass}>
+                return <td key={playerString} className={resultClass}>
                     {player.prediction.homeTeam} - {player.prediction.awayTeam}
                     {player.points && (
                         <>
@@ -128,20 +128,23 @@ function Results() {
 
             } else if (player.prediction.type === "hidden") {
                 // Hidden prediction
-                return <td className={resultClass}>
+                return <td key={playerString} className={resultClass}>
                     ? - ?
                 </td>
 
             } else {
-                return <div>{JSON.stringify(player.prediction, null, 4)}</div>
+                return <td key={playerString}>{JSON.stringify(player.prediction, null, 4)}</td>
             }
         }
 
         // Unknown
-        return <td>
+        return <td key={playerString}>
             -
         </td>
     }
+
+
+
     return (
         <div className="results">
            <h2>Results</h2>
@@ -170,31 +173,30 @@ function Results() {
                                         <th>Match</th>
                                         <th>Score</th>
                                         {players.map(player => (
-                                            <th>{player}</th>
+                                            <th key={player}>{player}</th>
                                         ))}
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {phase.fixtureGroups.map(fg => (
-                                        <>
-                                            {fg.fixtures.map(fixture => (
-                                                <tr key={fixture.homeTeam + "_" + fixture.awayTeam}>
-                                                    <td>{renderDateTime(fg.kickOff)}</td>
-                                                    <td>{fixture.homeTeam} <img className="teamLogo" src={getLogo24(fixture.homeTeam)} alt={fixture.homeTeam} /> vs <img className="teamLogo" src={getLogo24(fixture.awayTeam)} alt={fixture.awayTeam} /> {fixture.awayTeam}</td>
-                                                    <td>{fixture.finalScore && (fixture.finalScore.homeTeam + " - " + fixture.finalScore.awayTeam)}</td>
-                                                    {players.map(player => (
-                                                        renderPlayerPredictionTd(fixture.playerPredictions[player])
-                                                    ))}
-                                                </tr>
-                                            ))}
-                                        </>
+                                        fg.fixtures.map(fixture => (
+                                            <tr key={fixture.homeTeam + "_" + fixture.awayTeam}>
+                                                <td>{renderDateTime(fg.kickOff)}</td>
+                                                <td>{fixture.homeTeam} <img className="teamLogo" src={getLogo24(fixture.homeTeam)} alt={fixture.homeTeam} /> vs <img className="teamLogo" src={getLogo24(fixture.awayTeam)} alt={fixture.awayTeam} /> {fixture.awayTeam}</td>
+                                                <td>{fixture.finalScore && (fixture.finalScore.homeTeam + " - " + fixture.finalScore.awayTeam)}</td>
+                                                {players.map(player => (
+                                                    renderPlayerPredictionTd(player, fixture.playerPredictions[player])
+                                                ))}
+                                            </tr>
+                                        ))
+                                        
                                     ))}
                                     <tr>
                                         <td></td>
                                         <td></td>
                                         <td>Total</td>
                                         {players.map(player => (
-                                            <td>
+                                            <td key={player}>
                                                 <strong>{phase.points[player].totalPoints >= 0 && "+"}{phase.points[player].totalPoints}</strong>
                                             </td>
                                         ))}

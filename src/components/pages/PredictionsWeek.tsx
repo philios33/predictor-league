@@ -32,7 +32,7 @@ function PredictionsWeek() {
             }
 
             console.log("CONFIG", config);
-            
+
             const result = await axios({
                 headers: {
                     authorization: login.token,
@@ -393,7 +393,7 @@ function PredictionsWeek() {
     }, [weekData]);
 
     const now = new Date();
-    const renderPredictionInputs = (fixture: PredictionFixture, name: string, isMyPredictions: boolean, savingPredictions: null | {[key:string]: SavingPrediction}) => {
+    const renderPredictionInputs = (fixture: PredictionFixture, key: number, name: string, isMyPredictions: boolean, savingPredictions: null | {[key:string]: SavingPrediction}) => {
 
         let homeGoals: number = -1;
         let awayGoals: number = -1;
@@ -497,7 +497,7 @@ function PredictionsWeek() {
         }
 
         if (isMyPredictions && kickOff > now && fixture.finalScore === null) {
-            return <tr className={editingClass}>
+            return <tr key={key} className={editingClass}>
                 <td className="kickOff">{renderDateTime(fixture.kickOff)}</td>
                 <td className="homeTeam">
                     <span className="rankBox">{renderNumericEnding(teamRankings[fixture.homeTeam])}</span>
@@ -679,7 +679,7 @@ function PredictionsWeek() {
                             </thead>
                             <tbody>
                                 {weekData.fixtures.map((fixture,i) => (
-                                    renderPredictionInputs(fixture, weekData.loggedInAs as string, true, savingPredictions)                                                                              
+                                    renderPredictionInputs(fixture, i, weekData.loggedInAs as string, true, savingPredictions)                                                                              
                                 ))}
                                 <tr className="totals">
                                     <td>{weekData.fixtures.length} matches</td>

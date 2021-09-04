@@ -4,6 +4,8 @@ import { WeekFixtures } from '../lib/types';
 import { getLogin } from '../lib/util';
 import StatusBox from './StatusBox';
 
+import './AllPlayersWidget.scss';
+
 type Props = {
     weekId: string
 }
@@ -34,9 +36,7 @@ function AllPlayersWidget(props: Props) {
     }, []);
 
 
-    if (!showButton) {
-        return null;
-    }
+    
 
     const players = getPlayerNames();
 
@@ -45,14 +45,13 @@ function AllPlayersWidget(props: Props) {
         setShowPlayers(true);
     }
 
-    if (!showPlayers) {
-        return <button onClick={(e) => loadWidget(e)}>See other player predictions</button>
-    }
+    
+
+    const [showingUser, setShowingUser] = useState(null as null | string);
 
     const showPredictions = (e: React.MouseEvent, player: string) => {
         e.preventDefault();
-        console.log("Found data", playerPredictions[player]);
-        // TODO Load some modal for mike to copy from
+        setShowingUser(player);
     }
 
     const [playerPredictions, setPlayerPredictions] = useState({} as {[key: string]: WeekFixtures});
@@ -64,6 +63,17 @@ function AllPlayersWidget(props: Props) {
         })
     }
 
+    let relevantPredictions = null;
+    if (showingUser !== null && showingUser in playerPredictions) {
+        relevantPredictions = playerPredictions[showingUser];
+    }
+
+    if (!showButton) {
+        return null;
+    }
+    if (!showPlayers) {
+        return <button onClick={(e) => loadWidget(e)}>See other player predictions</button>
+    }
     return <div className="allPlayersWidget">
         <table>
             <thead>
@@ -86,6 +96,47 @@ function AllPlayersWidget(props: Props) {
                 )) }
             </tbody>
         </table>
+
+        {showingUser !== null && relevantPredictions !== null && (
+            <div>
+                <p>{showingUser}'s predictions</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Home Team</th>
+                            <th>Score</th>
+                            <th></th>
+                            <th>Score</th>
+                            <th>Away Team</th>
+                            <th>Banker</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {relevantPredictions.fixtures.map((fixture,i) => {
+                            const prediction = fixture.playerPredictions[showingUser]?.prediction;
+                            let homeGoals = "?";
+                            let awayGoals = "?";
+                            let isBanker = false;
+                            if (prediction && prediction.type === "prediction") {
+                                homeGoals = prediction.homeTeam.toString();
+                                awayGoals = prediction.awayTeam.toString();
+                                isBanker = prediction.isBanker;
+                            }
+                            return (
+                                <tr key={fixture.homeTeam + "_vs_" + fixture.awayTeam}>
+                                    <td>{fixture.homeTeam}</td>
+                                    <td>{homeGoals}</td>
+                                    <td>{i === 0 ? showingUser?.toUpperCase() : 'v'}</td>
+                                    <td>{awayGoals}</td>
+                                    <td>{fixture.awayTeam}</td>
+                                    <td>{isBanker && "BANKER"}</td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
+            </div>
+        )}
         
     </div>
 }
