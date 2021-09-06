@@ -208,6 +208,24 @@ span.points {
                     font-weight: bold;
                 }
                 
+                &.homeTeamCell {
+                    text-align: right;
+                    border-right: 0px;
+                }
+                &.awayTeamCell {
+                    text-align: left;
+                    border-left: 0px;
+                }
+                &.bankerMultipler {
+                    font-size: 10px;
+                    font-weight: bold;
+                }
+                &.bankerMultipler-2 {
+                    color: #44f;
+                }
+                &.bankerMultipler-3 {
+                    color: #4b4;
+                }
             }
 
             &.myUser {
@@ -216,6 +234,11 @@ span.points {
                 }
             }
         }
+    }
+
+    .averagePoints {
+        font-weight: bold;
+        padding-left: 50%;
     }
 }
 

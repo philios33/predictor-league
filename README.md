@@ -7,7 +7,7 @@ This is a website to help with predictor points calculations.  Players can login
 
 sudo docker build -t predictor .
 
-sudo docker run -v `pwd`/signals:/home/node/signals -t -i -p 8081:8081 predictor
+sudo docker run -v `pwd`/signals:/home/node/signals -v `pwd`/logs:/home/node/logs -t -i -p 8081:8081 predictor
 
 ## Server startup command
 

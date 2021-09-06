@@ -24,7 +24,7 @@ function AllPlayersWidget(props: Props) {
             if (login.username === "Phil" || login.username === "Mike") {
                 setShowButton(true);
             } else {
-                throw new Error("Not allowed to view other players predictions: " + login.username);
+                // throw new Error("Not allowed to view other players predictions: " + login.username);
             }
         } catch(e) {
             console.warn(e);

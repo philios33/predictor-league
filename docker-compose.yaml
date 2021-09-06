@@ -6,6 +6,9 @@ services:
       - type: bind
         source: ./signals
         target: /home/node/signals
+      - type: bind
+        source: ./logs
+        target: /home/node/logs
     restart: always
     networks:
       - master

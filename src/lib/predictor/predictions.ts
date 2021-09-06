@@ -39,8 +39,11 @@ export const getAllUserPredictions = async (gauth: GoogleAuth, user: string) : P
     for(const teamName of teamNames) {
         const tm = teamMatches[teamName];
         if (tm.raw) {
-            for(const value of tm.raw) {
-                const arrayIndex = tm.raw.indexOf(value);
+            // for(const value of tm.raw) {
+            //    const arrayIndex = tm.raw.indexOf(value);
+            // BUGFIX
+            for (let arrayIndex=0; arrayIndex<tm.raw.length; arrayIndex++) {
+                const value = tm.raw[arrayIndex];
                 const awayTeamName = teamNames[arrayIndex];
                 if (value === "") {
                     // Skip this empty value
@@ -74,6 +77,7 @@ export const getAllUserPredictions = async (gauth: GoogleAuth, user: string) : P
     }
 
     // Parse the extra meta rows
+    /*
     const metaFields: {[key: string]: string} = {
         "Email Address": "email",
         "Secret Key": "secret",
@@ -90,9 +94,10 @@ export const getAllUserPredictions = async (gauth: GoogleAuth, user: string) : P
             throw new Error("Unknown meta key: " + key);
         }
     }
+    */
 
     return {
-        meta: metaResult,
+        // meta: metaResult,
         homeTeams: teamMatches,
     }
     

@@ -5,9 +5,9 @@ import { getCachedMatchSchedule, getCachedMatchScores } from "./predictor/cached
 import { getCachedResults } from "./predictor/cachedResults";
 import { writePrediction } from "./predictor/matches";
 import { getAllUserPredictions } from "./predictor/predictions";
-import { CompiledSchedule, HiddenPrediction, PointsRow, Prediction, PredictionFixture, TeamMatchesAgainstPredictions, TeamMatchesAgainstScores, UserMeta, WeekFixtures } from "./types";
+import { CompiledSchedule, HiddenPrediction, PointsRow, Prediction, PredictionFixture, TeamMatchesAgainstPredictions, TeamMatchesAgainstScores, WeekFixtures } from "./types";
 import { addPoints, calculatePoints, calculateResultType, getBankerMultiplier } from "./util";
-
+import fs from 'fs';
 
 
 export async function getThisWeek(gauth: GoogleAuth, weekId: string, playerName: string) : Promise<WeekFixtures> {
@@ -20,7 +20,7 @@ export async function getThisWeek(gauth: GoogleAuth, weekId: string, playerName:
     const result = await getWeekFixtures(gauth, weekId, true, [playerName]);
 
     // Remove sensitive meta data
-    result.players[playerName].userMeta = {};
+    // result.players[playerName].userMeta = {};
     result.loggedInAs = playerName;
 
     return result;
@@ -41,13 +41,13 @@ export async function getWeekFixtures(gauth: GoogleAuth, weekId: string, withSco
         [key: string]: {
             predictions: {[key: string] : TeamMatchesAgainstPredictions}
             cumPoints: null | PointsRow,
-            userMeta: UserMeta
+            // userMeta: UserMeta
         }
     };
     const players: {
         [key: string]: {
             points: PointsRow | null;
-            userMeta: UserMeta;
+            // userMeta: UserMeta;
         };
     } = {};
     for(const player of withPredictions) {
@@ -55,7 +55,7 @@ export async function getWeekFixtures(gauth: GoogleAuth, weekId: string, withSco
         playerPredictions[player] = {
             predictions: playerData.homeTeams,
             cumPoints: null,
-            userMeta: playerData.meta,
+            // userMeta: playerData.meta,
         };
     }
 
@@ -147,7 +147,7 @@ export async function getWeekFixtures(gauth: GoogleAuth, weekId: string, withSco
     for(const player of withPredictions) {
         players[player] = {
             points: playerPredictions[player].cumPoints,
-            userMeta: playerPredictions[player].userMeta,
+            // userMeta: playerPredictions[player].userMeta,
         }
     }
     return {
@@ -198,7 +198,11 @@ function getCellRefByMatch (homeTeam: string, awayTeam: string) : string {
     return awayCol + homeRow.toString();
 }
 
+
+const playerCredentials: {[key: string]: string} = JSON.parse(fs.readFileSync(__dirname + "/../keys/players.json").toString("utf8"));
+
 export async function validatePlayerSecret(gauth: GoogleAuth, userName: string, userSecret: string) {
+    /*
     const current = await getWeekFixtures(gauth, "1", false, [userName]);
 
     if (!current.players[userName].userMeta) {
@@ -220,6 +224,24 @@ export async function validatePlayerSecret(gauth: GoogleAuth, userName: string, 
     if (userSecret !== current.players[userName].userMeta.secret) {
         throw new Error("The secret is wrong");
     }
+    */
+    
+    if (userSecret.length < 6) {
+        throw new Error("Given secret is too short");
+    }
+
+    if (userName in playerCredentials) {
+        const expected = playerCredentials[userName];
+        if (expected !== userSecret) {
+            console.warn("Incorrect secret for ", userName, "expecting", expected, "but received", userSecret);
+            throw new Error("Incorrect secret");
+        } else {
+            // GOOD
+        }
+    } else {
+        throw new Error("Unknown user: " + userName);
+    }
+
 }
 
 export async function savePrediction(gauth: GoogleAuth, weekId: string, userName: string, homeTeam: string, awayTeam: string, homeScore: number, awayScore: number, isBanker: boolean) : Promise<Array<PredictionFixture>> {
@@ -235,16 +257,21 @@ export async function savePrediction(gauth: GoogleAuth, weekId: string, userName
         8. The complete state for the week is sent back after every save.  This is taken from the initial read with the data overwritten, rather than a pointless 2nd read.
     */
 
+    // Set this to true when you want to override any timing errors
+    const circumventErrors = false;
+
     const playerNames = getPlayerNames();
 
     const current = await getWeekFixtures(gauth, weekId, true, [userName]);
 
+    /*
     if (!current.players[userName].userMeta) {
         throw new Error("Missing expected user meta");
     }
     if (!("email" in current.players[userName].userMeta)) {
         throw new Error("Missing user meta: email");
     }
+    */
 
     const fixture = current.fixtures.find((fixture) => {
         return fixture.homeTeam === homeTeam && fixture.awayTeam === awayTeam;
@@ -253,13 +280,13 @@ export async function savePrediction(gauth: GoogleAuth, weekId: string, userName
         throw new Error("Could not find the fixture: " + homeTeam + " vs " + awayTeam + " during week: " + weekId);
     }
 
-    if (fixture.finalScore !== null) {
+    if (!circumventErrors && fixture.finalScore !== null) {
         throw new Error("Sorry, this match already has a final score: " + fixture.finalScore.homeTeam + " - " + fixture.finalScore.awayTeam);
     }
 
     const now = new Date();
     const fixtureKickoff = new Date(fixture.kickOff);
-    if (fixtureKickoff < now) {
+    if (!circumventErrors && fixtureKickoff < now) {
         throw new Error("Sorry, this match has already kicked off");
     }
 

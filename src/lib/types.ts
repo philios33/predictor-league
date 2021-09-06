@@ -1,8 +1,9 @@
 
-
+/*
 export type UserMeta = {
     [key: string]: string
 }
+*/
 export type WeekFixtures = {
     loggedInAs?: string // To show who we are logged in as
     week: WeekDates
@@ -10,7 +11,7 @@ export type WeekFixtures = {
     players: {
         [key: string]: {
             points: PointsRow | null
-            userMeta: UserMeta
+            // userMeta: UserMeta
         }
     }
 }
@@ -117,7 +118,7 @@ export type TeamMatchesAgainstPredictions = {
 }
 
 export type UserPredictions = {
-    meta: {[key: string]: string}
+    // meta: {[key: string]: string}
     homeTeams: {[key: string]: TeamMatchesAgainstPredictions}
 }
 

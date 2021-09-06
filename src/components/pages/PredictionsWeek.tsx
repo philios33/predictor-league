@@ -542,7 +542,7 @@ function PredictionsWeek() {
 
         } else {
 
-            return <tr className={resultClass}>
+            return <tr key={key} className={resultClass}>
                 <td className="kickOff">{renderDateTime(fixture.kickOff)}</td>
                 <td className="homeTeam">{fixture.homeTeam}<img className="teamLogo" src={getLogo24(fixture.homeTeam)} alt={fixture.homeTeam} /></td>
                 <td className="myPredictions">

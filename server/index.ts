@@ -9,9 +9,12 @@ import jwt from 'jsonwebtoken';
 import { getThisWeek, savePrediction, validatePlayerSecret } from '../src/lib/api';
 import GoogleAuth from '../src/lib/googleAuth';
 import buildDetails from '../src/compiled/build.json';
-import moment from 'moment-mini';
+import { Logger } from '../src/lib/logger';
+
 
 export {}
+
+const logger = new Logger(true);
 
 const credentialsFile = __dirname + "/../keys/credentials.json";
 console.log("CREDENTIALS FILE PATH 1", credentialsFile);
@@ -91,10 +94,20 @@ app.post("/loginService", async (req, res) => {
             subject: name,
         });
 
+        logger.writeEvent("LOGIN_SUCCESS", {
+            ip: req.headers['real-ip'],
+            subject: name,
+        });
+
         res.send({
             token
         });
     } catch(e) {
+        logger.writeEvent("LOGIN_FAIL", {
+            ip: req.headers['real-ip'],
+            message: e.message,
+        });
+
         console.error(e);
         res.status(500);        
         res.send({
@@ -123,6 +136,9 @@ const validateJWTToUser = (token?: string): string => {
 app.get("/service/getThisWeek/:id", async (req, res) => {
     try {
         let user = validateJWTToUser(req.headers.authorization);
+        // let user = "Lawro";
+
+        let origUser = user;
         const weekId = req.params.id;
 
         // Special case where there is a param called playerName and the user is phil or mike, we allow to view the predictions
@@ -134,8 +150,22 @@ app.get("/service/getThisWeek/:id", async (req, res) => {
         }
 
         const data = await getThisWeek(gauth, weekId, user);
+
+        logger.writeEvent("LOAD_PREDICTIONS_SUCCESS", {
+            ip: req.headers['real-ip'],
+            user: user,
+            by: origUser,
+            week: weekId,
+        });
+
         res.send(data);
     } catch(e) {
+
+        logger.writeEvent("LOAD_PREDICTIONS_FAIL", {
+            ip: req.headers['real-ip'],
+            message: e.message,
+        });
+
         console.error(e);
         if (e.message === "Not logged in") {
             res.status(401);
@@ -151,10 +181,28 @@ app.get("/service/getThisWeek/:id", async (req, res) => {
 app.post("/service/postPrediction/:weekId", async (req, res) => {
     try {
         const user = validateJWTToUser(req.headers.authorization);
+        // const user = "Lawro";
         const weekId = req.params.weekId;
         const data = await savePrediction(gauth, weekId, user, req.body.homeTeam, req.body.awayTeam, req.body.homeGoals, req.body.awayGoals, req.body.isBanker);
+
+        logger.writeEvent("SAVE_PREDICTION_SUCCESS", {
+            ip: req.headers['real-ip'],
+            user: user,
+            week: weekId,
+            homeTeam: req.body.homeTeam,
+            awayTeam: req.body.awayTeam,
+            homeGoals: req.body.homeGoals,
+            awayGoals: req.body.awayGoals,
+            isBanker: req.body.isBanker,
+        });
+
         res.send(data);
     } catch(e) {
+        logger.writeEvent("SAVE_PREDICTION_FAIL", {
+            ip: req.headers['real-ip'],
+            message: e.message,
+        });
+
         console.error(e);
         if (e.message === "Not logged in") {
             res.status(401);
@@ -180,6 +228,8 @@ app.get("*", function (req, res) {
     console.log("Logged in!");
     app.listen(PORT);
     console.log("Listening on port " + PORT);
+
+    logger.writeEvent("STARTUP_COMPLETE", {});
 })();
 
 
@@ -187,6 +237,7 @@ app.get("*", function (req, res) {
 
 // Required for control+C compatibility
 process.on("SIGINT", () => {
+    logger.writeEvent("SIGINT", {});
     process.exit(1);
 })
 

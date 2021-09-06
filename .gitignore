@@ -8,5 +8,7 @@
 /src/test.ts
 /signals/*
 !/signals/.gitkeep
+/logs/*
+!/logs/.gitkeep
 /todo.txt
 

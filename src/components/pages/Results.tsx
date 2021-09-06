@@ -143,8 +143,6 @@ function Results() {
         </td>
     }
 
-
-
     return (
         <div className="results">
            <h2>Results</h2>
@@ -170,7 +168,7 @@ function Results() {
                                 <thead>
                                     <tr>
                                         <th>Date / Time</th>
-                                        <th>Match</th>
+                                        <th colSpan={4}>Match</th>
                                         <th>Score</th>
                                         {players.map(player => (
                                             <th key={player}>{player}</th>
@@ -182,7 +180,12 @@ function Results() {
                                         fg.fixtures.map(fixture => (
                                             <tr key={fixture.homeTeam + "_" + fixture.awayTeam}>
                                                 <td>{renderDateTime(fg.kickOff)}</td>
-                                                <td>{fixture.homeTeam} <img className="teamLogo" src={getLogo24(fixture.homeTeam)} alt={fixture.homeTeam} /> vs <img className="teamLogo" src={getLogo24(fixture.awayTeam)} alt={fixture.awayTeam} /> {fixture.awayTeam}</td>
+                                                <td className="homeTeamCell">{fixture.homeTeam} <img className="teamLogo" src={getLogo24(fixture.homeTeam)} alt={fixture.homeTeam} /></td>
+                                                <td>vs</td>
+                                                <td className="awayTeamCell"><img className="teamLogo" src={getLogo24(fixture.awayTeam)} alt={fixture.awayTeam} /> {fixture.awayTeam}</td>
+                                                <td className={fixture.bankerMultiplier ? "bankerMultipler bankerMultipler-" + fixture.bankerMultiplier : "bankerMultipler"}>{fixture.bankerMultiplier && (
+                                                    <span>Banker<br/>* {fixture.bankerMultiplier}</span>
+                                                )}</td>
                                                 <td>{fixture.finalScore && (fixture.finalScore.homeTeam + " - " + fixture.finalScore.awayTeam)}</td>
                                                 {players.map(player => (
                                                     renderPlayerPredictionTd(player, fixture.playerPredictions[player])
@@ -193,16 +196,26 @@ function Results() {
                                     ))}
                                     <tr>
                                         <td></td>
-                                        <td></td>
+                                        <td colSpan={4}></td>
                                         <td>Total</td>
                                         {players.map(player => (
                                             <td key={player}>
-                                                <strong>{phase.points[player].totalPoints >= 0 && "+"}{phase.points[player].totalPoints}</strong>
+                                                <strong>{phase.points[player].totalPoints > 0 && "+"}{phase.points[player].totalPoints}</strong>
                                             </td>
                                         ))}
                                     </tr>
                                 </tbody>
                             </table>
+
+                            {(() => { 
+                                let totalPoints = 0;
+                                players.map(player => {
+                                    totalPoints += phase.points[player].totalPoints
+                                });
+                                let averagePoints = Math.round(totalPoints * 10 / players.length) / 10;
+                                return <p className="averagePoints">Average points: {averagePoints}</p>
+                            })()}
+                            
                         </div>
 
                         {(phase.isFirstPhaseOfWeek && phase.isLastPhaseOfWeek) ? (

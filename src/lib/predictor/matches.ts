@@ -7,10 +7,12 @@ import { CompiledSchedule, CompiledScores, TeamMatchesAgainstSchedule, TeamMatch
 const SheetsApi = sheets('v4');
 const spreadsheetId = "1LH94Sk4LcDQe4DfiFNcmfZ-dNG9Wzuqh-4dWp69UEW8";
 
-export const getAllMatchDataFor = async (gauth: GoogleAuth, sheetName: string, collectMeta: boolean = false) : Promise<any[][]> =>  {    
+export const getAllMatchDataFor = async (gauth: GoogleAuth, sheetName: string, collectMeta: boolean = false) : Promise<any[][]> =>  {
+    // Note: I have removed the concept of metadata within the spreadsheet
+    collectMeta = false;
     const range = sheetName + '!A3:U' + (collectMeta ? '30' : '22');
     const auth = gauth.jwtClient;
-    console.log("Getting Match Data from " + range);
+    // console.log("Getting Match Data from " + range);
     const result = await SheetsApi.spreadsheets.values.get({
         auth: auth,
         spreadsheetId,
@@ -55,8 +57,11 @@ export const getMatchSchedule = async (gauth: GoogleAuth) : Promise<CompiledSche
     for(const teamName of teamNames) {
         const tm = teamMatches[teamName];
         if (tm.raw) {
-            for(const value of tm.raw) {
-                const arrayIndex = tm.raw.indexOf(value);
+            // for(const value of tm.raw) {
+            //    const arrayIndex = tm.raw.indexOf(value);
+            // BUGFIX
+            for (let arrayIndex=0; arrayIndex<tm.raw.length; arrayIndex++) {
+                const value = tm.raw[arrayIndex];
                 const awayTeamName = teamNames[arrayIndex];
                 if (value === "") {
                     // Skip this empty value
@@ -171,7 +176,7 @@ export const getMatchScores = async (gauth: GoogleAuth) : Promise<CompiledScores
 export const writePrediction = async (gauth: GoogleAuth, userName: string, cellRef: string, scoreValue: string) : Promise<void> => {
     const range = "PLY:" + userName + '!' + cellRef;
     const auth = gauth.jwtClient;
-    console.log("Writing data at ", cellRef, scoreValue);
+    // console.log("Writing data at ", cellRef, scoreValue);
     const result = await SheetsApi.spreadsheets.values.update({
         auth: auth,
         spreadsheetId,
