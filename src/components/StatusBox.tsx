@@ -117,7 +117,7 @@ function StatusBox(props: Props) {
         )}
 
         { isLoading ? (
-            <p>Loading...</p>
+            <div>Loading...</div>
         ) : (
             <a href="#" onClick={refreshPressed}>Refresh</a>
         )}

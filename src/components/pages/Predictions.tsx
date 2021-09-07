@@ -97,12 +97,13 @@ function Predictions(props: Props) {
 
             <h3>Weeks with upcoming matches</h3>
             {upcomingWeeks.length > 0 ? (
-                <ul>
+                <ul className="upcomingPredictionWeeks">
                     {upcomingWeeks.map((week) => 
                         <li key={week.id}>
-                            <Link to={"/predictions/" + encodeURIComponent(week.id)}>Week {week.id}</Link>
+                            <Link to={"/predictions/" + encodeURIComponent(week.id)} className="btn">Week {week.id}</Link>
                             &nbsp;
                             <small>({week.total} matches)</small>
+                            <br />
                             <StatusBox weekId={week.id} />
                         </li>
                     ).reverse()}
@@ -115,7 +116,7 @@ function Predictions(props: Props) {
             {finishedWeeks.length > 0 ? (
                 <ul>
                     {finishedWeeks.map((week) => 
-                        <li key={week.id}><Link to={"/predictions/" + encodeURIComponent(week.id)}>Week {week.id}</Link> <small>({week.total} matches)</small></li>
+                        <li key={week.id}><Link to={"/predictions/" + encodeURIComponent(week.id)} className="btn">Week {week.id}</Link> <small>({week.total} matches)</small></li>
                     ).reverse()}
                 </ul>
             ) : (

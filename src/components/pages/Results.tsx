@@ -180,9 +180,9 @@ function Results() {
                                         fg.fixtures.map(fixture => (
                                             <tr key={fixture.homeTeam + "_" + fixture.awayTeam}>
                                                 <td>{renderDateTime(fg.kickOff)}</td>
-                                                <td className="homeTeamCell">{fixture.homeTeam} <img className="teamLogo" src={getLogo24(fixture.homeTeam)} alt={fixture.homeTeam} /></td>
+                                                <td className="homeTeamCell"><img className="teamLogo" src={getLogo24(fixture.homeTeam)} alt={fixture.homeTeam} title={fixture.homeTeam} /><br /> {fixture.homeTeam}</td>
                                                 <td>vs</td>
-                                                <td className="awayTeamCell"><img className="teamLogo" src={getLogo24(fixture.awayTeam)} alt={fixture.awayTeam} /> {fixture.awayTeam}</td>
+                                                <td className="awayTeamCell"><img className="teamLogo" src={getLogo24(fixture.awayTeam)} alt={fixture.awayTeam} title={fixture.awayTeam} /><br /> {fixture.awayTeam}</td>
                                                 <td className={fixture.bankerMultiplier ? "bankerMultipler bankerMultipler-" + fixture.bankerMultiplier : "bankerMultipler"}>{fixture.bankerMultiplier && (
                                                     <span>Banker<br/>* {fixture.bankerMultiplier}</span>
                                                 )}</td>

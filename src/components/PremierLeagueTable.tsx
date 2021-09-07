@@ -34,9 +34,9 @@ function PremierLeagueTable(props: Props) {
             
             {props.showTableTypeDropdown && (
                 <ul>
-                    <li className={tableType === "all" ? "selected" : ""}><a onClick={(e) => handleType(e, "all")} href="#">Both</a></li>
-                    <li className={tableType === "homeOnly" ? "selected" : ""}><a onClick={(e) => handleType(e, "homeOnly")} href="#">Home Only</a></li>
-                    <li className={tableType === "awayOnly" ? "selected" : ""}><a onClick={(e) => handleType(e, "awayOnly")} href="#">Away Only</a></li>
+                    <li className={tableType === "all" ? "selected" : ""}><a className="btn" onClick={(e) => handleType(e, "all")} href="#">Both</a></li>
+                    <li className={tableType === "homeOnly" ? "selected" : ""}><a className="btn" onClick={(e) => handleType(e, "homeOnly")} href="#">Home Only</a></li>
+                    <li className={tableType === "awayOnly" ? "selected" : ""}><a className="btn" onClick={(e) => handleType(e, "awayOnly")} href="#">Away Only</a></li>
                 </ul>
             )}
             

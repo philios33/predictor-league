@@ -14,6 +14,19 @@ a.link {
     display: inline-block;
 }
 
+a.btn, button.btn {
+    display: inline-block;
+    background-color: rgb(149, 191, 255);
+    color: black;
+    padding: 5px 10px;
+    margin: 5px;
+    border: 1px solid black;
+    border-radius: 5px;
+    &:hover {
+        background-color: rgb(74, 146, 253);
+    }
+}
+
 .predictions {
     font-size: 12px;
     text-align: center;
@@ -33,58 +46,79 @@ a.link {
         border-collapse: collapse;
         
         tr {
-            
-            th,td {
-                padding: 5px;
+            &.ok {
+                &:nth-child(even) {
+                    td {
+                        background-color:#afa;
+                    }
+                }
+                &:nth-child(odd) {
+                    td {
+                        background-color:#dfd;
+                    }
+                }
+            }
 
+            &.incomplete, &.error, &.saving {
+                &:nth-child(even) {
+                    td {
+                        background-color:#faa;
+                    }
+                }
+                &:nth-child(odd) {
+                    td {
+                        background-color:#fdd;
+                    }
+                }
+            }
+
+            th {
+                border-bottom: 1px solid grey;
+            }
+            th,td {
+                padding: 2px;
+                line-height: 1.5;
+
+                .nobr {
+                    display: inline-block;
+                    white-space: nowrap;
+                    vertical-align: middle;
+
+                    * {
+                        vertical-align: middle;
+                    }
+                }
+                span.teamName {
+                    white-space: nowrap;
+                    max-width: 15vw;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    display: inline-block;
+                }
                 &.homeTeam {
                     text-align: right;
-                    // padding: 5px;
                 }
                 &.awayTeam {
                     text-align: left;
-                    // padding: 5px;
                 }
                 &.kickOff {
                     text-align: center;
                     border-right: 1px solid black;
-                    // padding: 5px;
                 }
                 &.finalScore {
                     text-align: center;
                     border-left: 1px solid black;
-                    // padding: 5px;
                 }
                 &.myPredictions, &.otherPredictions {
                     padding: 0px;
                     text-align: left;
-                    // border-left: 1px solid black;
-                    > div {
-                        padding: 5px;
-
-                        &.error {
-                            background-color: lighten(red, 10%);
-                        }
-                        &.incomplete {
-                            background-color: lighten(red, 40%);
-                        }
-                        &.saving {
-                            background-color: lighten(orange, 40%);
-                        }
-                        &.ok {
-                            background-color: lighten(green, 40%);
-                        }
-                          
-                    }
-
-                    .statusMessage {
-                        display: inline-block;
+                }
+                .statusMessage {
+                    display: inline-block;
+                    font-size: 12px;
+                    button {
                         font-size: 12px;
-                        button {
-                            font-size: 12px;
-                        }
                     }
-
                 }
 
                 input {
@@ -106,19 +140,11 @@ a.link {
                     margin: 4px;
                 }
 
-                .multiplierBox {
-                    font-weight: bold;
-                }
-                .multiplierBox-2 {
-                    color: #44f;
-                }
-                .multiplierBox-3 {
-                    color: #4b4;
-                }
+                
             }
             th {
                 &.myPredictions, &.otherPredictions {
-                    padding: 5px;
+                    padding: 3px;
                 }
             }
 
@@ -131,6 +157,8 @@ a.link {
         }
     }
 }
+
+
 
 
 img.teamLogo {
@@ -148,6 +176,7 @@ div.fullWidthScroller {
     font-weight: bold;
     color: orange;
 }
+
 table.predictions {
     
     .incorrect {
@@ -181,14 +210,34 @@ table.predictions {
             border: 4px #ffff00 solid;
         }
     }
-    
+    tr {
+        .multiplierBox {
+            color: grey;
+            font-weight: bold;
+        }
+        
+        &.withBanker {
+            .multiplierBox {
+                color: black;
+            }
+        }
+        &.incomplete {
+            .multiplierBox-2 {
+                color: #44f;
+            }
+            .multiplierBox-3 {
+                color: #4b4;
+            }
+        }
+    }
 }
 
 span.points {
     text-align: right;
     font-size: smaller;
     display: inline-block;
-    width: 60px;
+    white-space: nowrap;
+    // width: 60px;
 }
 
 .results {
@@ -211,10 +260,12 @@ span.points {
                 &.homeTeamCell {
                     text-align: right;
                     border-right: 0px;
+                    vertical-align: top;
                 }
                 &.awayTeamCell {
                     text-align: left;
                     border-left: 0px;
+                    vertical-align: top;
                 }
                 &.bankerMultipler {
                     font-size: 10px;
@@ -230,7 +281,7 @@ span.points {
 
             &.myUser {
                 td {
-                    background-color: lighten(blue, 30%);
+                    background-color: #95bfff;
                 }
             }
         }
@@ -242,6 +293,15 @@ span.points {
     }
 }
 
+.upcomingPredictionWeeks {
+    .statusBox {
+        border: 0px;
+        a {
+            display: none;
+        }
+    }
+}
+
 @media all and (min-width: 800px) {
     .predictions {
         padding: 0px;
@@ -250,6 +310,12 @@ span.points {
     .results {
         padding: 0px;
         font-size: 16px;
+    }
+
+    table.predictions {
+        th,td {
+            padding: 5px;
+        }
     }
 }
 

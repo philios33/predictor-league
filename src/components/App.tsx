@@ -57,13 +57,13 @@ function App() {
                 <div>
                     <ul className="menu">
                         <li>
-                            <Link to="/">Home</Link>
+                            <Link className="btn" to="/">Home</Link>
                         </li>
                         <li>
-                            <Link to="/predictions">Predictions</Link>
+                            <Link className="btn" to="/predictions">Predictions</Link>
                         </li>
                         <li>
-                            <Link to="/results">Results</Link>
+                            <Link className="btn" to="/results">Results</Link>
                         </li>
                     </ul>
 
