@@ -18,6 +18,9 @@ import Login from './pages/Login';
 import { startVersionChecking, stopVersionChecking } from '../lib/versionChecker';
 import { getLogin } from '../lib/util';
 
+import logoSmall from '../assets/logo_small.jpg';
+import logo500 from '../assets/logo_500w.png';
+import logoFull from '../assets/logo.png';
 
 const GithubUrl = "https://github.com/philios33/predictor-league";
 
@@ -43,7 +46,8 @@ function App() {
     return (
         <div className="App">
             <header>
-                <h1>Predictor League</h1>
+                <img src={logoSmall} srcSet={logoFull + " 1000w," + logo500 + " 500w"} alt="Predictor 21-22" title="Predictor 21-22"/>
+                {/*<h1>Predictor 21-22</h1>*/}
                 {login !== null && <p>Logged in as: <strong>{login.username}</strong></p>}
             </header>
 

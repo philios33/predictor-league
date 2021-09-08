@@ -43,12 +43,11 @@ const config: Configuration = {
                 use: ['style-loader', 'css-loader', 'sass-loader'],
             },
             {
-                test: /\.png$/,
-                loader: "url-loader"
-            },
-            {
-                test: /\.svg$/,
-                loader: "url-loader"
+                test: /\.(png|jpe?g|svg)$/,
+                loader: "url-loader",
+                options: {
+                    limit: 10000,
+                }
             },
             {
                 test: /\.(mp3|wav)$/,

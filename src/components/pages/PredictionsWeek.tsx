@@ -31,7 +31,7 @@ function PredictionsWeek() {
                 throw new Error("Not logged in");
             }
 
-            console.log("CONFIG", config);
+            // console.log("CONFIG", config);
 
             const result = await axios({
                 headers: {

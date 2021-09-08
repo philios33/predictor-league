@@ -17,12 +17,21 @@
 
   
   header {
-    padding: 10px;
+    // padding: 10px;
 
     h1 {
       font-size: 28px;
       margin: 0px;
       display: inline-block;
+    }
+
+    img {
+      display: inline-block;
+
+      width: 100%;
+      height: calc(100vw * 0.16);
+      max-width: 1000px;
+      max-height: 160px;
     }
     
   }
