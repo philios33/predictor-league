@@ -257,6 +257,9 @@ span.points {
                     font-weight: bold;
                 }
                 
+                &.faceCell {
+                    text-align: left;
+                }
                 &.homeTeamCell {
                     text-align: right;
                     border-right: 0px;
@@ -290,6 +293,11 @@ span.points {
     .averagePoints {
         font-weight: bold;
         padding-left: 50%;
+    }
+
+    .faceImage {
+        width: 60px;
+        display: inline-block;
     }
 }
 
