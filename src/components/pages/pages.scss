@@ -185,11 +185,14 @@ div.fullWidthScroller {
 
 table.predictions {
     
+    .withBanker {
+        border: 4px #ffff00 solid;
+    }
+
     .incorrect {
         background-color: #fcc;
         &.withBanker {
             background-color: #f55;
-            border: 4px #ffff00 solid;
         }
     }
     .noPrediction {
@@ -199,21 +202,18 @@ table.predictions {
         background-color: #8dffad;
         &.withBanker {
             background-color: #1aff1a;
-            border: 4px #ffff00 solid;
         }
     }
     .correctGoalDifference {
         background-color: #1aff1a;
         &.withBanker {
             background-color: #00c600;
-            border: 4px #ffff00 solid;
         }
     }
     .correctScore {
         background-color: #00c600;
         &.withBanker {
             background-color: #009000;
-            border: 4px #ffff00 solid;
         }
     }
     tr {
