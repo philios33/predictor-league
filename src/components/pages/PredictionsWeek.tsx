@@ -384,9 +384,11 @@ function PredictionsWeek() {
         if (weekData && weekData.loggedInAs) {
             const weekId = weekData.week.id;
             if (weekId in results.startOfWeekStandings) {
-                const table = (results as BuiltResults).startOfWeekStandings[weekId].leagueTables;
-                for (const fixture of weekData.fixtures) {
-                    fixture.bankerMultiplier = getBankerMultiplier(weekId, fixture.homeTeam, fixture.awayTeam, table);   
+                const table = (results as BuiltResults).startOfWeekStandings[weekId]?.leagueTables;
+                if (table) {
+                    for (const fixture of weekData.fixtures) {
+                        fixture.bankerMultiplier = getBankerMultiplier(weekId, fixture.homeTeam, fixture.awayTeam, table);   
+                    }
                 }
             }
         }
@@ -615,11 +617,14 @@ function PredictionsWeek() {
 
 
     const teamRankings: {[key: string]: number} = {};
-    (results as BuiltResults).startOfWeekStandings[weekId].leagueTables.all.map(team => {
-        if (team.rank !== null) {
-            teamRankings[team.name] = team.rank;
-        }
-    });
+    const weekStandings = (results as BuiltResults).startOfWeekStandings[weekId];
+    if (weekStandings) {
+        weekStandings.leagueTables.all.map(team => {
+            if (team.rank !== null) {
+                teamRankings[team.name] = team.rank;
+            }
+        });
+    }
 
     const renderNumericEnding = (num: number) : string => {
         if ([1,21].indexOf(num) !== -1) {

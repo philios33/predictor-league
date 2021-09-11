@@ -66,7 +66,7 @@ function Predictions(props: Props) {
             } else {
                 const kickOff = new Date(match.kickOff);
                 const daysUntilKickOff = Math.floor((kickOff.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-                if (daysUntilKickOff < 20) {
+                if (daysUntilKickOff < 5) {
                     if (kickOff > now) {
                         // UPCOMING
                         weekFreq[match.weekId].upcoming++;
