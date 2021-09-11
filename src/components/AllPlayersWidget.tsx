@@ -74,6 +74,8 @@ function AllPlayersWidget(props: Props) {
     if (!showPlayers) {
         return <button onClick={(e) => loadWidget(e)}>See other player predictions</button>
     }
+    const now = new Date();
+
     return <div className="allPlayersWidget">
         <table>
             <thead>
@@ -113,6 +115,12 @@ function AllPlayersWidget(props: Props) {
                     </thead>
                     <tbody>
                         {relevantPredictions.fixtures.map((fixture,i) => {
+
+                            let stillEditing = false;
+                            if (new Date(fixture.kickOff) > now) {
+                                stillEditing = true;
+                            }                           
+
                             const prediction = fixture.playerPredictions[showingUser]?.prediction;
                             let homeGoals = "?";
                             let awayGoals = "?";
@@ -123,7 +131,7 @@ function AllPlayersWidget(props: Props) {
                                 isBanker = prediction.isBanker;
                             }
                             return (
-                                <tr key={fixture.homeTeam + "_vs_" + fixture.awayTeam}>
+                                <tr key={fixture.homeTeam + "_vs_" + fixture.awayTeam} className={stillEditing ? 'editing' : 'locked'}>
                                     <td>{fixture.homeTeam}</td>
                                     <td>{homeGoals}</td>
                                     <td>{i === 0 ? showingUser?.toUpperCase() : 'v'}</td>

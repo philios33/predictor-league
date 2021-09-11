@@ -33,6 +33,11 @@ a.btn, button.btn {
     // width: 100%;
     padding: 0px 10px;
 
+    p.message {
+        color: #ff7700;
+        font-size: 12px;
+    }
+
     ul {
         padding: 0px;
         margin: 0px;
@@ -108,6 +113,7 @@ a.btn, button.btn {
                 &.finalScore {
                     text-align: center;
                     border-left: 1px solid black;
+                    border-right: 1px solid black;
                 }
                 &.myPredictions, &.otherPredictions {
                     padding: 0px;
@@ -221,13 +227,17 @@ table.predictions {
                 color: black;
             }
         }
-        &.incomplete {
+        &.incomplete, &.ok {
             .multiplierBox-2 {
                 color: #44f;
             }
             .multiplierBox-3 {
                 color: #4b4;
             }
+        }
+
+        td {
+            white-space: nowrap;
         }
     }
 }

@@ -4,5 +4,16 @@
         td {
             border: 1px solid black;
         }
+        tr.editing {
+            td {
+                color: lightgray;
+            }
+        }
+        tr.locked {
+            td {
+                background-color: lightgreen;
+                color: black;
+            }
+        }
     }
 }

@@ -70,23 +70,35 @@ function StatusBox(props: Props) {
     let bankersUsed = 0;
     let totalMatches = 0;
     let totalPredicted = 0;
+    let needToFill = 0;
     if (predictions && predictions.loggedInAs) {
         for (const fixture of predictions.fixtures) {
-            if (new Date(fixture.kickOff) > now) {
+            
+            // We DO need to consider all matches to work out if the banker has been used
+            // We just need to know whether they have made all predictions possible
+            // if (new Date(fixture.kickOff) > now) {
                 totalMatches++;
                 const pred = fixture.playerPredictions[predictions.loggedInAs];
+                let hasPredicted = false;
                 if (pred) {
                     const prediction = pred.prediction;
                     if (prediction && prediction.type === "prediction") {
                         if (prediction.homeTeam !== -1 && prediction.awayTeam !== -1) {
-                            totalPredicted++;   
+                            hasPredicted = true;
                         }
                         if (prediction.isBanker) {
                             bankersUsed++;
                         }
                     }
                 }
-            }
+                if (hasPredicted) {
+                    totalPredicted++;
+                } else {
+                    if (new Date(fixture.kickOff) > now) {
+                        needToFill++;
+                    }
+                }
+            // }
         }
     }
 
@@ -101,9 +113,14 @@ function StatusBox(props: Props) {
         predictionsMessage = "Player has made " + totalPredicted + " of " + totalMatches + " predictions and used their banker once.";
 
         if (totalMatches === totalPredicted) {
-            predictionsClass = "done";    
+            predictionsClass = "done";
         } else {
-            predictionsClass = "problem";
+            // Here a player may have missed a match
+            if (needToFill === 0) {
+                predictionsClass = "done";
+            } else {
+                predictionsClass = "problem";
+            }
         }
     }
 

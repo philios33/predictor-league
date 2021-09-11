@@ -7,3 +7,4 @@ declare module "*.jpg" {
     export = value;
 }
 
+declare module 'lamejs';

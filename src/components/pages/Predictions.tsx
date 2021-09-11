@@ -7,6 +7,8 @@ import { CompiledSchedule, CompiledScores } from '../../lib/types';
 import compiledSchedule from '../../compiled/schedule.json';
 import compiledScores from '../../compiled/scores.json';
 import StatusBox from '../StatusBox';
+import { getLogin } from '../../lib/util';
+// import RecordAudio from '../RecordAudio';
 
 type Props = {
     // weekOffset: number
@@ -91,6 +93,9 @@ function Predictions(props: Props) {
 
     const finishedWeeks = sortedWeeks.filter(w => w.upcoming === 0 && w.future === 0);
 
+    const login = getLogin();
+    
+    
     return (
         <div className="predictions">
             <h2>Predictions</h2>
@@ -122,6 +127,8 @@ function Predictions(props: Props) {
             ) : (
                 <p>None</p>
             )}
+
+            { /*<RecordAudio />*/ }
 
         </div>
     );

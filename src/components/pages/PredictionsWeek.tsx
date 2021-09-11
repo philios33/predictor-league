@@ -496,101 +496,85 @@ function PredictionsWeek() {
             editingClass = "error";
         }
 
+        let isEditing = false;
         if (isMyPredictions && kickOff > now && fixture.finalScore === null) {
-            return <tr key={key} className={editingClass}>
-                <td className="kickOff">{renderDateTime(fixture.kickOff)}</td>
-                <td className="homeTeam">
-                    <div className="nobr">
-                        <span className="teamName">{fixture.homeTeam}</span>
-                        <img className="teamLogo" src={getLogo24(fixture.homeTeam)} alt={fixture.homeTeam} title={fixture.homeTeam} />
-                    </div>
-
-                    <br/>
-
-                    <span className="rankBox">{renderNumericEnding(teamRankings[fixture.homeTeam])}</span>
-                    <input type="number" disabled={isSaving || isError} value={homeGoalsTxt} max={20} min={0} onChange={(e) => {setPrediction("homeTeam", e.target.value, fixture.homeTeam, fixture.awayTeam)}} />
-
-                </td>
-                <td className="myPredictions">vs</td>
-                <td className="awayTeam">
-                    <div className="nobr">
-                        <img className="teamLogo" src={getLogo24(fixture.awayTeam)} alt={fixture.awayTeam} title={fixture.awayTeam} />
-                        <span className="teamName">{fixture.awayTeam}</span>
-                    </div>
-
-                    <br/>
-
-                    <input type="number" disabled={isSaving || isError} value={awayGoalsTxt} max={20} min={0} onChange={(e) => {setPrediction("awayTeam", e.target.value, fixture.homeTeam, fixture.awayTeam)}} /> 
-                    <span className="rankBox">{renderNumericEnding(teamRankings[fixture.awayTeam])}</span>
-
-                </td>
-                <td className="bankerCol">
-                    <input type="checkbox" disabled={isSaving || isError || isSavingJoker || hasAlreadyUsedJoker} title="Banker" checked={isBanker} onChange={(e) => {setPrediction("isBanker", e.target.checked, fixture.homeTeam, fixture.awayTeam)}} />
-                    <br />
-                    {fixture.bankerMultiplier && (
-                        <span className={"multiplierBox multiplierBox-" + fixture.bankerMultiplier}>*{fixture.bankerMultiplier}</span>
-                    )}
-                    
-                </td>
-                <td className="finalScore">? - ?</td>
-                <td className="points">
-                    {isSaving && (
-                        <div className="loading" />
-                    )}
-
-                    { errorMessage && (
-                        <div className="statusMessage">
-                            <span>{errorMessage}</span>
-                            <button onClick={(e) => {retrySave(fixture.homeTeam, fixture.awayTeam)}}>Retry</button>
-                            <button onClick={(e) => {undoSave(fixture.homeTeam, fixture.awayTeam)}}>Undo</button>
-                        </div>
-                    )}
-                </td>
-            </tr>
-
-        } else {
-
-            return <tr key={key} className={resultClass}>
-                <td className="kickOff">{renderDateTime(fixture.kickOff)}</td>
-                <td className="homeTeam">
-                    <div className="nobr">
-                        <span className="teamName">{fixture.homeTeam}</span>
-                        <img className="teamLogo" src={getLogo24(fixture.homeTeam)} alt={fixture.homeTeam} title={fixture.homeTeam} />
-                    </div>
-
-                    <br/>
-
-                    <span className="rankBox">{renderNumericEnding(teamRankings[fixture.homeTeam])}</span>
-                    <input disabled={true} value={homeGoalsTxt} readOnly={true} />
-                </td>
-                <td className="myPredictions">vs</td>
-                <td className="awayTeam">
-                    <div className="nobr">
-                        <img className="teamLogo" src={getLogo24(fixture.awayTeam)} alt={fixture.awayTeam} title={fixture.awayTeam} />
-                        <span className="teamName">{fixture.awayTeam}</span>
-                    </div>
-
-                    <br/>
-
-                    <input disabled={true} value={awayGoalsTxt} readOnly={true} />
-                    <span className="rankBox">{renderNumericEnding(teamRankings[fixture.awayTeam])}</span>
-                </td>
-                <td className="bankerCol">
-                    <input disabled={true} type="checkbox" title="Banker" checked={isBanker} readOnly={true} />
-                    <br/>
-
-                    {fixture.bankerMultiplier && (
-                        <span className={"multiplierBox multiplierBox-" + fixture.bankerMultiplier}>*{fixture.bankerMultiplier}</span>
-                    )}
-                </td>
-                <td className="finalScore">{fixture.finalScore ? (
-                    <div className="nobr">{fixture.finalScore.homeTeam} - {fixture.finalScore.awayTeam}</div>
-                ) : (
-                    <div className="nobr">? - ?</div>
-                )}</td>
-                <td className="points">{pointsTxt !== "" && (<span className="points">{pointsTxt}</span>)}</td>
-            </tr>
+            isEditing = true;
         }
+
+        return <tr key={key} className={isEditing ? editingClass : resultClass}>
+            <td className="kickOff">{renderDateTime(fixture.kickOff)}</td>
+            <td className="homeTeam">
+                <div className="nobr">
+                    <span className="teamName">{fixture.homeTeam}</span>
+                    <img className="teamLogo" src={getLogo24(fixture.homeTeam)} alt={fixture.homeTeam} title={fixture.homeTeam} />
+                </div>
+
+                <br/>
+
+                {teamRankings[fixture.homeTeam] && (
+                    <span className="rankBox">{renderNumericEnding(teamRankings[fixture.homeTeam])}</span>
+                )}
+                
+                {isEditing ? (
+                    <input type="number" disabled={isSaving || isError} value={homeGoalsTxt} max={20} min={0} onChange={(e) => {setPrediction("homeTeam", e.target.value, fixture.homeTeam, fixture.awayTeam)}} />
+                ) : (
+                    <input disabled={true} value={homeGoalsTxt} readOnly={true} />
+                )}                    
+
+            </td>
+            <td className="myPredictions">vs</td>
+            <td className="awayTeam">
+                <div className="nobr">
+                    <img className="teamLogo" src={getLogo24(fixture.awayTeam)} alt={fixture.awayTeam} title={fixture.awayTeam} />
+                    <span className="teamName">{fixture.awayTeam}</span>
+                </div>
+
+                <br/>
+
+                {isEditing ? (
+                    <input type="number" disabled={isSaving || isError} value={awayGoalsTxt} max={20} min={0} onChange={(e) => {setPrediction("awayTeam", e.target.value, fixture.homeTeam, fixture.awayTeam)}} /> 
+                ) : (
+                    <input disabled={true} value={awayGoalsTxt} readOnly={true} />
+                )}
+                {teamRankings[fixture.awayTeam] && (
+                    <span className="rankBox">{renderNumericEnding(teamRankings[fixture.awayTeam])}</span>
+                )}
+
+            </td>
+            <td className="bankerCol">
+                {isEditing ? (
+                    <input type="checkbox" disabled={isSaving || isError || isSavingJoker || hasAlreadyUsedJoker} title="Banker" checked={isBanker} onChange={(e) => {setPrediction("isBanker", e.target.checked, fixture.homeTeam, fixture.awayTeam)}} />
+                ) : (
+                    <input disabled={true} type="checkbox" title="Banker" checked={isBanker} readOnly={true} />
+                )}
+                
+                <br />
+                {fixture.bankerMultiplier && (
+                    <span className={"multiplierBox multiplierBox-" + fixture.bankerMultiplier}>*{fixture.bankerMultiplier}</span>
+                )}
+                
+            </td>
+            <td className="finalScore">{fixture.finalScore ? (
+                <div className="nobr">{fixture.finalScore.homeTeam} - {fixture.finalScore.awayTeam}</div>
+            ) : (
+                <div className="nobr">? - ?</div>
+            )}</td>
+            <td className="points">
+                {pointsTxt !== "" && (
+                    <span className="points">{pointsTxt}</span>
+                )}
+                {isSaving && (
+                    <div className="loading" />
+                )}
+                {errorMessage && (
+                    <div className="statusMessage">
+                        <span>{errorMessage}</span>
+                        <button onClick={(e) => {retrySave(fixture.homeTeam, fixture.awayTeam)}}>Retry</button>
+                        <button onClick={(e) => {undoSave(fixture.homeTeam, fixture.awayTeam)}}>Undo</button>
+                    </div>
+                )}
+            </td>
+        </tr>
     }
 
     // When this loads, we need to ajax the predictions for this week
@@ -655,6 +639,16 @@ function PredictionsWeek() {
         e.preventDefault();
         setIsTableOpen(true);
     }
+
+    let fixturesEditable = 0;
+    if (weekData) {
+        weekData.fixtures.map((fixture) => {
+            if (new Date(fixture.kickOff) > now && fixture.finalScore === null) {
+                fixturesEditable++;
+            }
+        });
+    }
+    
     
     return (
         <div className="predictions">
@@ -685,7 +679,9 @@ function PredictionsWeek() {
             ) : (
                 weekData && weekData.loggedInAs && (
                     <>
-                        
+                        {fixturesEditable > 0 && (
+                            <p className="message">Note: You may update predictions up until the kick off time of each match.</p>
+                        )}
                         <table className="predictions">
                             <thead>
                                 <tr>
@@ -728,6 +724,8 @@ function PredictionsWeek() {
             )}
 
             <AllPlayersWidget weekId={weekId} />
+
+            
         </div>
     );
 }
