@@ -17,7 +17,7 @@ export {}
 // const awaitingScoresFor = ['Newtown vs Caernarfon Town', 'Fiorentina vs Inter Milan'];
 const awaitingScoresFor = cachedResults.awaitingScoresFor;
 
-const credentialsFile = __dirname + "/../../keys/credentials.json";
+const credentialsFile = __dirname + "/../keys/credentials.json";
 const gauth = new GoogleAuth(credentialsFile);
 const spreadsheetId = "1LH94Sk4LcDQe4DfiFNcmfZ-dNG9Wzuqh-4dWp69UEW8";
 
