@@ -21,6 +21,7 @@ import { getLogin } from '../lib/util';
 import logoSmall from '../assets/logo_small.jpg';
 import logo500 from '../assets/logo_500w.png';
 import logoFull from '../assets/logo.png';
+import Cup from './pages/Cup';
 
 const GithubUrl = "https://github.com/philios33/predictor-league";
 
@@ -94,6 +95,10 @@ function App() {
                         
                         <Route path="/results">
                             <Results />
+                        </Route>
+
+                        <Route path="/cup">
+                            <Cup />
                         </Route>
                     </Switch>
                 </div>
