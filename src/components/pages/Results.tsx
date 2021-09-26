@@ -7,7 +7,7 @@ import { Player, BuiltResults, PointsRow, PlayerPrediction } from '../../lib/typ
 import PremierLeagueTable from '../PremierLeagueTable';
 
 
-const results: BuiltResults = compiledResults as BuiltResults;
+const results: BuiltResults = compiledResults as unknown as BuiltResults;
 
 const newspapperFaces: any = {
     'Phil': require('../../assets/faces/cartoon/phil.png'),

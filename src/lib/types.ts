@@ -198,6 +198,7 @@ export type BuiltResults = {
     mergedPhases: Array<MergedPhase>
     startOfWeekStandings: {[key: string]: StartOfWeekStanding}
     nextRedeploy: string | null
+    awaitingScoresFor: Array<string>
 }
 
 export type StartOfWeekStanding = {
@@ -231,6 +232,8 @@ export type HomeAwayPoints = {
     goalsFor: number
     goalsAgainst: number
     points: number
+    pointsAgainst: {[key: string]: number}
+    awayGoalsAgainst: {[key: string]: number}
 }
 
 export type TeamPointsRow = {
@@ -239,6 +242,8 @@ export type TeamPointsRow = {
     home: HomeAwayPoints
     away: HomeAwayPoints
     penalties: Array<Penalty>
+    // pointsAgainst: {[key: string]: number}
+    // awayGoalsAgainst: {[key: string]: number}
 }
 
 export type Penalty = {
@@ -247,3 +252,73 @@ export type Penalty = {
 }
 
 export type CumulativeTeamPoints = {[key:string]: TeamPointsRow}
+
+
+
+export type CupRanking = {
+    rank: number
+    name: string
+    wins: number
+    draws: number
+    losses: number
+    goalsFor: number
+    goalsAgainst: number
+    points: number
+    progress: "unknown" | "through" | "out" | "winner"
+}
+
+export type CupGroup = {
+    name: string
+    rankings: Array<CupRanking>
+}
+
+export type CupMatchTeam = {
+    name: string
+    prediction: null | string
+    cupGoals: null | number
+    progress: "unknown" | "through" | "out" | "winner"
+}
+
+export type CupMatchGame = {
+    home: CupMatchTeam
+    away: CupMatchTeam
+    // score: string
+    text: string
+    status: "upcoming" | "homeWin" | "draw" | "awayWin"
+}
+
+export type CupWeek = {
+    week: string
+    description: string
+    homeTeam: string
+    awayTeam: string
+    score: null | string
+    matches: Array<CupMatchGame>
+}
+
+export type CupKOTeam = {
+    name: string
+    progress: "out" | "through" | "winner" | "unknown"
+    goals: number
+}
+
+export type CupKOMatch = {
+    home: CupKOTeam
+    away: CupKOTeam
+    text: string
+}
+
+export type Cup = {
+    name: string
+    semis: {
+        left: CupKOMatch
+        right: CupKOMatch
+        final: CupKOMatch
+    }
+    groups: Array<CupGroup>
+    weeks: Array<CupWeek>
+}
+
+export type BuiltCups = {
+    [key: string]: Cup
+}

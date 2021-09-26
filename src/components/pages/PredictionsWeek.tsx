@@ -384,7 +384,7 @@ function PredictionsWeek() {
         if (weekData && weekData.loggedInAs) {
             const weekId = weekData.week.id;
             if (weekId in results.startOfWeekStandings) {
-                const table = (results as BuiltResults).startOfWeekStandings[weekId]?.leagueTables;
+                const table = (results as unknown as BuiltResults).startOfWeekStandings[weekId]?.leagueTables;
                 if (table) {
                     for (const fixture of weekData.fixtures) {
                         fixture.bankerMultiplier = getBankerMultiplier(weekId, fixture.homeTeam, fixture.awayTeam, table);   
@@ -617,7 +617,7 @@ function PredictionsWeek() {
 
 
     const teamRankings: {[key: string]: number} = {};
-    const weekStandings = (results as BuiltResults).startOfWeekStandings[weekId];
+    const weekStandings = (results as unknown as BuiltResults).startOfWeekStandings[weekId];
     if (weekStandings) {
         weekStandings.leagueTables.all.map(team => {
             if (team.rank !== null) {
@@ -662,7 +662,7 @@ function PredictionsWeek() {
             {weekId !== "1" && (
                 weekId in results.startOfWeekStandings ? (
                     isTableOpen ? (
-                        <PremierLeagueTable data={(results as BuiltResults).startOfWeekStandings[weekId].leagueTables} name={"League table at the start of this week"} snapshotAt={(results as BuiltResults).startOfWeekStandings[weekId].snapshotTime} maxRank={20} showTableTypeDropdown={true} />
+                        <PremierLeagueTable data={(results as unknown as BuiltResults).startOfWeekStandings[weekId].leagueTables} name={"League table at the start of this week"} snapshotAt={(results as unknown as BuiltResults).startOfWeekStandings[weekId].snapshotTime} maxRank={20} showTableTypeDropdown={true} />
                     ) : (
                         <a href="#" onClick={tableExpandClicked} className="btn">View table</a>
                     )
