@@ -21,8 +21,8 @@ const newspapperFaces: any = {
     'Ian': require('../../assets/faces/cartoon/ian.png'),
 }
 const getPlayerFaceImage = (playerName: string, type: string): any => {
-    console.log("Image is", newspapperFaces[playerName]);
-    console.log("Object keys", Object.keys(newspapperFaces[playerName]));
+    // console.log("Image is", newspapperFaces[playerName]);
+    // console.log("Object keys", Object.keys(newspapperFaces[playerName]));
     return newspapperFaces[playerName].default;
 }
 

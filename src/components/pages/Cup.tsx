@@ -16,9 +16,9 @@ function Cup() {
             <h2>Rules</h2>
             <ul>
                 <li>The predictor cup runs in tandem with the predictor league.</li>
-                <li>9 players are divided up in to 3 groups.  We can do a draw in whatsapp.</li>
+                <li>The 9 players are divided in to 3 groups.  We can do a draw in whatsapp.</li>
                 <li>One specific match is chosen (by Mike) to be the designated cup match for that week.</li>
-                <li>To win your cup match, you must beat your rivals prediction score for that match.</li>
+                <li>To win your cup match, you must beat your rival's prediction score for that match.</li>
                 <li>Win = 3 points, Draw = 1 point.  Each prediction point is like a goal in your cup match.</li>
                 <li>Groups are sorted by points, goal difference then goals scored.</li>
                 <li>All players play the other two in their group once.  This will take 3 match weeks with a rotating 6 of 9 players competing in the cup.</li>
