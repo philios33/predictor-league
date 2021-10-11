@@ -1,0 +1,65 @@
+.cupPhase {
+    color: black;
+    border-top: 1px solid black;
+    table {
+        margin: 0px auto;
+        border-collapse: collapse;
+
+        tr {
+            &.teamNames {
+                font-size: 18px;
+                td.vs {
+                    font-size: 26px;
+                }
+
+                td:first-child {
+                    width: 40%;
+                }
+                td:last-child {
+                    width: 40%;
+                }
+            }
+            &.realScore {
+                font-size: 18px;
+                font-weight: bold;
+                td {
+                    padding-bottom: 10px;
+                }
+            }
+            &.cupMatch {
+                font-size: 26px;
+                img {
+                    max-height: 90px;
+                }
+
+                td {
+                    border-top: 1px solid black;
+                }
+            }
+            &.cupGoals {
+                font-size: 18px;
+                font-weight: bold;
+                td {
+                    padding-bottom: 10px;
+                }
+            }
+            &.prediction {
+                font-size: 12px;
+                td {
+                    &.goals-0 {
+                        background-color: #e96;
+                    }
+                    &.goals-1 {
+                        background-color: #8dffad;
+                    }
+                    &.goals-2 {
+                        background-color: #1aff1a;
+                    }
+                    &.goals-3 {
+                        background-color: #00c600;
+                    }
+                }
+            }
+        }
+    }
+}

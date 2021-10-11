@@ -1,36 +1,73 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useParams } from 'react-router';
 
 import cupImage from '../../assets/cup.jpg';
 
+import { getCachedCups } from '../../lib/predictor/cachedCups';
+import CupGroupStandings from '../CupGroupStandings';
+import CupPhases from '../CupPhases';
+import CupSemiFinals from '../CupSemiFinals';
+
 function Cup() {    
+    
+    const { cupId } = useParams() as {cupId: string};
+
+    const cups = getCachedCups();
+    if (!(cupId in cups)) {
+        return (
+            <div className="cup">
+                <h1>Unknown cup</h1>
+            </div>
+        )
+    }
+
+    const cup = cups[cupId];
+
+    const [viewingRules, setViewingRules] = useState(false);
+
+    const showRules = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, show: boolean) => {
+        e.preventDefault();
+        setViewingRules(show);
+    }
     
     return (
         <div className="cup">
-            <h1>The predictor cup</h1>
+            <h1>{cup.name}</h1>
 
             <img className="cupImage" src={cupImage} />
 
-            <h2>History</h2>
-            <p>Add something here</p>
+            {!viewingRules ? (
+                <>
+                    <br/>
+                    <a className="btn" href="#" onClick={(e) => showRules(e, true)}>View rules</a>
+                    <br/>
+                </>
+            ) : (
+                <>
+                    <h2>Rules &amp; Information</h2>
+                    <ul>
+                        {cup.details.map((info, i) => (
+                            <li key={i}>{info}</li>
+                        ))}
+                    </ul>
+                    <a className="btn" href="#" onClick={(e) => showRules(e, false)}>Hide rules</a>
+                    <br/>
+                </>
+            )}
 
-            <h2>Rules</h2>
-            <ul>
-                <li>The predictor cup runs in tandem with the predictor league.</li>
-                <li>The 9 players are divided in to 3 groups.  We can do a draw in whatsapp.</li>
-                <li>One specific match is chosen (by Mike) to be the designated cup match for that week.</li>
-                <li>To win your cup match, you must beat your rival's prediction score for that match.</li>
-                <li>Win = 3 points, Draw = 1 point.  Each prediction point is like a goal in your cup match.</li>
-                <li>Groups are sorted by points, goal difference then goals scored.</li>
-                <li>All players play the other two in their group once.  This will take 3 match weeks with a rotating 6 of 9 players competing in the cup.</li>
-                <li>The winners of the 3 groups and the best 2nd place player will enter the semi final draw.</li>
-                <li>An extra playoff match week may be required to determine the best 2nd placed player.</li>
-                <li>The semi final draw happens on Whatsapp.</li>
-                <li>Semi finals and the final can have infinite replays in the case of a draw.</li>
-                <li>The fact that a match is a designated cup match against a rival player should be made clear to both players in good time on the predictions screen, or agreed on whatsapp.</li>
-                <li>With no playoffs and no replays this cup will last 5 weeks.</li>
-            </ul>
+            {cup.semis !== null && (
+                <CupSemiFinals data={cup.semis} />
+            )}
+
+            {cup.koPhaseWeeks.length > 0 && (
+                <CupPhases data={cup.koPhaseWeeks} />
+            )}
+
+            <CupGroupStandings data={cup.groups} />
             
-            
+            {cup.groupPhaseWeeks.length > 0 && (
+                <CupPhases data={cup.groupPhaseWeeks} />
+            )}
             
         </div>
     );

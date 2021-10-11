@@ -25,6 +25,12 @@ export type PlayerPredictions = {
     [key: string] : PlayerPrediction
 }
 
+export type CupMatchFixture = {
+    cupName: string
+    weekDescription: string
+    fixture: CupMatchGame
+}
+
 export type PredictionFixture = {
     homeTeam: string
     awayTeam: string
@@ -33,6 +39,7 @@ export type PredictionFixture = {
     weekId: string
     finalScore: null | FinalScore
     playerPredictions: PlayerPredictions
+    cupMatches: Array<CupMatchFixture>
 
 }
 
@@ -218,11 +225,13 @@ export type Top4LeagueTables = {
     top4: LeagueTable
 }
 
-export type LeagueTable = Array<{
+export type LeagueTableRow = {
     name: string
     rank: null | number
     stats: HomeAwayPoints
-}>
+}
+
+export type LeagueTable = Array<LeagueTableRow>
 
 export type HomeAwayPoints = {
     played: number
@@ -253,7 +262,7 @@ export type Penalty = {
 
 export type CumulativeTeamPoints = {[key:string]: TeamPointsRow}
 
-
+export type ProgressType = null | "through" | "out" | "winner"
 
 export type CupRanking = {
     rank: number
@@ -264,27 +273,32 @@ export type CupRanking = {
     goalsFor: number
     goalsAgainst: number
     points: number
-    progress: "unknown" | "through" | "out" | "winner"
+    progress: ProgressType
 }
 
 export type CupGroup = {
     name: string
-    rankings: Array<CupRanking>
+    players: Array<string>
+    table: null | LeagueTable
+    playersProgressed: Array<string>
+    playersKnockedOut: Array<string>
 }
 
 export type CupMatchTeam = {
     name: string
     prediction: null | string
     cupGoals: null | number
-    progress: "unknown" | "through" | "out" | "winner"
+    progress: ProgressType
 }
+
+export type MatchStatusType = "upcoming" | "homeWin" | "draw" | "awayWin"
 
 export type CupMatchGame = {
     home: CupMatchTeam
     away: CupMatchTeam
     // score: string
     text: string
-    status: "upcoming" | "homeWin" | "draw" | "awayWin"
+    status: MatchStatusType
 }
 
 export type CupWeek = {
@@ -292,14 +306,14 @@ export type CupWeek = {
     description: string
     homeTeam: string
     awayTeam: string
-    score: null | string
+    score: null | FinalScore
     matches: Array<CupMatchGame>
 }
 
 export type CupKOTeam = {
     name: string
-    progress: "out" | "through" | "winner" | "unknown"
-    goals: number
+    progress: ProgressType
+    cupGoals: number
 }
 
 export type CupKOMatch = {
@@ -308,15 +322,20 @@ export type CupKOMatch = {
     text: string
 }
 
+export type CupSemis = {
+    left: CupKOMatch
+    right: CupKOMatch
+    final?: CupKOMatch
+    winner?: string
+}
+
 export type Cup = {
     name: string
-    semis: {
-        left: CupKOMatch
-        right: CupKOMatch
-        final: CupKOMatch
-    }
+    details: Array<string>
+    semis: null | CupSemis
+    koPhaseWeeks: Array<CupWeek>
     groups: Array<CupGroup>
-    weeks: Array<CupWeek>
+    groupPhaseWeeks: Array<CupWeek>
 }
 
 export type BuiltCups = {

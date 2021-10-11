@@ -1,0 +1,25 @@
+.groupStanding {
+    display: inline-block;
+    margin: 20px;
+    table {
+        border-collapse: collapse;
+        td, th {
+            padding: 3px;
+            border: solid 1px black;
+        }
+
+        tr {
+            &.knockedOut {
+                background-color: lightcoral;
+                color: grey;
+            }
+            &.progressed {
+                background-color: lightgreen;
+            }
+        }
+    }
+
+    .faceImage {
+        max-height: 50px;
+    }
+}

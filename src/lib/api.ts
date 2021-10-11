@@ -5,9 +5,10 @@ import { getCachedMatchSchedule, getCachedMatchScores } from "./predictor/cached
 import { getCachedResults } from "./predictor/cachedResults";
 import { writePrediction } from "./predictor/matches";
 import { getAllUserPredictions } from "./predictor/predictions";
-import { CompiledSchedule, HiddenPrediction, PointsRow, Prediction, PredictionFixture, TeamMatchesAgainstPredictions, TeamMatchesAgainstScores, WeekFixtures } from "./types";
+import { CompiledSchedule, CupMatchFixture, HiddenPrediction, PointsRow, Prediction, PredictionFixture, TeamMatchesAgainstPredictions, TeamMatchesAgainstScores, WeekFixtures } from "./types";
 import { addPoints, calculatePoints, calculateResultType, getBankerMultiplier } from "./util";
 import fs from 'fs';
+import { getCachedCups } from "./predictor/cachedCups";
 
 
 export async function getThisWeek(gauth: GoogleAuth, weekId: string, playerName: string) : Promise<WeekFixtures> {
@@ -29,6 +30,8 @@ export async function getThisWeek(gauth: GoogleAuth, weekId: string, playerName:
 export async function getWeekFixtures(gauth: GoogleAuth, weekId: string, withScores: boolean, withPredictions: Array<string>) : Promise<WeekFixtures> {
     
     const results = getCachedResults();
+
+    const cups = getCachedCups();
 
     const fixtures = getCachedMatchSchedule() as CompiledSchedule;
     let scores = null as null | {
@@ -66,9 +69,32 @@ export async function getWeekFixtures(gauth: GoogleAuth, weekId: string, withSco
         for(const awayTeam in thisTeam.against) {
             const fixture = thisTeam.against[awayTeam];
             
-            const fixtureKickOff = new Date(fixture.kickOff);
+            // const fixtureKickOff = new Date(fixture.kickOff);
             if (fixture.weekId === weekId) {
                 // This fixture is relevant
+
+                const cupMatches: Array<CupMatchFixture> = [];
+
+                // Loop through every cup to work out which games are relevant for this real life match
+                for (const cupId in cups) {
+                    const thisCup = cups[cupId];
+                    for (const phaseWeek of thisCup.groupPhaseWeeks) {
+                        if (phaseWeek.homeTeam === homeTeam && phaseWeek.awayTeam === awayTeam) {
+                            for (const thisMatch of phaseWeek.matches) {
+                                // If the match is relevant to this person
+                                if (withPredictions.includes(thisMatch.away.name) || withPredictions.includes(thisMatch.home.name)) {
+                                    // Yes
+                                    cupMatches.push({
+                                        cupName: thisCup.name,
+                                        weekDescription: phaseWeek.description,
+                                        fixture: thisMatch
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+
                 foundFixtures.push({
                     homeTeam,
                     awayTeam,
@@ -76,6 +102,7 @@ export async function getWeekFixtures(gauth: GoogleAuth, weekId: string, withSco
                     weekId,
                     finalScore: null,
                     playerPredictions: {},
+                    cupMatches: cupMatches,
                 })
             }
         }

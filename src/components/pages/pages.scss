@@ -383,4 +383,23 @@ div.loading:after {
             margin-bottom: 10px;
         }
     }
+
+    .fakeAddress {
+        margin-top: 200px;
+        margin-bottom: 200px;
+        color: #111;
+        text-shadow: 10px;
+        text-rendering: geometricPrecision;
+        font-family: courier;
+        font-size: 15px;
+        line-height: 1.2;
+        letter-spacing: 1;
+        ul {
+            li {
+                list-style: none;
+                padding: 0px;
+                margin: 0px;
+            }
+        }
+    }
 }

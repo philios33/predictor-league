@@ -1,0 +1,177 @@
+
+@use 'sass:math';
+
+[data-aspect-ratio] {
+    display: block;
+    max-width: 100%;
+    position: relative;
+}
+
+[data-aspect-ratio]:before {
+    content: '';
+    display: block;
+    padding-top: 56.25%;
+}
+
+[data-aspect-ratio] > * {
+    display: block;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+
+
+.semiFinals {
+    
+    margin: 0px auto;
+    position: relative;
+
+   // border-top: 1px solid black;
+
+    max-width: 800px;
+    font-size: 12px;
+
+    $smallSizeWidth: 15%;
+    $smallSizeHeight: math.div($smallSizeWidth * 16, 9);
+
+    $largeSizeWidth: 20%;
+    $largeSizeHeight: math.div($largeSizeWidth * 16, 9);
+
+    .face1 {
+        width: $smallSizeWidth;
+        height: $smallSizeHeight;
+        position: absolute;
+        // border: 1px solid black;
+        left: 0%;
+        top: 0%;
+    }
+
+    .face2 {
+        width: $smallSizeWidth;
+        height: $smallSizeHeight;
+        position: absolute;
+        // border: 1px solid black;
+        left: 0%;
+        top: 74%;
+    }
+
+    .face3 {
+        width: $largeSizeWidth;
+        height: $largeSizeHeight;
+        position: absolute;
+        // border: 1px solid black;
+        left: 27%;
+        top: 33%;
+    }
+
+    .face4 {
+        width: $smallSizeWidth;
+        height: $smallSizeHeight;
+        position: absolute;
+        // border: 1px solid black;
+        left: 85%;
+        top: 0%;
+    }
+
+    .face5 {
+        width: $smallSizeWidth;
+        height: $smallSizeHeight;
+        position: absolute;
+        // border: 1px solid black;
+        left: 85%;
+        top: 74%;
+    }
+
+    .face6 {
+        width: $largeSizeWidth;
+        height: $largeSizeHeight;
+        position: absolute;
+        // border: 1px solid black;
+        left: 53%;
+        top: 33%;
+    }
+
+    .faceImage {
+        max-width: 100%;
+    }
+
+    .lineBox1 {
+        width: 7%;
+        height: 76%;
+        left: 14%;
+        top: 12%;    
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+    }
+    .lineBox2 {
+        width: 9%;
+        height: 40%;
+        left: 21%;
+        top: 12%;   
+        border-left: 1px solid black;
+        border-bottom: 1px solid black;
+    }
+    .lineBox3 {
+        width: 9%;
+        height: 36%;
+        left: 21%;
+        top: 52%;
+        border-left: 1px solid black;
+        // border-top: 1px solid black;
+    }
+    .lineBox4 {
+        width: 7%;
+        height: 76%;
+        left: 79%;
+        top: 12%;    
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+    }
+    .lineBox5 {
+        width: 9%;
+        height: 40%;
+        left: 70%;
+        top: 12%;   
+        border-right: 1px solid black;
+        border-bottom: 1px solid black;
+    }
+    .lineBox6 {
+        width: 9%;
+        height: 36%;
+        left: 70%;
+        top: 52%;
+        border-right: 1px solid black;
+        // border-top: 1px solid black;
+    }
+
+    .score1 {
+        font-size: 200%;
+        left: 3%;
+        top: 48%;
+        display: inline-block;
+        width: 10%;
+        height: 10%;
+    }
+
+    .score2 {
+        font-size: 200%;
+        left: 87%;
+        top: 48%;
+        display: inline-block;
+        width: 10%;
+        height: 10%;
+    }
+
+    .score3 {
+        font-size: 200%;
+        left: 45%;
+        top: 48%;
+        display: inline-block;
+        width: 10%;
+        height: 10%;
+    }
+
+}
