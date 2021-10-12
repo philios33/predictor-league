@@ -579,8 +579,8 @@ function PredictionsWeek() {
                     )}
                 </td>
             </tr>
-            {fixture.cupMatches.map(cupMatch => (
-                <CupMatchDetails fixture={cupMatch} />
+            {fixture.cupMatches.map((cupMatch,i) => (
+                <CupMatchDetails key={i} fixture={cupMatch} />
             ))}
         </>
     }

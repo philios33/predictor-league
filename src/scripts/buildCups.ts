@@ -1,4 +1,4 @@
-import { BuiltCups, CupGroup, CupMatchGame, FinalScore, HomeAwayPoints, MatchPointsRow, MatchStatusType, Prediction, ProgressType } from "../lib/types"
+import { BuiltCups, CupGroup, CupMatchGame, CupWeek, FinalScore, HomeAwayPoints, MatchPointsRow, MatchStatusType, Prediction, ProgressType } from "../lib/types"
 import fs from 'fs';
 import { getCachedMatchSchedule, getCachedMatchScores } from "../lib/predictor/cached";
 import { getCachedResults } from "../lib/predictor/cachedResults";
@@ -27,27 +27,28 @@ const getCupMatch = (player1Name: string, player1Progress: ProgressType, player2
 
 const groups: Array<CupGroup> = [{
     name: "Group A",
-    players: ['Phil','Ian','Dave'],
+    players: ['Damo','Rob','Mike'],
     table: null,
-    playersProgressed: ['Phil', 'Ian'],
-    playersKnockedOut: ['Dave'],
+    playersProgressed: [],
+    playersKnockedOut: [],
 },{
     name: "Group B",
-    players: ['Rod','Mike','Rob'],
+    players: ['Rod','Jez','Ian'],
     table: null,
-    playersProgressed: ['Rob'],
-    playersKnockedOut: ['Mike', 'Rod'],
+    playersProgressed: [],
+    playersKnockedOut: [],
 },{
     name: "Group C",
-    players: ['Damo','Jez','Lawro'],
+    players: ['Lawro','Dave','Phil'],
     table: null,
-    playersProgressed: ['Jez'],
-    playersKnockedOut: ['Damo', 'Lawro'],
+    playersProgressed: [],
+    playersKnockedOut: [],
 }];
 
-const koPhase = [];
-const leaguePhase = [];
+const koPhase: Array<CupWeek> = [];
+const leaguePhase: Array<CupWeek> = [];
 
+/*
 koPhase.push({
     week: "7",
     description: "Final",
@@ -69,7 +70,9 @@ koPhase.push({
         getCupMatch("Ian", "out", "Rob", "through", ""),
     ]
 });
+*/
 
+/*
 leaguePhase.push({
     week: "5",
     description: "Group match day 3",
@@ -96,16 +99,18 @@ leaguePhase.push({
     ]
 });
 
+*/
+
 leaguePhase.push({
-    week: "3",
+    week: "8",
     description: "Group match day 1",
-    homeTeam: "Newcastle United",
-    awayTeam: "Southampton",
+    homeTeam: "Everton",
+    awayTeam: "West Ham United",
     score: null,
     matches: [
-        getCupMatch("Phil", null, "Dave", null, ""),
-        getCupMatch("Rod", null, "Rob", null, ""),
-        getCupMatch("Damo", null, "Lawro", null, ""),
+        getCupMatch("Damo", null, "Rob", null, ""),
+        getCupMatch("Rod", null, "Jez", null, ""),
+        getCupMatch("Lawro", null, "Dave", null, ""),
     ]
 });
 
@@ -132,6 +137,8 @@ cupData["predictorCup2021"] = {
         "The fact that a match is a designated cup match against a rival player should be made clear to both players in good time on the predictions screen, or agreed on whatsapp.",
         "With no playoffs and no replays this cup will last 5 weeks.",
     ],
+    semis: null,
+    /*
     semis: {
         left: {
             home: {
@@ -174,6 +181,7 @@ cupData["predictorCup2021"] = {
         },
         winner: "Rob",
     },
+    */
     koPhaseWeeks: koPhase,
     groups: groups,
     groupPhaseWeeks: leaguePhase,

@@ -70,9 +70,9 @@ function App() {
                         <li>
                             <Link className="btn" to="/results">Results</Link>
                         </li>
-                        {/*<li>
+                        <li>
                             <Link className="btn" to="/cup/predictorCup2021">Cup</Link>
-                        </li>*/}
+                        </li>
                     </ul>
 
                     <hr />

@@ -11,10 +11,12 @@ const SheetsApi = sheets('v4');
 export {}
 
 const spreadsheetId = "1LH94Sk4LcDQe4DfiFNcmfZ-dNG9Wzuqh-4dWp69UEW8";
-const weekId: string = "7";
-const dates: Array<string> = ["2021-09-28", "2021-09-29", "2021-09-30", "2021-10-01", "2021-10-02", "2021-10-03", "2021-10-04"];
+const weekId: string = "8";
+const dates: Array<string> = ["2021-10-15", "2021-10-16", "2021-10-17", "2021-10-18"];
 const updateSpreadsheet: boolean = true;
 const dryRun: boolean = false;
+
+// Run: npx ts-node ./src/scripts/scheduleMatches.ts
 
 // TODO Check that all teams have played 1 match in this week before writing the fixtures.
 

@@ -14,7 +14,12 @@ const newspapperFaces: any = {
 const getPlayerFaceImage = (playerName: string, type: string): any => {
     // console.log("Image is", newspapperFaces[playerName]);
     // console.log("Object keys", Object.keys(newspapperFaces[playerName]));
-    return newspapperFaces[playerName].default;
+    if (playerName in newspapperFaces) {
+        return newspapperFaces[playerName].default;
+    } else {
+        throw new Error("Not found player name: " + playerName);
+    }
+    
 }
 
 export const drawPlayerImage = (playerName: string) => {
