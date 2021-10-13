@@ -117,8 +117,8 @@ leaguePhase.push({
 
 const cupData: BuiltCups = {};
 
-cupData["predictorCup2021"] = {
-    name: "Predictor Cup 2021",
+cupData["mrEggCup2021"] = {
+    name: "The Mr Egg Memorial Egg Cup 2021",
     details: [
         "The predictor cup runs in tandem with the predictor league.",
         "The 9 players are divided in to 3 groups.  We can do a draw in whatsapp.",

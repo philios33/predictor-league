@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
 
-import cupImage from '../../assets/cup.jpg';
+import eggCupSmallImage from '../../assets/egg_cup_small.jpg';
+import mrEggImage from '../../assets/mr_egg.jpg';
 
 import { getCachedCups } from '../../lib/predictor/cachedCups';
 import CupGroupStandings from '../CupGroupStandings';
@@ -32,9 +33,14 @@ function Cup() {
     
     return (
         <div className="cup">
-            <h1>{cup.name}</h1>
+            {cup.name === "The Mr Egg Memorial Egg Cup 2021" ? (
+                <h1>The <img src={mrEggImage} alt="Mr Egg" /> Memorial Egg Cup 2021</h1>
+            ) : (
+                <h1>{cup.name}</h1>
+            )}
+            
 
-            <img className="cupImage" src={cupImage} />
+            <img className="cupImage" src={eggCupSmallImage} />
 
             {!viewingRules ? (
                 <>

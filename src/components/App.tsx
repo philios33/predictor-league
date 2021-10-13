@@ -71,7 +71,7 @@ function App() {
                             <Link className="btn" to="/results">Results</Link>
                         </li>
                         <li>
-                            <Link className="btn" to="/cup/predictorCup2021">Cup</Link>
+                            <Link className="btn" to="/cup/mrEggCup2021">Cup</Link>
                         </li>
                     </ul>
 

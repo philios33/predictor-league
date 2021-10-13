@@ -368,8 +368,13 @@ div.loading:after {
 
 
 .cup {
+    h1 {
+        img {
+            display: inline-block;
+        }
+    }
     .cupImage {
-        max-width: 64px;
+        max-width: 80px;
     }
     
     ul {
