@@ -86,20 +86,22 @@ leaguePhase.push({
     ]
 });
 
+*/
+
 leaguePhase.push({
-    week: "4",
+    week: "9",
     description: "Group match day 2",
     homeTeam: "Arsenal",
-    awayTeam: "Norwich City",
+    awayTeam: "Aston Villa",
     score: null,
     matches: [
-        getCupMatch("Phil", null, "Ian", null, ""),
-        getCupMatch("Rod", null, "Mike", null, ""),
-        getCupMatch("Damo", null, "Jez", null, ""),
+        getCupMatch("Damo", null, "Mike", null, ""),
+        getCupMatch("Rod", null, "Ian", null, ""),
+        getCupMatch("Lawro", null, "Phil", null, ""),
     ]
 });
 
-*/
+
 
 leaguePhase.push({
     week: "8",

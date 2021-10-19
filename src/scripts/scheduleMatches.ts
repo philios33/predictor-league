@@ -11,9 +11,8 @@ const SheetsApi = sheets('v4');
 export {}
 
 const spreadsheetId = "1LH94Sk4LcDQe4DfiFNcmfZ-dNG9Wzuqh-4dWp69UEW8";
-const weekId: string = "8";
-const dates: Array<string> = ["2021-10-15", "2021-10-16", "2021-10-17", "2021-10-18"];
-const updateSpreadsheet: boolean = true;
+const weekId: string = "9";
+const dates: Array<string> = ["2021-10-19", "2021-10-20", "2021-10-21", "2021-10-22", "2021-10-23", "2021-10-24", "2021-10-25"];
 const dryRun: boolean = false;
 
 // Run: npx ts-node ./src/scripts/scheduleMatches.ts
@@ -160,10 +159,6 @@ export const writeFixture = async (gauth: GoogleAuth, cellRef: string, fixtureVa
             console.log("SUCCESS, found 10 matches for week: " + weekId);
 
             console.log("MATCHES", matches);
-
-            if (!updateSpreadsheet) {
-                process.exit(1);
-            }
 
             // Now write these to the fixtures spreadsheet if they look correct
             for (const match of matches) {
