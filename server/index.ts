@@ -37,11 +37,7 @@ app.use(express.json());
 // Use gzip
 app.use(compression());
 
-// Only send index.html when user accesses the root page
-app.get("/", function (req, res) {
-    // No cache
-    res.sendFile(path.join(DIST_DIR, "index.html"));
-});
+
 
 /*
 // Robots page
@@ -62,12 +58,6 @@ app.get("/sitemap.xml", function (req, res) {
     res.sendFile(path.join(DIST_DIR, "sitemap.xml"));
 });
 */
-
-// Serve all other files in the dist folder with long cache control
-app.use(express.static(DIST_DIR, {
-    maxAge: "1y",
-    immutable: true,
-}));
 
 // Other services
 
@@ -216,11 +206,59 @@ app.post("/service/postPrediction/:weekId", async (req, res) => {
     }
 });
 
+const escapeHtml = (unsafe: string) : string => {
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+}
+
+const indexContent = fs.readFileSync(path.join(DIST_DIR, "index.html")).toString();
+const getIndexFileWithMeta = (title: string, description: string) : string => {
+    return indexContent
+        .replace(/%%TITLE%%/g, escapeHtml(title))
+        .replace(/%%DESCRIPTION%%/g, escapeHtml(description));
+}
+
+const sendIndexPage = (req: express.Request, res: express.Response) => {
+    let title = "Predictor 21-22";
+    let description = "Predictor League 21-22";
+
+    const url = req.url;
+
+    const predictionWeekRegExp = new RegExp("^/predictions/(\\d+)$");
+    let matches = null;
+    if (matches = predictionWeekRegExp.exec(url)) {
+        const weekNum = matches[1];
+        title = "Week " + weekNum + " predictions";
+        description = "Get your predictions in lads.";
+
+        if (weekNum === "9") {
+            description += " This Friday Arsenal take on Aston Villa in the Mr Egg memorial egg cup.";
+        }
+    }
+
+    const out = getIndexFileWithMeta(title, description);
+    res.send(out);
+}
+
+app.get("/", function (req, res) {
+    sendIndexPage(req, res);
+});
+
+// Serve all other files in the dist folder with long cache control
+app.use(express.static(DIST_DIR, {
+    maxAge: "1y",
+    immutable: true,
+}));
 
 //Send index.html when the user tries to access any other page
 app.get("*", function (req, res) {
-    res.sendFile(path.join(DIST_DIR, "index.html"));
+    sendIndexPage(req, res);
 });
+
 
 (async () => {
     console.log("Logging in... index.ts");
