@@ -1,0 +1,28 @@
+.predictionModal {
+    .shadowScreen {
+        width: 100vw;
+        height: 100vh;
+        background-color: black;
+        opacity: 0.7;
+        position: fixed;
+        z-index: 4;
+        top: 0px;
+    }
+    .modal {
+        padding: 20px;
+        background-color: lightskyblue;
+        border-color: 1px solid black;
+        border-radius: 4px;
+        z-index: 5;
+        position: absolute;
+        width: 80vw;
+        margin-left: 10vw;
+        margin-top: 10vh;
+
+        .meg {
+            max-width: 30%;
+            float: left;
+            margin: 5px;
+        }
+    }
+}

@@ -19,6 +19,19 @@ export type WeekFixtures = {
 export type PlayerPrediction = {
     prediction: null | Prediction | HiddenPrediction
     points: null | MatchPointsRow
+    stats: null | MatchPredictionStats
+    /*
+    stats: null | {
+        homeTeam: PredictionStats
+        awayTeam: PredictionStats
+    }
+    */
+}
+
+export type MatchPlayerPrediction = {
+    prediction: null | Prediction | HiddenPrediction
+    points: null | MatchPointsRow
+    stats: null | MatchPredictionStats
 }
 
 export type PlayerPredictions = {
@@ -40,7 +53,14 @@ export type PredictionFixture = {
     finalScore: null | FinalScore
     playerPredictions: PlayerPredictions
     cupMatches: Array<CupMatchFixture>
+}
 
+export type MatchPredictionStats = {
+    homeTeam: PredictionStats
+    homeTeamSegment: "top6" | "middle8" | "bottom6"
+    awayTeam: PredictionStats
+    awayTeamSegment: "top6" | "middle8" | "bottom6"
+    mostLikelyPrediction: {homeGoals: number, awayGoals: number}
 }
 
 export type MatchResultType = 'incorrect' | 'hidden' | 'noPrediction' | 'correctResult' | 'correctGoalDifference' | 'correctScore';
@@ -340,4 +360,31 @@ export type Cup = {
 
 export type BuiltCups = {
     [key: string]: Cup
+}
+
+
+export type BuiltPredictionStats = Record<string, TeamsPredictionStats>;
+
+export type TeamsPredictionStats = Record<string, PositionalPredictionStats>;
+
+export type PositionalPredictionStats = {
+    home: {
+        top6: PredictionStats
+        middle8: PredictionStats
+        bottom6: PredictionStats
+    },
+    away: {
+        top6: PredictionStats
+        middle8: PredictionStats
+        bottom6: PredictionStats
+    },
+};
+
+export type PredictionStats = {
+    predictions: number
+    goalsFor: number
+    goalsAgainst: number
+    wins: number
+    draws: number
+    losses: number
 }

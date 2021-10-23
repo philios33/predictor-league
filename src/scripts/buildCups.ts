@@ -36,7 +36,7 @@ const groups: Array<CupGroup> = [{
     players: ['Rod','Jez','Ian'],
     table: null,
     playersProgressed: [],
-    playersKnockedOut: [],
+    playersKnockedOut: ['Rod'],
 },{
     name: "Group C",
     players: ['Lawro','Dave','Phil'],

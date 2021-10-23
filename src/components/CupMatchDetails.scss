@@ -1,14 +1,10 @@
 .cupMatchDetails {
+    font-size: smaller;
+    
     background-color: lightseagreen;
-    td:first-child {
-        border-right: 1px solid black
-    }
 
     &.padding {
         background-color: inherit;
-        td:first-child {
-            border-right: 0px;
-        }
     }
 
     

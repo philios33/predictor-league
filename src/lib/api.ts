@@ -5,10 +5,12 @@ import { getCachedMatchSchedule, getCachedMatchScores } from "./predictor/cached
 import { getCachedResults } from "./predictor/cachedResults";
 import { writePrediction } from "./predictor/matches";
 import { getAllUserPredictions } from "./predictor/predictions";
-import { CompiledSchedule, CupMatchFixture, HiddenPrediction, PointsRow, Prediction, PredictionFixture, TeamMatchesAgainstPredictions, TeamMatchesAgainstScores, WeekFixtures } from "./types";
+import { CompiledSchedule, CupMatchFixture, HiddenPrediction, LeagueTables, MatchPredictionStats, PointsRow, Prediction, PredictionFixture, PredictionStats, TeamMatchesAgainstPredictions, TeamMatchesAgainstScores, WeekFixtures } from "./types";
 import { addPoints, calculatePoints, calculateResultType, getBankerMultiplier } from "./util";
 import fs from 'fs';
 import { getCachedCups } from "./predictor/cachedCups";
+import { getCachedStats } from "./predictor/cachedStats";
+import { sortAndDeduplicateDiagnostics } from "typescript";
 
 
 export async function getThisWeek(gauth: GoogleAuth, weekId: string, playerName: string) : Promise<WeekFixtures> {
@@ -25,6 +27,196 @@ export async function getThisWeek(gauth: GoogleAuth, weekId: string, playerName:
     result.loggedInAs = playerName;
 
     return result;
+}
+
+const stats = getCachedStats();
+
+function findSegmentFromTeamName(teamName: string, leagueTables: LeagueTables) {
+    const tableRow = leagueTables.all.find(t => t.name === teamName);
+    if (tableRow) {
+        const rank = tableRow.rank;
+        if (rank) {
+            if (rank <= 6) {
+                return "top6";
+            } else if (rank >= 15) {
+                return "bottom6";
+            } else {
+                return "middle8";
+            }
+        }
+    }
+    throw new Error("Couldn't find rank for team: " + teamName);
+}
+
+function getScoresList() : Array<{home: number, away: number}> {
+    return [
+        {home: 0, away: 0},
+        {home: 1, away: 1},
+        {home: 2, away: 2},
+        {home: 3, away: 3},
+        {home: 4, away: 4},
+        {home: 5, away: 5},
+
+        // Home wins
+        {home: 1, away: 0},
+
+        {home: 2, away: 0},
+        {home: 2, away: 1},
+
+        {home: 3, away: 0},
+        {home: 3, away: 1},
+        {home: 3, away: 2},
+
+        {home: 4, away: 0},
+        {home: 4, away: 1},
+        {home: 4, away: 2},
+        {home: 4, away: 3},
+
+        {home: 5, away: 0},
+        {home: 5, away: 1},
+        {home: 5, away: 2},
+        {home: 5, away: 3},
+        {home: 5, away: 4},
+
+        // Away wins
+
+        {home: 0, away: 1},
+
+        {home: 0, away: 2},
+        {home: 1, away: 2},
+
+        {home: 0, away: 3},
+        {home: 1, away: 3},
+        {home: 2, away: 3},
+
+        {home: 0, away: 4},
+        {home: 1, away: 4},
+        {home: 2, away: 4},
+        {home: 3, away: 4},
+
+        {home: 0, away: 5},
+        {home: 1, away: 5},
+        {home: 2, away: 5},
+        {home: 3, away: 5},
+        {home: 4, away: 5},
+    ]
+}
+
+function calculateWeighting(home: PredictionStats, away: PredictionStats, homeGoals: number, awayGoals: number): number {
+    // Weighting score is based on percentage points of the other two results, plus weighted goals for, plus weighted GD difference
+    const homeForGoalsWeight = 10;
+    const homeGDWeight = 16;
+    const awayForGoalsWeight = 8;
+    const awayGDWeight = 14;
+
+    let score = 0;
+    if (home.predictions > 0) {
+
+        if (homeGoals > awayGoals) {
+            // Home win, use perc points for draws and losses
+            score += 100 * ((home.draws + home.losses) / home.predictions);
+        } else if (homeGoals < awayGoals) {
+            // Away win, use perc points for draws and wins
+            score += 100 * ((home.draws + home.wins) / home.predictions);
+        } else {
+            // Draw, use perc points for wins and losses
+            score += 100 * ((home.draws + home.losses) / home.predictions);
+        }
+
+        const homeAvrGoalsFor = home.goalsFor / home.predictions;
+        const homeAvrGD = (home.goalsFor - home.goalsAgainst) / home.predictions;
+        score += Math.abs(homeAvrGoalsFor - homeGoals) * homeForGoalsWeight;
+        score += Math.abs(homeAvrGD - (homeGoals - awayGoals)) * homeGDWeight;
+    }
+    if (away.predictions > 0) {
+
+        if (homeGoals > awayGoals) {
+            // Home win, Away loss, use perc points for draws and wins
+            score += 100 * ((away.draws + away.wins) / away.predictions);
+
+        } else if (homeGoals < awayGoals) {
+            // Away win, use perc points for draws and losses
+            score += 100 * ((away.draws + away.losses) / away.predictions);
+
+        } else {
+            // Draw, use perc points for wins and losses
+            score += 100 * ((away.draws + away.losses) / away.predictions);
+
+        }
+
+        const awayAvrGoalsFor = away.goalsFor / away.predictions;
+        const awayAvrGD = (away.goalsFor - away.goalsAgainst) / away.predictions;
+        score += Math.abs(awayAvrGoalsFor - awayGoals) * awayForGoalsWeight;
+        score += Math.abs(awayAvrGD - (awayGoals - homeGoals)) * awayGDWeight;
+    }
+
+    return score;
+}
+
+function calculateMostLikelyPrediction(home: PredictionStats, away: PredictionStats): {homeGoals: number, awayGoals: number} {
+    const scoresList = getScoresList();
+    const scoreWeights: Array<{
+        homeGoals: number
+        awayGoals: number
+        text: string
+        weight: number
+    }> = [];
+    for (const score of scoresList) {
+        const weighting = calculateWeighting(home, away, score.home, score.away);
+        const scoreKey = score.home + "-" + score.away;
+        scoreWeights.push({
+            homeGoals: score.home,
+            awayGoals: score.away,
+            text: scoreKey,
+            weight: weighting,
+        });
+    }
+
+    scoreWeights.sort((a, b) => {
+        return a.weight - b.weight;
+    });
+
+    // console.log("Weights", JSON.stringify(scoreWeights, null, 4));
+    return {
+        homeGoals: scoreWeights[0].homeGoals,
+        awayGoals: scoreWeights[0].awayGoals,
+    }
+}
+
+function findPlayersPredictionStats(playerName: string, homeTeam: string, awayTeam: string, leagueTables: LeagueTables) : null | MatchPredictionStats {
+
+    const homeTeamSegment: "top6" | "middle8" | "bottom6" = findSegmentFromTeamName(homeTeam, leagueTables);
+    const awayTeamSegment: "top6" | "middle8" | "bottom6" = findSegmentFromTeamName(awayTeam, leagueTables);
+
+    let home: null | PredictionStats = null;
+    let away: null | PredictionStats = null;
+
+    if (playerName in stats) {
+        if (homeTeam in stats[playerName]) {
+            if (homeTeamSegment in stats[playerName][homeTeam].home) {
+                home = stats[playerName][homeTeam].home[awayTeamSegment];
+            }
+        }
+        if (awayTeam in stats[playerName]) {
+            if (awayTeamSegment in stats[playerName][awayTeam].away) {
+                away = stats[playerName][awayTeam].away[homeTeamSegment];
+            }
+        }
+    }
+
+    if (home !== null && away !== null) {
+
+        const mostLikelyPrediction = calculateMostLikelyPrediction(home, away);
+        return {
+            homeTeam: home,
+            homeTeamSegment,
+            awayTeam: away,
+            awayTeamSegment,
+            mostLikelyPrediction,
+        }
+    } else {
+        return null;
+    }
 }
 
 export async function getWeekFixtures(gauth: GoogleAuth, weekId: string, withScores: boolean, withPredictions: Array<string>) : Promise<WeekFixtures> {
@@ -129,6 +321,7 @@ export async function getWeekFixtures(gauth: GoogleAuth, weekId: string, withSco
                         fixture.playerPredictions[playerName] = {
                             prediction: predictions[fixture.homeTeam].against[fixture.awayTeam],
                             points: null,
+                            stats: findPlayersPredictionStats(playerName, fixture.homeTeam, fixture.awayTeam, results.startOfWeekStandings[fixture.weekId].leagueTables),
                         }
                     }
                 }
@@ -372,6 +565,7 @@ export async function savePrediction(gauth: GoogleAuth, weekId: string, userName
         fixture.playerPredictions[userName] = {
             prediction: newPrediction,
             points: null,
+            stats: null,
         }
     } else {
         fixture.playerPredictions[userName].prediction = newPrediction;

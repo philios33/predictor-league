@@ -260,6 +260,7 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
                     fixture.playerPredictions[player] = {
                         prediction,
                         points: null,
+                        stats: null,
                     }
                 }
             }           
@@ -316,7 +317,8 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
                         if (!(player in fixture.playerPredictions)) {
                             fixture.playerPredictions[player] = {
                                 prediction: null,
-                                points: null
+                                points: null,
+                                stats: null,
                             }
                         }
                         const prediction = fixture.playerPredictions[player].prediction;

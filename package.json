@@ -9,11 +9,12 @@
     "buildLogos": "ts-node ./src/scripts/buildLogos.ts",
     "buildData": "ts-node ./src/scripts/buildData.ts",
     "buildResults": "ts-node ./src/scripts/buildResults.ts",
+    "buildPredictionStats": "ts-node ./src/scripts/buildPredictionStats.ts",
     "buildCups": "ts-node ./src/scripts/buildCups.ts",
     "prebuildClient": "npm run buildCriticalCss",
     "buildClient": "webpack --mode production --config webpack.prod.ts",
     "buildServer": "webpack --mode production --config webpack.server.ts",
-    "buildAll": "npm run buildLogos && npm run buildData && npm run buildResults && npm run buildCups && npm run buildClient && npm run buildServer",
+    "buildAll": "npm run buildLogos && npm run buildData && npm run buildResults && npm run buildPredictionStats && npm run buildCups && npm run buildClient && npm run buildServer",
     "build": "echo 'Choose your build type'",
     "serve": "node ./serverDist/index.js"
   },

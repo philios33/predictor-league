@@ -1,10 +1,10 @@
 
 import { useParams } from 'react-router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import moment from 'moment-mini';
-import { BuiltResults, PredictionFixture, WeekFixtures } from '../../lib/types';
+import { BuiltResults, MatchPredictionStats, PredictionFixture, WeekFixtures } from '../../lib/types';
 import PremierLeagueTable from '../PremierLeagueTable';
 import results from '../../compiled/results.json';
 import { getLogo24 } from '../../lib/logo';
@@ -12,6 +12,7 @@ import { getBankerMultiplier, getLogin } from '../../lib/util';
 import AllPlayersWidget from '../AllPlayersWidget';
 import { config } from '../../config';
 import CupMatchDetails from '../CupMatchDetails';
+import PredictionModal from '../PredictionModal';
 
 function PredictionsWeek() {
 
@@ -395,6 +396,36 @@ function PredictionsWeek() {
         }
     }, [weekData]);
 
+
+    const predictionModalRef = useRef() as React.MutableRefObject<HTMLDivElement>;
+    type PredictModal = {
+        homeTeam: string
+        awayTeam: string
+        homeRank: string
+        awayRank: string
+        stats: MatchPredictionStats
+    }
+    const [predictModal, setPredictModal] = useState(null as null | PredictModal);
+    const showPredictModal = (homeTeam: string, awayTeam: string, homeRank: string, awayRank: string, stats: MatchPredictionStats) => {
+
+        // console.log(homeTeam, awayTeam, stats);
+
+        setPredictModal({
+            homeTeam,
+            awayTeam,
+            homeRank,
+            awayRank,
+            stats,
+        });
+        if (predictionModalRef && predictionModalRef.current) {
+            predictionModalRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+    }
+    const hidePredictModal = () => {
+        setPredictModal(null);
+    }
+
     const now = new Date();
     const renderPredictionInputs = (fixture: PredictionFixture, key: number, name: string, isMyPredictions: boolean, savingPredictions: null | {[key:string]: SavingPrediction}) => {
 
@@ -504,8 +535,8 @@ function PredictionsWeek() {
             isEditing = true;
         }
 
-        return <>
-            <tr key={key} className={isEditing ? editingClass : resultClass}>
+        return <React.Fragment key={key}>
+            <tr className={isEditing ? editingClass : resultClass}>
                 <td className="kickOff">{renderDateTime(fixture.kickOff)}</td>
                 <td className="homeTeam">
                     <div className="nobr">
@@ -577,12 +608,17 @@ function PredictionsWeek() {
                             <button onClick={(e) => {undoSave(fixture.homeTeam, fixture.awayTeam)}}>Undo</button>
                         </div>
                     )}
+                    {pointsTxt === "" && !isSaving && !errorMessage && fixture.playerPredictions[name] /* && fixture.playerPredictions[name].stats && fixture.playerPredictions[name].stats !== null */ && (
+                        <div>
+                            <button className="btn" onClick={(e) => {showPredictModal(fixture.homeTeam, fixture.awayTeam, renderNumericEnding(teamRankings[fixture.homeTeam]), renderNumericEnding(teamRankings[fixture.awayTeam]), fixture.playerPredictions[name].stats as MatchPredictionStats )}}>Predict</button>
+                        </div>
+                    )}
                 </td>
             </tr>
             {fixture.cupMatches.map((cupMatch,i) => (
                 <CupMatchDetails key={i} fixture={cupMatch} />
             ))}
-        </>
+        </React.Fragment>
     }
 
     // When this loads, we need to ajax the predictions for this week
@@ -660,6 +696,10 @@ function PredictionsWeek() {
         });
     }
     
+    const usePrediction = (homeTeam: string, awayTeam: string, stats: MatchPredictionStats) => {
+        setPrediction("homeTeam", stats.mostLikelyPrediction.homeGoals.toString(), homeTeam, awayTeam);
+        setPrediction("awayTeam", stats.mostLikelyPrediction.awayGoals.toString(), homeTeam, awayTeam);
+    }
     
     return (
         <div className="predictions">
@@ -677,8 +717,13 @@ function PredictionsWeek() {
                 )
             )}
 
-            
             <a className="link btn" href="#" onClick={clickedRefresh}>Refresh</a>
+
+            <div ref={predictionModalRef}>
+                {predictModal !== null && (
+                    <PredictionModal homeTeam={predictModal.homeTeam} awayTeam={predictModal.awayTeam} homeRank={predictModal.homeRank} awayRank={predictModal.awayRank} stats={predictModal.stats} close={() => hidePredictModal()} usePrediction={() => { hidePredictModal(); usePrediction(predictModal.homeTeam, predictModal.awayTeam, predictModal.stats)}} />
+                )}
+            </div>
 
             { weekData === null && dataError === null && (
                 <div>
