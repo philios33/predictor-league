@@ -11,9 +11,10 @@ const SheetsApi = sheets('v4');
 export {}
 
 const spreadsheetId = "1LH94Sk4LcDQe4DfiFNcmfZ-dNG9Wzuqh-4dWp69UEW8";
-const weekId: string = "9";
-const dates: Array<string> = ["2021-10-19", "2021-10-20", "2021-10-21", "2021-10-22", "2021-10-23", "2021-10-24", "2021-10-25"];
-const dryRun: boolean = false;
+
+const weekId: string = "10";
+const dates: Array<string> = ["2021-10-26", "2021-10-27", "2021-10-28", "2021-10-29", "2021-10-30", "2021-10-31", "2021-11-01"];
+const dryRun: boolean = true;
 
 // Run: npx ts-node ./src/scripts/scheduleMatches.ts
 

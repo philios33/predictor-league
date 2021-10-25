@@ -254,6 +254,8 @@ export async function getWeekFixtures(gauth: GoogleAuth, weekId: string, withSco
         };
     }
 
+    // console.log("PLAYER PREDICTIONS", JSON.stringify(playerPredictions, null, 4));
+
     const foundFixtures: Array<PredictionFixture> = [];
     for (const homeTeam in fixtures.matches) {
         const thisTeam = fixtures.matches[homeTeam];
@@ -313,19 +315,22 @@ export async function getWeekFixtures(gauth: GoogleAuth, weekId: string, withSco
 
         // For every playersPredictions
         for (const playerName in playerPredictions) {
+
+            fixture.playerPredictions[playerName] = {
+                prediction: null,
+                points: null,
+                stats: findPlayersPredictionStats(playerName, fixture.homeTeam, fixture.awayTeam, results.startOfWeekStandings[fixture.weekId].leagueTables),
+            }
+
             const predictions = playerPredictions[playerName].predictions;
             // Try to find this match in their predictions
             if (predictions) {
                 if (fixture.homeTeam in predictions) {
                     if (fixture.awayTeam in predictions[fixture.homeTeam].against) {
-                        fixture.playerPredictions[playerName] = {
-                            prediction: predictions[fixture.homeTeam].against[fixture.awayTeam],
-                            points: null,
-                            stats: findPlayersPredictionStats(playerName, fixture.homeTeam, fixture.awayTeam, results.startOfWeekStandings[fixture.weekId].leagueTables),
-                        }
+                        fixture.playerPredictions[playerName].prediction = predictions[fixture.homeTeam].against[fixture.awayTeam];
                     }
                 }
-            }    
+            }
         }
 
         // If theres a prediction and a score, calculate the points
