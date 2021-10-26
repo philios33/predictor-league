@@ -88,6 +88,21 @@ leaguePhase.push({
 
 */
 
+
+leaguePhase.push({
+    week: "10",
+    description: "Group match day 3",
+    homeTeam: "Tottenham Hotspur",
+    awayTeam: "Manchester United",
+    score: null,
+    matches: [
+        getCupMatch("Rob", null, "Mike", null, ""),
+        getCupMatch("Jez", null, "Ian", null, ""),
+        getCupMatch("Dave", null, "Phil", null, ""),
+    ]
+});
+
+
 leaguePhase.push({
     week: "9",
     description: "Group match day 2",
