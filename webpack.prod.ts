@@ -1,9 +1,10 @@
 
 
 import * as webpack from 'webpack';
+import path from 'path';
 
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-// const CopyWebpackPlugin = require('copy-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 // The prod config is heavily based on the data in the dev config to keep things DRY.
 const prodConfig = require('./webpack.dev').default;
@@ -63,17 +64,17 @@ prodConfig.plugins.push(
     })
 );
 
-/*
+
 prodConfig.plugins.push(
     new CopyWebpackPlugin({
         patterns: [
-            // path.resolve(__dirname, "src", "public", "favicon.ico"),
+            path.resolve(__dirname, "src", "assets", "week10_mystery_player.jpg"),
             // path.resolve(__dirname, "src", "public", "robots.txt"),
             // path.resolve(__dirname, "src", "public", "sitemap.xml")
         ]
     })
 );
-*/
+
 
 /*
 prodConfig.plugins.push(

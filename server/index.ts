@@ -216,18 +216,27 @@ const escapeHtml = (unsafe: string) : string => {
 }
 
 const indexContent = fs.readFileSync(path.join(DIST_DIR, "index.html")).toString();
-const getIndexFileWithMeta = (title: string, description: string) : string => {
-    return indexContent
+const getIndexFileWithMeta = (title: string, description: string, imagePath: null | string) : string => {
+    let content = indexContent
         .replace(/%%TITLE%%/g, escapeHtml(title))
         .replace(/%%DESCRIPTION%%/g, escapeHtml(description));
+
+    if (imagePath !== null) {
+        content = content.replace(/%%METAIMAGE%%/g, '<meta property="og:image" content="' + escapeHtml(imagePath) + '">');
+    } else {
+        content = content.replace(/%%METAIMAGE%%/g, '');
+    }
+
+    return content;
 }
 
 const sendIndexPage = (req: express.Request, res: express.Response) => {
     let title = "Predictor 21-22";
     let description = "Predictor League 21-22";
+    let image: null | string = null;
 
     const url = req.url;
-
+    
     const predictionWeekRegExp = new RegExp("^/predictions/(\\d+)$");
     let matches = null;
     if (matches = predictionWeekRegExp.exec(url)) {
@@ -240,10 +249,11 @@ const sendIndexPage = (req: express.Request, res: express.Response) => {
         }
         if (weekNum === "10") {
             description += " Egg Cup Latest: Spurs vs Tottenham at the King Dave stadium.";
+            image = "/week10_mystery_player.jpg";
         }
     }
 
-    const out = getIndexFileWithMeta(title, description);
+    const out = getIndexFileWithMeta(title, description, image);
     res.send(out);
 }
 
