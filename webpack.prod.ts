@@ -68,7 +68,7 @@ prodConfig.plugins.push(
 prodConfig.plugins.push(
     new CopyWebpackPlugin({
         patterns: [
-            path.resolve(__dirname, "src", "assets", "week10_mystery_player.jpg"),
+            path.resolve(__dirname, "src", "assets", "week10_mystery_player2.jpg"),
             // path.resolve(__dirname, "src", "public", "robots.txt"),
             // path.resolve(__dirname, "src", "public", "sitemap.xml")
         ]

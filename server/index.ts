@@ -249,7 +249,7 @@ const sendIndexPage = (req: express.Request, res: express.Response) => {
         }
         if (weekNum === "10") {
             description += " Egg Cup Latest: Spurs vs Tottenham at the King Dave stadium.";
-            image = "/week10_mystery_player.jpg";
+            image = "/week10_mystery_player2.jpg";
         }
     }
 
