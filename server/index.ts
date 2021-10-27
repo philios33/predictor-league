@@ -233,10 +233,13 @@ const sendIndexPage = (req: express.Request, res: express.Response) => {
     if (matches = predictionWeekRegExp.exec(url)) {
         const weekNum = matches[1];
         title = "Week " + weekNum + " predictions";
-        description = "Get your predictions in lads.";
+        description = "Get them in.";
 
         if (weekNum === "9") {
             description += " This Friday Arsenal take on Aston Villa in the Mr Egg memorial egg cup.";
+        }
+        if (weekNum === "10") {
+            description += " Egg Cup Latest: Spurs vs Tottenham at the King Dave stadium.";
         }
     }
 
