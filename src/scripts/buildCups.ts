@@ -36,7 +36,7 @@ const groups: Array<CupGroup> = [{
     players: ['Rod','Jez','Ian'],
     table: null,
     playersProgressed: [],
-    playersKnockedOut: ['Rod'],
+    playersKnockedOut: [],
 },{
     name: "Group C",
     players: ['Lawro','Dave','Phil'],
@@ -88,6 +88,18 @@ leaguePhase.push({
 
 */
 
+leaguePhase.push({
+    week: "11",
+    description: "Group match day 4",
+    homeTeam: "Everton",
+    awayTeam: "Tottenham Hotspur",
+    score: null,
+    matches: [
+        getCupMatch("Rob", null, "Damo", null, ""),
+        getCupMatch("Jez", null, "Rod", null, ""),
+        getCupMatch("Dave", null, "Lawro", null, ""),
+    ]
+});
 
 leaguePhase.push({
     week: "10",

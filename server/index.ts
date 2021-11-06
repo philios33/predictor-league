@@ -251,6 +251,15 @@ const sendIndexPage = (req: express.Request, res: express.Response) => {
             description += " Egg Cup Latest: Spurs vs Tottenham at the King Dave stadium.";
             image = "/week10_mystery_player2.jpg";
         }
+        if (weekNum === "11") {
+            description += " Egg Cup Latest: Everyone is back in it!";
+            image = "/week10_mystery_player2.jpg";
+        }
+    }
+    if (url === "/cup/mrEggCup2021") {
+        title = "Mr Egg Memorial Egg Cup 2021";
+        description = "Everyones back in it!";
+        image = "/mregg.jpg";
     }
 
     const out = getIndexFileWithMeta(title, description, image);
