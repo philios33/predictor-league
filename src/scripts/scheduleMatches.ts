@@ -12,8 +12,8 @@ export {}
 
 const spreadsheetId = "1LH94Sk4LcDQe4DfiFNcmfZ-dNG9Wzuqh-4dWp69UEW8";
 
-const weekId: string = "10";
-const dates: Array<string> = ["2021-10-26", "2021-10-27", "2021-10-28", "2021-10-29", "2021-10-30", "2021-10-31", "2021-11-01"];
+const weekId: string = "12";
+const dates: Array<string> = ["2021-11-16", "2021-11-17", "2021-11-18", "2021-11-19", "2021-11-20", "2021-11-21", "2021-11-22"];
 const dryRun: boolean = true;
 
 // Run: npx ts-node ./src/scripts/scheduleMatches.ts

@@ -89,6 +89,19 @@ leaguePhase.push({
 */
 
 leaguePhase.push({
+    week: "12",
+    description: "Group match day 5",
+    homeTeam: "Burnley",
+    awayTeam: "Crystal Palace",
+    score: null,
+    matches: [
+        getCupMatch("Mike", null, "Damo", null, ""),
+        getCupMatch("Ian", null, "Rod", null, ""),
+        getCupMatch("Phil", null, "Lawro", null, ""),
+    ]
+});
+
+leaguePhase.push({
     week: "11",
     description: "Group match day 4",
     homeTeam: "Everton",
