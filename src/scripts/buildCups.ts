@@ -35,14 +35,14 @@ const groups: Array<CupGroup> = [{
     name: "Group B",
     players: ['Rod','Jez','Ian'],
     table: null,
-    playersProgressed: [],
-    playersKnockedOut: [],
+    playersProgressed: ['Ian'],
+    playersKnockedOut: ['Rod'],
 },{
     name: "Group C",
     players: ['Lawro','Dave','Phil'],
     table: null,
-    playersProgressed: [],
-    playersKnockedOut: [],
+    playersProgressed: ['Lawro'],
+    playersKnockedOut: ['Dave'],
 }];
 
 const koPhase: Array<CupWeek> = [];
