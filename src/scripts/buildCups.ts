@@ -89,6 +89,19 @@ leaguePhase.push({
 */
 
 leaguePhase.push({
+    week: "13",
+    description: "Group match day 6",
+    homeTeam: "Crystal Palace",
+    awayTeam: "Aston Villa",
+    score: null,
+    matches: [
+        getCupMatch("Mike", null, "Rob", null, ""),
+        getCupMatch("Ian", null, "Jez", null, ""),
+        getCupMatch("Phil", null, "Dave", null, ""),
+    ]
+});
+
+leaguePhase.push({
     week: "12",
     description: "Group match day 5",
     homeTeam: "Burnley",
@@ -171,13 +184,13 @@ cupData["mrEggCup2021"] = {
         "Incorrect Result = 0 goals, Correct Result = 1 goal, Correct GD = 2 goals, Correct Score = 3 goals.",
         "Groups are sorted by points, goal difference then goals scored.",
         "Away cup goals are NOT considered more valuable than home cup goals during group rankings or multi-legged playoffs.",
-        "All players play the other two in their group once.  This will take 3 match weeks with a rotating 6 of 9 players competing in the cup.",
+        "All players play the other two in their group twice.  This will take 6 match weeks with a rotating 6 of 9 players competing in the cup.",
         "The winners of the 3 groups and the best 2nd place player will enter the semi final draw.",
         "An extra playoff match week may be required to determine the best 2nd placed player.",
         "The semi final draw happens on Whatsapp.",
         "Semi finals and the final can have infinite replays in the case of a draw.",
         "The fact that a match is a designated cup match against a rival player should be made clear to both players in good time on the predictions screen, or agreed on whatsapp.",
-        "With no playoffs and no replays this cup will last 5 weeks.",
+        "With no playoffs and no replays this cup will last 8 weeks.",
     ],
     semis: null,
     /*
