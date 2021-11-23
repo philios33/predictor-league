@@ -216,13 +216,17 @@ const escapeHtml = (unsafe: string) : string => {
 }
 
 const indexContent = fs.readFileSync(path.join(DIST_DIR, "index.html")).toString();
-const getIndexFileWithMeta = (title: string, description: string, imagePath: null | string) : string => {
+const getIndexFileWithMeta = (title: string, description: string, imagePath: null | string, imageWidth: null | string, imageHeight: null | string) : string => {
     let content = indexContent
         .replace(/%%TITLE%%/g, escapeHtml(title))
         .replace(/%%DESCRIPTION%%/g, escapeHtml(description));
 
     if (imagePath !== null) {
-        content = content.replace(/%%METAIMAGE%%/g, '<meta property="og:image" content="' + escapeHtml(imagePath) + '">');
+        if (imageWidth !== null && imageHeight !== null) {
+            content = content.replace(/%%METAIMAGE%%/g, '<meta property="og:image" content="' + escapeHtml(imagePath) + '"><meta name="og:image:width" content="' + imageWidth + '"/><meta name="og:image:height" content="' + imageHeight + '"/>');
+        } else {
+            content = content.replace(/%%METAIMAGE%%/g, '<meta property="og:image" content="' + escapeHtml(imagePath) + '">');
+        }
     } else {
         content = content.replace(/%%METAIMAGE%%/g, '');
     }
@@ -234,6 +238,8 @@ const sendIndexPage = (req: express.Request, res: express.Response) => {
     let title = "Predictor 21-22";
     let description = "Predictor League 21-22";
     let image: null | string = null;
+    let imageWidth: null | string = null;
+    let imageHeight: null | string = null;
 
     const url = req.url;
     
@@ -255,6 +261,16 @@ const sendIndexPage = (req: express.Request, res: express.Response) => {
             description += " Egg Cup Latest: Everyone is back in it!";
             image = "/week10_mystery_player2.jpg";
         }
+        if (weekNum === "13") {
+            description = "NEWS: Match 6 of Egg cup confirmed by Jez";
+            image = "https://predictor.30yardsniper.co.uk/week13_mystery_player.jpg";
+            imageWidth = "500";
+            imageHeight = "394";
+        }
+        if (weekNum === "14") {
+            description += "Yes now! It's a week in the middle of another week.";
+            image = "/week10_mystery_player2.jpg";
+        }
     }
     if (url === "/cup/mrEggCup2021") {
         title = "Mr Egg Memorial Egg Cup 2021";
@@ -262,7 +278,7 @@ const sendIndexPage = (req: express.Request, res: express.Response) => {
         image = "/mregg.jpg";
     }
 
-    const out = getIndexFileWithMeta(title, description, image);
+    const out = getIndexFileWithMeta(title, description, image, imageWidth, imageHeight);
     res.send(out);
 }
 
