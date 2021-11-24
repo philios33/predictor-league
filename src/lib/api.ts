@@ -316,10 +316,15 @@ export async function getWeekFixtures(gauth: GoogleAuth, weekId: string, withSco
         // For every playersPredictions
         for (const playerName in playerPredictions) {
 
+            let stats: MatchPredictionStats | null = null;
+            if (fixture.weekId in results.startOfWeekStandings) {
+                stats = findPlayersPredictionStats(playerName, fixture.homeTeam, fixture.awayTeam, results.startOfWeekStandings[fixture.weekId].leagueTables);
+            }
+
             fixture.playerPredictions[playerName] = {
                 prediction: null,
                 points: null,
-                stats: findPlayersPredictionStats(playerName, fixture.homeTeam, fixture.awayTeam, results.startOfWeekStandings[fixture.weekId].leagueTables),
+                stats,
             }
 
             const predictions = playerPredictions[playerName].predictions;

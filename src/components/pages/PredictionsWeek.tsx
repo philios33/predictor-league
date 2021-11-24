@@ -608,9 +608,9 @@ function PredictionsWeek() {
                             <button onClick={(e) => {undoSave(fixture.homeTeam, fixture.awayTeam)}}>Undo</button>
                         </div>
                     )}
-                    {pointsTxt === "" && !isSaving && !errorMessage && isEditing && fixture.playerPredictions[name] /* && fixture.playerPredictions[name].stats && fixture.playerPredictions[name].stats !== null */ && (
+                    {pointsTxt === "" && !isSaving && !errorMessage && isEditing && fixture.playerPredictions[name] && fixture.playerPredictions[name].stats && fixture.playerPredictions[name].stats !== null && (
                         <div>
-                            <button className="btn" onClick={(e) => {showPredictModal(fixture.homeTeam, fixture.awayTeam, renderNumericEnding(teamRankings[fixture.homeTeam]), renderNumericEnding(teamRankings[fixture.awayTeam]), fixture.playerPredictions[name].stats as MatchPredictionStats )}}>Predict</button>
+                            <button className="btn" onClick={(e) => {showPredictModal(fixture.homeTeam, fixture.awayTeam, renderNumericEnding(teamRankings[fixture.homeTeam]), renderNumericEnding(teamRankings[fixture.awayTeam]), fixture.playerPredictions[name].stats)}}>Predict</button>
                         </div>
                     )}
                 </td>
