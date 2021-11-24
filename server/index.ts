@@ -268,8 +268,10 @@ const sendIndexPage = (req: express.Request, res: express.Response) => {
             imageHeight = "394";
         }
         if (weekNum === "14") {
-            description += "Yes now! It's a week in the middle of another week.";
-            image = "/week10_mystery_player2.jpg";
+            description = "NEWS: Next PL match is Tuesday. Get them in NOW.";
+            image = "https://predictor.30yardsniper.co.uk/week14_mystery_player.jpg";
+            imageWidth = "488";
+            imageHeight = "420";
         }
     }
     if (url === "/cup/mrEggCup2021") {
