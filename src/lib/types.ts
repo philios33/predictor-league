@@ -333,7 +333,7 @@ export type CupWeek = {
 export type CupKOTeam = {
     name: string
     progress: ProgressType
-    cupGoals: number
+    cupGoals: null | number
 }
 
 export type CupKOMatch = {

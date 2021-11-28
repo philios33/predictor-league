@@ -38,10 +38,14 @@ function CupSemiFinals(props: Props) {
             <div className="lineBox5"></div>
             <div className="lineBox6"></div>
 
-            <div className="score1">{props.data.left.home.cupGoals} - {props.data.left.away.cupGoals}</div>
-            <div className="score2">{props.data.right.home.cupGoals} - {props.data.right.away.cupGoals}</div>
-            {props.data.final && (
-                <div className="score3">{props.data.final.home.cupGoals} - {props.data.final.away.cupGoals}</div>
+            {props.data.left.home.cupGoals !== null && (
+                <>
+                    <div className="score1">{props.data.left.home.cupGoals} - {props.data.left.away.cupGoals}</div>
+                    <div className="score2">{props.data.right.home.cupGoals} - {props.data.right.away.cupGoals}</div>
+                    {props.data.final && (
+                        <div className="score3">{props.data.final.home.cupGoals} - {props.data.final.away.cupGoals}</div>
+                    )}
+                </>
             )}
         </div>
     </div>

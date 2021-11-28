@@ -192,35 +192,34 @@ cupData["mrEggCup2021"] = {
         "The fact that a match is a designated cup match against a rival player should be made clear to both players in good time on the predictions screen, or agreed on whatsapp.",
         "With no playoffs and no replays this cup will last 8 weeks.",
     ],
-    semis: null,
-    /*
     semis: {
         left: {
             home: {
-                name: "Jez",
-                progress: "through",
-                cupGoals: 3,
+                name: "Ian",
+                progress: null,
+                cupGoals: null,
             },
             away: {
-                name: "Phil",
-                progress: "out",
-                cupGoals: 2,
+                name: "Lawro",
+                progress: null,
+                cupGoals: null,
             },
             text: "",
         },
         right: {
             home: {
-                name: "Ian",
-                progress: "out",
-                cupGoals: 0,
+                name: "Phil",
+                progress: null,
+                cupGoals: null,
             },
             away: {
-                name: "Rob",
-                progress: "through",
-                cupGoals: 3,
+                name: "Damo",
+                progress: null,
+                cupGoals: null,
             },
             text: "",
         },
+        /*
         final: {
             home: {
                 name: "Jez",
@@ -235,8 +234,9 @@ cupData["mrEggCup2021"] = {
             text: "",
         },
         winner: "Rob",
+        */
     },
-    */
+    
     koPhaseWeeks: koPhase,
     groups: groups,
     groupPhaseWeeks: leaguePhase,
