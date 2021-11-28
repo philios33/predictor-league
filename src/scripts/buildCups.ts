@@ -29,19 +29,19 @@ const groups: Array<CupGroup> = [{
     name: "Group A",
     players: ['Damo','Rob','Mike'],
     table: null,
-    playersProgressed: [],
-    playersKnockedOut: [],
+    playersProgressed: ['Damo'],
+    playersKnockedOut: ['Rob','Mike'],
 },{
     name: "Group B",
     players: ['Rod','Jez','Ian'],
     table: null,
     playersProgressed: ['Ian'],
-    playersKnockedOut: ['Rod'],
+    playersKnockedOut: ['Rod','Jez'],
 },{
     name: "Group C",
     players: ['Lawro','Dave','Phil'],
     table: null,
-    playersProgressed: ['Lawro'],
+    playersProgressed: ['Lawro','Phil'],
     playersKnockedOut: ['Dave'],
 }];
 
