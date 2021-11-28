@@ -51,11 +51,13 @@ const getStandingsTable = (players: Array<Player>, user: null | string) => {
 
                 {/*<th title="Correct Result Bankered">CRB</th>
                 <th title="Correct Result Non Bankered">CRN</th>*/}
-                <th title="Correct Result">CR</th>
+                <th title="Correct Result, Wrong Goal Difference">WGD</th>
+
+                <th title="Total Correct Results">TCR</th>
 
                 {/*<th title="Incorrect Results Bankered">INB</th>
                 <th title="Incorrect Results Non Bankered">INN</th>*/}
-                <th title="Incorrect Results">IR</th>
+                <th title="Total Incorrect Results">TIR</th>
 
                 <th title="Regular Points">RPT</th>
                 <th title="Banker Points">BPT</th>
@@ -88,6 +90,8 @@ const getStandingsTable = (players: Array<Player>, user: null | string) => {
                     {/*<td>{points.correctOutcomeBankered}</td>
                     <td>{points.correctOutcomeNonBankered}</td>*/}
                     <td>{points.correctOutcomeTotal}</td>
+
+                    <td>{points.correctTotal}</td>
 
                     {/*<td>{points.incorrectBankered}</td>
                     <td>{points.incorrectNonBankered}</td>*/}

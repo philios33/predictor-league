@@ -105,6 +105,7 @@ export type ConcisePointsRow = {
     correctScoresTotal: number
     correctGDTotal: number
     correctOutcomeTotal: number
+    correctTotal: number
     incorrectTotal: number
     regularPoints: number
     bankerPoints: number

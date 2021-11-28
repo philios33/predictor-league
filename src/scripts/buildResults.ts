@@ -602,6 +602,7 @@ const convertToConcisePointsRow = (pointsRow: PointsRow) : ConcisePointsRow => {
         correctScoresTotal: pointsRow.correctScoresTotal,
         correctGDTotal: pointsRow.correctGDTotal,
         correctOutcomeTotal: pointsRow.correctOutcomeTotal,
+        correctTotal: pointsRow.correctTotal,
         incorrectTotal: pointsRow.incorrectTotal,
         regularPoints: pointsRow.regularPoints,
         bankerPoints: pointsRow.bankerPoints,
