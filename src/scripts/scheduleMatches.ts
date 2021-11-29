@@ -12,9 +12,9 @@ export {}
 
 const spreadsheetId = "1LH94Sk4LcDQe4DfiFNcmfZ-dNG9Wzuqh-4dWp69UEW8";
 
-const weekId: string = "14";
-const dates: Array<string> = ["2021-11-29", "2021-11-30", "2021-12-01", "2021-12-02"];
-const dryRun: boolean = false;
+const weekId: string = "20";
+const dates: Array<string> = ["2021-12-28", "2021-12-29", "2021-12-30"];
+const dryRun: boolean = true;
 
 // Run: npx ts-node ./src/scripts/scheduleMatches.ts
 

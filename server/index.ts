@@ -273,6 +273,18 @@ const sendIndexPage = (req: express.Request, res: express.Response) => {
             imageWidth = "488";
             imageHeight = "420";
         }
+        if (weekNum === "15") {
+            description = "More football, already? YES";
+            image = "https://predictor.30yardsniper.co.uk/week15_mystery_player.jpg";
+            imageWidth = "739";
+            imageHeight = "415";
+        }
+        if (weekNum === "16") {
+            description = "It's impossible to keep track of all the football! Get them in lads.";
+            image = "https://predictor.30yardsniper.co.uk/week16_david.jpg";
+            imageWidth = "1086";
+            imageHeight = "1051";
+        }
     }
     if (url === "/cup/mrEggCup2021") {
         title = "Mr Egg Memorial Egg Cup 2021";
