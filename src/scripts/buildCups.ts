@@ -71,6 +71,17 @@ koPhase.push({
     ]
 });
 */
+koPhase.push({
+    week: "14",
+    description: "Semi Finals",
+    homeTeam: "Newcastle United",
+    awayTeam: "Norwich City",
+    score: null,
+    matches: [
+        getCupMatch("Ian", null, "Lawro", null, ""),
+        getCupMatch("Phil", null, "Damo", null, ""),
+    ]
+});
 
 /*
 leaguePhase.push({
