@@ -71,6 +71,19 @@ koPhase.push({
     ]
 });
 */
+
+koPhase.push({
+    week: "16",
+    description: "Semi Final Replays",
+    homeTeam: "Crystal Palace",
+    awayTeam: "Everton",
+    score: null,
+    matches: [
+        getCupMatch("Ian", null, "Lawro", null, "Replay 1"),
+        getCupMatch("Phil", null, "Damo", null, "Replay 1"),
+    ]
+});
+
 koPhase.push({
     week: "14",
     description: "Semi Finals",
@@ -82,6 +95,8 @@ koPhase.push({
         getCupMatch("Phil", null, "Damo", null, ""),
     ]
 });
+
+
 
 /*
 leaguePhase.push({
