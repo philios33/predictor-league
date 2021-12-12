@@ -222,45 +222,45 @@ cupData["mrEggCup2021"] = {
         left: {
             home: {
                 name: "Ian",
-                progress: null,
-                cupGoals: null,
+                progress: "through",
+                cupGoals: 1,
             },
             away: {
                 name: "Lawro",
-                progress: null,
-                cupGoals: null,
+                progress: "out",
+                cupGoals: 0,
             },
-            text: "",
+            text: "After 1 replay",
         },
         right: {
             home: {
                 name: "Phil",
-                progress: null,
-                cupGoals: null,
+                progress: "through",
+                cupGoals: 1,
             },
             away: {
                 name: "Damo",
+                progress: "out",
+                cupGoals: 0,
+            },
+            text: "After 1 replay",
+        },
+        
+        final: {
+            home: {
+                name: "Ian",
+                progress: null,
+                cupGoals: null,
+            },
+            away: {
+                name: "Phil",
                 progress: null,
                 cupGoals: null,
             },
             text: "",
         },
-        /*
-        final: {
-            home: {
-                name: "Jez",
-                progress: "out",
-                cupGoals: 2,
-            },
-            away: {
-                name: "Rob",
-                progress: "winner",
-                cupGoals: 3,
-            },
-            text: "",
-        },
-        winner: "Rob",
-        */
+        // winner: "Rob",
+        
     },
     
     koPhaseWeeks: koPhase,
