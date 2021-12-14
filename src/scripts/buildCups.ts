@@ -73,6 +73,18 @@ koPhase.push({
 */
 
 koPhase.push({
+    week: "17",
+    description: "Final",
+    homeTeam: "Burnley",
+    awayTeam: "Watford",
+    score: null,
+    matches: [
+        getCupMatch("Ian", null, "Phil", null, ""),
+    ]
+});
+
+
+koPhase.push({
     week: "16",
     description: "Semi Final Replays",
     homeTeam: "Crystal Palace",

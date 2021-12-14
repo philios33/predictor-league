@@ -288,7 +288,7 @@ const sendIndexPage = (req: express.Request, res: express.Response) => {
     }
     if (url === "/cup/mrEggCup2021") {
         title = "Mr Egg Memorial Egg Cup 2021";
-        description = "Everyones back in it!";
+        description = "Who will be the champion of egg?";
         image = "/mregg.jpg";
     }
 
