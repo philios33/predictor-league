@@ -52,7 +52,7 @@ export const calculateResultType = (prediction: null | Prediction | HiddenPredic
     throw new Error("Impossible situation");
 }
 
-export const calculatePoints = (prediction: null | Prediction | HiddenPrediction, finalScore: FinalScore, bankerMultiplier: number) : PointsRow => {
+export const calculatePoints = (prediction: null | Prediction | HiddenPrediction, finalScore: FinalScore, bankerMultiplier: number, homeTeam: string, awayTeam: string, playerName: string) : PointsRow => {
 
     if (typeof bankerMultiplier !== "number") {
         throw new Error("Banker multiplier MUST be a number but was of type: " + typeof bankerMultiplier);
@@ -153,6 +153,13 @@ export const calculatePoints = (prediction: null | Prediction | HiddenPrediction
         }
 
     }
+
+    // Give Dave 2 points for his late 0-2 Prediction for Norwich - Villa
+    if (homeTeam === "Norwich City" && awayTeam === "Aston Villa" && playerName === "Dave") {
+        // Cap to 2 points
+        points.regularPoints = 2;
+    }
+    
 
     if ((prediction as Prediction).isBanker) {
         points.bankerPoints = Math.round((bankerMultiplier - 1) * points.regularPoints);

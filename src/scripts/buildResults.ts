@@ -323,7 +323,7 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
                         }
                         const prediction = fixture.playerPredictions[player].prediction;
                         
-                        const points = calculatePoints(prediction, fixture.finalScore, fixture.bankerMultiplier);
+                        const points = calculatePoints(prediction, fixture.finalScore, fixture.bankerMultiplier, fixture.homeTeam, fixture.awayTeam, player);
                         phase.points[player] = addPoints(phase.points[player], points);
                         cumPoints[player]  = addPoints(cumPoints[player], points);
 
