@@ -150,7 +150,7 @@ async function getPredictionStats(gauth: GoogleAuth, players: string[]) : Promis
                     predictionStats[match.awayTeam].away[homeTeamSegment].draws++;
                 }
             } else {
-                throw new Error("Not found " + player + " s prediction for " + match.homeTeam + " vs " + match.awayTeam);
+                // throw new Error("Not found " + player + " s prediction for " + match.homeTeam + " vs " + match.awayTeam);
             }
         }
 
