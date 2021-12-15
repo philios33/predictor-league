@@ -72,6 +72,7 @@ koPhase.push({
 });
 */
 
+/*
 koPhase.push({
     week: "17",
     description: "Final",
@@ -82,6 +83,7 @@ koPhase.push({
         getCupMatch("Ian", null, "Phil", null, ""),
     ]
 });
+*/
 
 
 koPhase.push({
