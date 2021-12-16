@@ -111,6 +111,10 @@ a.btn, button.btn {
                 &.kickOff {
                     text-align: center;
                     border-right: 1px solid black;
+                    &.postponed {
+                        color: red;
+                        font-weight: bold;
+                    }
                 }
                 &.finalScore {
                     text-align: center;

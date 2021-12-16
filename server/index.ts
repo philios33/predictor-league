@@ -285,6 +285,9 @@ const sendIndexPage = (req: express.Request, res: express.Response) => {
             imageWidth = "1086";
             imageHeight = "1051";
         }
+        if (weekNum === "18") {
+            description = "Just 5 matches to predict this weekend.";
+        }
     }
     if (url === "/cup/mrEggCup2021") {
         title = "Mr Egg Memorial Egg Cup 2021";

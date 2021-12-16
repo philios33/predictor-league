@@ -537,7 +537,7 @@ function PredictionsWeek() {
 
         return <React.Fragment key={key}>
             <tr className={isEditing ? editingClass : resultClass}>
-                <td className="kickOff">{renderDateTime(fixture.kickOff)}</td>
+                <td className={renderDateTime(fixture.kickOff) === "Postponed" ? "kickOff postponed" : "kickOff"}>{renderDateTime(fixture.kickOff)}</td>
                 <td className="homeTeam">
                     <div className="nobr">
                         <span className="teamName">{fixture.homeTeam}</span>
