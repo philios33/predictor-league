@@ -72,18 +72,18 @@ koPhase.push({
 });
 */
 
-/*
+
 koPhase.push({
-    week: "17",
+    week: "19",
     description: "Final",
-    homeTeam: "Burnley",
-    awayTeam: "Watford",
+    homeTeam: "Brighton & Hove Albion",
+    awayTeam: "Brentford",
     score: null,
     matches: [
         getCupMatch("Ian", null, "Phil", null, ""),
     ]
 });
-*/
+
 
 
 koPhase.push({
