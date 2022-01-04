@@ -80,7 +80,7 @@ koPhase.push({
     awayTeam: "Brentford",
     score: null,
     matches: [
-        getCupMatch("Ian", null, "Phil", null, ""),
+        getCupMatch("Ian", "out", "Phil", "winner", "Winner Winner Egg Dinner"),
     ]
 });
 
@@ -93,8 +93,8 @@ koPhase.push({
     awayTeam: "Everton",
     score: null,
     matches: [
-        getCupMatch("Ian", null, "Lawro", null, "Replay 1"),
-        getCupMatch("Phil", null, "Damo", null, "Replay 1"),
+        getCupMatch("Ian", "through", "Lawro", "out", "Replay 1"),
+        getCupMatch("Phil", "through", "Damo", "out", "Replay 1"),
     ]
 });
 
@@ -263,17 +263,17 @@ cupData["mrEggCup2021"] = {
         final: {
             home: {
                 name: "Ian",
-                progress: null,
-                cupGoals: null,
+                progress: "out",
+                cupGoals: 0,
             },
             away: {
                 name: "Phil",
-                progress: null,
-                cupGoals: null,
+                progress: "winner",
+                cupGoals: 1,
             },
-            text: "",
+            text: "Winner Winner Egg Dinner",
         },
-        // winner: "Rob",
+        winner: "Phil",
         
     },
     

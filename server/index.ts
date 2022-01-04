@@ -2,6 +2,7 @@
 import path from 'path';
 import fs from 'fs';
 import express from 'express';
+import http from 'http';
 import cors from 'cors';
 import compression from 'compression';
 import jwt from 'jsonwebtoken';
@@ -255,44 +256,49 @@ const sendIndexPage = (req: express.Request, res: express.Response) => {
         }
         if (weekNum === "10") {
             description += " Egg Cup Latest: Spurs vs Tottenham at the King Dave stadium.";
-            image = "/week10_mystery_player2.jpg";
+            image = "/assets/week10_mystery_player2.jpg";
         }
         if (weekNum === "11") {
             description += " Egg Cup Latest: Everyone is back in it!";
-            image = "/week10_mystery_player2.jpg";
+            image = "/assets/week10_mystery_player2.jpg";
         }
         if (weekNum === "13") {
             description = "NEWS: Match 6 of Egg cup confirmed by Jez";
-            image = "https://predictor.30yardsniper.co.uk/week13_mystery_player.jpg";
+            image = "https://predictor.30yardsniper.co.uk/assets/week13_mystery_player.jpg";
             imageWidth = "500";
             imageHeight = "394";
         }
         if (weekNum === "14") {
             description = "NEWS: Next PL match is Tuesday. Get them in NOW.";
-            image = "https://predictor.30yardsniper.co.uk/week14_mystery_player.jpg";
+            image = "https://predictor.30yardsniper.co.uk/assets/week14_mystery_player.jpg";
             imageWidth = "488";
             imageHeight = "420";
         }
         if (weekNum === "15") {
             description = "More football, already? YES";
-            image = "https://predictor.30yardsniper.co.uk/week15_mystery_player.jpg";
+            image = "https://predictor.30yardsniper.co.uk/assets/week15_mystery_player.jpg";
             imageWidth = "739";
             imageHeight = "415";
         }
         if (weekNum === "16") {
             description = "It's impossible to keep track of all the football! Get them in lads.";
-            image = "https://predictor.30yardsniper.co.uk/week16_david.jpg";
+            image = "https://predictor.30yardsniper.co.uk/assets/week16_david.jpg";
             imageWidth = "1086";
             imageHeight = "1051";
         }
         if (weekNum === "18") {
-            description = "Just 5 matches to predict this weekend.";
+            description = "Back to game week 18!";
+            image = "https://predictor.30yardsniper.co.uk/assets/Time_Circuits_BTTF.jpg";
+            imageWidth = "853";
+            imageHeight = "480";
         }
     }
     if (url === "/cup/mrEggCup2021") {
         title = "Mr Egg Memorial Egg Cup 2021";
         description = "Who will be the champion of egg?";
-        image = "/mregg.jpg";
+        image = "https://predictor.30yardsniper.co.uk/assets/mregg.jpg";
+        imageWidth = "640";
+        imageHeight = "480";
     }
 
     const out = getIndexFileWithMeta(title, description, image, imageWidth, imageHeight);
@@ -319,7 +325,19 @@ app.get("*", function (req, res) {
     console.log("Logging in... index.ts");
     await gauth.start();
     console.log("Logged in!");
-    app.listen(PORT);
+
+    const server = http.createServer(app);
+    const io = require('socket.io')(server);
+    io.on('connection', (socket: any) => {
+        console.log("Client socket connected: ", socket);
+        logger.writeEvent("CLIENT_SOCKET_CONNECTED", {});
+        socket.on("hello", (data: any) => {
+            logger.writeEvent("CLIENT_SOCKET_HELLO", {
+                data
+            });
+        });
+    });
+    server.listen(PORT);
     console.log("Listening on port " + PORT);
 
     logger.writeEvent("STARTUP_COMPLETE", {});

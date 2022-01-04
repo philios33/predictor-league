@@ -26,6 +26,7 @@ function Predictions(props: Props) {
         kickedOff: number // Matches kicked off
         results: number // Matches with results
         future: number // Matches in the far future
+        postponed: number // Matches that are postponed and are not yet rescheduled
         total: number // Total in this week
     }} = {};
 
@@ -37,6 +38,7 @@ function Predictions(props: Props) {
                 kickedOff: 0,
                 results: 0,
                 future: 0,
+                postponed: 0,
                 total: 0,
             }
         }
@@ -64,19 +66,23 @@ function Predictions(props: Props) {
                 // RESULT
                 weekFreq[match.weekId].results++;
             } else {
-                const kickOff = new Date(match.kickOff);
-                const daysUntilKickOff = Math.floor((kickOff.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-                if (daysUntilKickOff < 5) {
-                    if (kickOff > now) {
-                        // UPCOMING
-                        weekFreq[match.weekId].upcoming++;
-                    } else {
-                        // KICKED OFF BUT NO RESULT
-                        weekFreq[match.weekId].kickedOff++;
-                    }
+                if (match.kickOff === "2022-05-05T14:55:00.000Z") {
+                    weekFreq[match.weekId].postponed++;
                 } else {
-                    // IN THE FAR FUTURE
-                    weekFreq[match.weekId].future++;
+                    const kickOff = new Date(match.kickOff);
+                    const daysUntilKickOff = Math.floor((kickOff.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+                    if (daysUntilKickOff < 7) {
+                        if (kickOff > now) {
+                            // UPCOMING (within 7 days)
+                            weekFreq[match.weekId].upcoming++;
+                        } else {
+                            // KICKED OFF BUT NO RESULT
+                            weekFreq[match.weekId].kickedOff++;
+                        }
+                    } else {
+                        // IN THE FAR FUTURE
+                        weekFreq[match.weekId].future++;
+                    }
                 }
             }
         }
@@ -91,23 +97,25 @@ function Predictions(props: Props) {
 
     const upcomingWeeks = sortedWeeks.filter(w => w.upcoming > 0);
 
-    const finishedWeeks = sortedWeeks.filter(w => w.upcoming === 0 && w.future === 0);
+    const finishedWeeks = sortedWeeks.filter(w => (w.kickedOff + w.results) === 10);
 
-    const login = getLogin();
+    const unfinishedWeeks = sortedWeeks.filter(w => w.upcoming === 0 && (w.kickedOff + w.results) < 10 && (w.kickedOff + w.results) > 0);
+
+    // const login = getLogin();
     
     
     return (
         <div className="predictions">
             <h2>Predictions</h2>
 
-            <h3>Weeks with upcoming matches</h3>
+            <h3>Game Weeks with upcoming matches</h3>
             {upcomingWeeks.length > 0 ? (
                 <ul className="upcomingPredictionWeeks">
                     {upcomingWeeks.map((week) => 
                         <li key={week.id}>
-                            <Link to={"/predictions/" + encodeURIComponent(week.id)} className="btn">Week {week.id}</Link>
+                            <Link to={"/predictions/" + encodeURIComponent(week.id)} className="btn">Game Week {week.id}</Link>
                             &nbsp;
-                            <small>({week.total} matches)</small>
+                            <small>({weekFreq[week.id].upcoming + weekFreq[week.id].future} scheduled, {weekFreq[week.id].postponed} postponed)</small>
                             <br />
                             <StatusBox weekId={week.id} />
                         </li>
@@ -117,11 +125,26 @@ function Predictions(props: Props) {
                 <p>None</p>
             )}
 
-            <h3>Recent weeks</h3>
+            <h3>Incomplete</h3>
+            {unfinishedWeeks.length > 0 ? (
+                <ul>
+                    {unfinishedWeeks.map((week) => 
+                        <li key={week.id}><Link to={"/predictions/" + encodeURIComponent(week.id)} className="btn">Game Week {week.id}</Link>
+                        &nbsp;
+                        <small>({weekFreq[week.id].results + weekFreq[week.id].kickedOff} played, {weekFreq[week.id].upcoming + weekFreq[week.id].future} scheduled, {weekFreq[week.id].postponed} postponed)</small>
+                        </li>
+                    ).reverse()}
+                </ul>
+            ) : (
+                <p>None</p>
+            )}
+
+
+            <h3>Completed</h3>
             {finishedWeeks.length > 0 ? (
                 <ul>
                     {finishedWeeks.map((week) => 
-                        <li key={week.id}><Link to={"/predictions/" + encodeURIComponent(week.id)} className="btn">Week {week.id}</Link> <small>({week.total} matches)</small></li>
+                        <li key={week.id}><Link to={"/predictions/" + encodeURIComponent(week.id)} className="btn">Game Week {week.id}</Link></li>
                     ).reverse()}
                 </ul>
             ) : (

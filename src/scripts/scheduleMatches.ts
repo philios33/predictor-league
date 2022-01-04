@@ -12,8 +12,11 @@ export {}
 
 const spreadsheetId = "1LH94Sk4LcDQe4DfiFNcmfZ-dNG9Wzuqh-4dWp69UEW8";
 
-const weekId: string = "20";
-const dates: Array<string> = ["2021-12-28", "2021-12-29", "2021-12-30"];
+// Week 26 not imported yet, all KO at 3pm still
+// Week 27 Arsenal vs Liverpool will be blank if either team reach the FA Cup 5th round
+
+const weekId: string = "26";
+const dates: Array<string> = ["2022-02-19"];
 const dryRun: boolean = true;
 
 // Run: npx ts-node ./src/scripts/scheduleMatches.ts

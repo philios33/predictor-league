@@ -94,6 +94,10 @@
         top: 33%;
     }
 
+    .out {
+        filter: grayscale(100%);
+    }
+
     .faceImage {
         max-width: 100%;
     }

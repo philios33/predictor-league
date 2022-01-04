@@ -12,22 +12,22 @@ function CupSemiFinals(props: Props) {
     return <div>
         {props.data.winner && (
             <div className="winner">
-                <h2>Winner {props.data.winner}</h2>
+                <h2>Winner: {props.data.winner}</h2>
                 {drawPlayerImage(props.data.winner)}
             </div>
         )}
         
 
         <div className="semiFinals" data-aspect-ratio="yes">
-            <div className="face1">{drawPlayerImage(props.data.left.home.name)}</div>
-            <div className="face2">{drawPlayerImage(props.data.left.away.name)}</div>
+            <div className={"face1 " + props.data.left.home.progress}>{drawPlayerImage(props.data.left.home.name)}</div>
+            <div className={"face2 " + props.data.left.away.progress}>{drawPlayerImage(props.data.left.away.name)}</div>
             
-            <div className="face4">{drawPlayerImage(props.data.right.home.name)}</div>
-            <div className="face5">{drawPlayerImage(props.data.right.away.name)}</div>
+            <div className={"face4 " + props.data.right.home.progress}>{drawPlayerImage(props.data.right.home.name)}</div>
+            <div className={"face5 " + props.data.right.away.progress}>{drawPlayerImage(props.data.right.away.name)}</div>
             {props.data.final && (
                 <>
-                    <div className="face3">{drawPlayerImage(props.data.final.home.name)}</div>
-                    <div className="face6">{drawPlayerImage(props.data.final.away.name)}</div>
+                    <div className={"face3 " + props.data.final.home.progress}>{drawPlayerImage(props.data.final.home.name)}</div>
+                    <div className={"face6 " + props.data.final.away.progress}>{drawPlayerImage(props.data.final.away.name)}</div>
                 </>
             )}
             
