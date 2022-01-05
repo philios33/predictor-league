@@ -332,10 +332,24 @@ app.get("*", function (req, res) {
         serveClient: false
     });
     io.on('connection', (socket: any) => {
+        let loginName = "unknown";
+        const loginTime = new Date();
         socket.on("login", (data: any) => {
-            logger.writeEvent("CLIENT_SOCKET_LOGIN", data);
+            logger.writeEvent("CLIENT_SOCKET_LOGIN", {...data, socketId: socket.id});
+            loginName = data.login.username;
         });
+        socket.on("disconnect", () => {
+            const now = new Date();
+            const durationSeconds = Math.round((now.getTime() - loginTime.getTime()) / 1000);
+            logger.writeEvent("CLIENT_SOCKET_DISCONNECTED", {
+                socketId: socket.id,
+                user: loginName,
+                duration: durationSeconds
+            });
+            
+        })
     });
+    
     server.listen(PORT);
     console.log("Listening on port " + PORT);
 
