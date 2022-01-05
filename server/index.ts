@@ -12,6 +12,7 @@ import GoogleAuth from '../src/lib/googleAuth';
 import buildDetails from '../src/compiled/build.json';
 import { Logger } from '../src/lib/logger';
 
+import socketIO from 'socket.io';
 
 export {}
 
@@ -327,14 +328,12 @@ app.get("*", function (req, res) {
     console.log("Logged in!");
 
     const server = http.createServer(app);
-    const io = require('socket.io')(server);
+    const io = new socketIO.Server(server, {
+        serveClient: false
+    });
     io.on('connection', (socket: any) => {
-        console.log("Client socket connected: ", socket);
-        logger.writeEvent("CLIENT_SOCKET_CONNECTED", {});
-        socket.on("hello", (data: any) => {
-            logger.writeEvent("CLIENT_SOCKET_HELLO", {
-                data
-            });
+        socket.on("login", (data: any) => {
+            logger.writeEvent("CLIENT_SOCKET_LOGIN", data);
         });
     });
     server.listen(PORT);
