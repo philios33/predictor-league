@@ -70,6 +70,9 @@ prodConfig.plugins.push(
         patterns: [{
             from: path.resolve(__dirname, "src", "assets"),
             to: 'assets'
+        },{
+            from: path.resolve(__dirname, "src", "sw"),
+            to: 'sw'
         }]
     })
 );

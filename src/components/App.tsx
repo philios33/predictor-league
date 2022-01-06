@@ -22,12 +22,63 @@ import logoSmall from '../assets/logo_small.jpg';
 import logo500 from '../assets/logo_500w.png';
 import logoFull from '../assets/logo.png';
 import Cup from './pages/Cup';
+import Notifications from './Notifications';
 
 const GithubUrl = "https://github.com/philios33/predictor-league";
 
 function App() {    
 
     const [refreshRequired, setRefreshRequired] = useState(false);
+
+    const publicVapidKey = "1234";
+    
+    const urlBase64ToUint8Array = (base64String: string) => {
+        var padding = '='.repeat((4 - base64String.length % 4) % 4);
+        var base64 = (base64String + padding)
+          .replace(/\-/g, '+')
+          .replace(/_/g, '/');
+      
+        var rawData = window.atob(base64);
+        var outputArray = new Uint8Array(rawData.length);
+      
+        for (var i = 0; i < rawData.length; ++i) {
+          outputArray[i] = rawData.charCodeAt(i);
+        }
+        return outputArray;
+    };
+
+    useEffect(() => {
+        
+        (async () => {
+            try {
+                // Service worker registration
+                if ('serviceWorker' in navigator) {
+            
+                    const registration = await navigator.serviceWorker.register('/sw/service-worker.js');
+                    console.log("SW Reg", registration);
+
+                    const subscription = await registration.pushManager.getSubscription();
+                    if (!subscription) {
+                        console.log("User has no subscription yet, creating it now...");
+                        const newSubscription = await registration.pushManager.subscribe({
+                            userVisibleOnly: true,
+                            applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
+                        });
+                        console.log("New sub", newSubscription);
+
+                        // TODO Send this to our server to register the subscription details
+
+                    } else {
+                        console.log("User already has this subscription!", subscription);
+                    }
+                } else {
+                    throw new Error('service worker is not supported');
+                }
+            } catch(e) {
+                console.log(e);
+            }
+        })()
+    }, []);
 
     useEffect(() => {
         startVersionChecking(() => {
@@ -102,6 +153,10 @@ function App() {
 
                         <Route path="/cup/:cupId">
                             <Cup />
+                        </Route>
+
+                        <Route path="/notifications">
+                            <Notifications />
                         </Route>
                     </Switch>
                 </div>
