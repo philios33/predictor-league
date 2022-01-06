@@ -13,8 +13,6 @@ const SheetsApi = sheets('v4');
 
 export {}
 
-// TODO Get this from the built data for matches that have kicked off
-// const awaitingScoresFor = ['Newtown vs Caernarfon Town', 'Fiorentina vs Inter Milan'];
 const awaitingScoresFor = cachedResults.awaitingScoresFor;
 
 const credentialsFile = __dirname + "/../keys/credentials.json";
