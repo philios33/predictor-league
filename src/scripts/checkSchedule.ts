@@ -12,6 +12,7 @@ import GoogleAuth from "../lib/googleAuth";
 import moment from "moment-timezone";
 import { writeFixture } from "../lib/writer";
 import { sheets } from '@googleapis/sheets';
+import fs from 'fs';
 
 const SheetsApi = sheets('v4');
 
@@ -36,8 +37,17 @@ datesInFuture = [...new Set(datesInFuture)];
 
 // console.log("Future dates", datesInFuture);
 
-const credentialsFile = __dirname + "/../../keys/credentials.json";
-const gauth = new GoogleAuth(credentialsFile);
+const credentialsFile1 = __dirname + "/../../keys/credentials.json";
+const credentialsFile2 = __dirname + "/../keys/credentials.json";
+let gauth: null | GoogleAuth = null;
+if (fs.existsSync(credentialsFile1)) {
+    gauth = new GoogleAuth(credentialsFile1);
+} else if (fs.existsSync(credentialsFile2)) {
+    gauth = new GoogleAuth(credentialsFile2);
+} else {
+    throw new Error("Couldnt find the credentials file in any of the valid locations");
+}
+
 const spreadsheetId = "1LH94Sk4LcDQe4DfiFNcmfZ-dNG9Wzuqh-4dWp69UEW8";
 
 let updatesMade = 0;
@@ -68,7 +78,11 @@ const writeCell = async (gauth: GoogleAuth, range: string, value: string) => {
 
 const triggerRebuild = async (message: string) => {
     const range = 'Schedule!B25';
-    await writeCell(gauth, range, message);
+    if (gauth !== null) {
+        await writeCell(gauth, range, message);
+    } else {
+        throw new Error("GAuth is null");
+    }
 }
 
 (async () => {
@@ -174,6 +188,7 @@ const triggerRebuild = async (message: string) => {
 
     if (updatesMade > 0) {
         triggerRebuild("Made " + updatesMade + " updates to the schedule");
+        console.log("Triggering rebuild...");
     }
     console.log("Finished, made " + updatesMade + " updates, found " + errorsFound + " errors that we couldn't fix automatically!");
 
