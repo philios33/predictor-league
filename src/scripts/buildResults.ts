@@ -89,17 +89,20 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
 
     let currentPhase: null | Phase = null;
     // let lastPhase: null | Phase = null;
-    let lastWeekId: null | string = null;
+    // let lastWeekId: null | string = null;
 
     for (const fixture of sortedFixtures) {
 
+        /*
         if (lastWeekId !== null && fixture.weekId !== lastWeekId) {
             // Break if next match is a new week after the final week
             break;
         }
+        */
 
         // We also want to only process up to the match results that we have
         // When the next fixture to process has no results, stop processing
+        // Update: This is now disabled as it breaks the week phase logic.  We need to consider all weeks now that we have all fixtures.
         if (fixture.finalScore === null) {
             // Mark this as the last phase.  When this phase completes, we break!
             /*
@@ -109,7 +112,7 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
 
             // break;
             // lastPhase = currentPhase;
-            lastWeekId = fixture.weekId;
+            // lastWeekId = fixture.weekId;
         } else {
             // console.log("YES", fixture.homeTeam + " vs " + fixture.awayTeam );
         }

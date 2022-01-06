@@ -126,12 +126,12 @@ const triggerRebuild = async (message: string) => {
                     const foundMatch = schedule.matches[bbcMatch.homeTeam].against[bbcMatch.awayTeam];
                     if (bbcMatch.eventStatus === "postponed") {
                         // The kickoff time must be a special value if the match is postponed
-                        if (foundMatch.kickOff === "2022-05-05T14:55:00.000Z") {
+                        if (foundMatch.kickOff === "2022-06-06T14:55:00.000Z") {
                             // Yes this match is still postponed
                             console.log("This match is still postponed");
                         } else {
                             console.log("Problem: The match is postponed, but we have it scheduled, postponing...");
-                            await writeFixture(dryRun, gauth, bbcMatch.homeTeam, bbcMatch.awayTeam, foundMatch.weekId, "5/5@15:55");
+                            await writeFixture(dryRun, gauth, bbcMatch.homeTeam, bbcMatch.awayTeam, foundMatch.weekId, "6/6@15:55");
                             updatesMade++;
                         }
                     } else {

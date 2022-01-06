@@ -636,7 +636,7 @@ function PredictionsWeek() {
 
     const renderDateTime = (dateString: string) => {
         // Special kickoff time that means the game is postponed!
-        if (dateString === "2022-05-05T14:55:00.000Z") {
+        if (dateString === "2022-06-06T14:55:00.000Z") {
             return "Postponed";
         }
         // console.log("UTC Date String", dateString);

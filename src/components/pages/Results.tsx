@@ -184,9 +184,9 @@ function Results() {
                             <p>Part way through week {phase.weekId}.</p>
                         ) : (
                             phase.isLastPhaseOfWeek ? (
-                                <p>Week {phase.weekId} is completed.</p>
+                                <p>Game week {phase.weekId} is completed.</p>
                             ) : (
-                                <p>Week {phase.weekId} fixtures will continue later in the season.</p>
+                                <p className="warning">Game week {phase.weekId} fixtures will continue later in the season.</p>
                             )
                         )}
 

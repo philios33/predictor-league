@@ -66,7 +66,7 @@ function Predictions(props: Props) {
                 // RESULT
                 weekFreq[match.weekId].results++;
             } else {
-                if (match.kickOff === "2022-05-05T14:55:00.000Z") {
+                if (match.kickOff === "2022-06-06T14:55:00.000Z") {
                     weekFreq[match.weekId].postponed++;
                 } else {
                     const kickOff = new Date(match.kickOff);
@@ -115,7 +115,7 @@ function Predictions(props: Props) {
                         <li key={week.id}>
                             <Link to={"/predictions/" + encodeURIComponent(week.id)} className="btn">Game Week {week.id}</Link>
                             &nbsp;
-                            <small>({weekFreq[week.id].upcoming + weekFreq[week.id].future} scheduled, {weekFreq[week.id].postponed} postponed)</small>
+                            <small>({weekFreq[week.id].results + weekFreq[week.id].kickedOff} played, {weekFreq[week.id].upcoming + weekFreq[week.id].future} scheduled, {weekFreq[week.id].postponed} postponed)</small>
                             <br />
                             <StatusBox weekId={week.id} />
                         </li>
