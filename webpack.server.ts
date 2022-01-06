@@ -6,6 +6,7 @@ const serverConfig = {
         index: './server/index.ts',
         redeployChecker: './server/redeployChecker.ts',
         importFinalScores: './server/importFinalScores.ts',
+        checkSchedule: './server/checkSchedule.ts',
     },
     output: {
         filename: './[name].js', // <-- Important

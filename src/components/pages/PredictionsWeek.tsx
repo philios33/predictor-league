@@ -640,7 +640,7 @@ function PredictionsWeek() {
             return "Postponed";
         }
         // console.log("UTC Date String", dateString);
-        return moment(dateString).format("Do MMM H:mm");
+        return moment(dateString).format("ddd Do MMM H:mm");
     }
 
     useEffect(() => {
