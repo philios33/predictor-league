@@ -185,6 +185,7 @@ export type Phase = {
     phaseId: number
     kickOff: string
     fixtures: Array<PredictionFixture>
+    isIncomplePhase: boolean
 }
 
 export type FixtureGroup = {
@@ -200,6 +201,8 @@ export type MergedPhase = {
     isLastPhaseOfWeek: boolean // If not last, specify the part X text
     isOngoing: boolean // Use this to change the description at the top to make it clear that the rankings table is not complete, e.g. "Current Standings (Week 3 ongoing)" instead of "After week 3"
     isStarted: boolean // We only show started phases in the results feed
+
+    isIncomplete: boolean
 
     fixtureGroups: Array<FixtureGroup>
     points: {[key: string]: PointsRow} // Cumulative players points for the fixtures in this merged phase

@@ -103,6 +103,7 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
         // We also want to only process up to the match results that we have
         // When the next fixture to process has no results, stop processing
         // Update: This is now disabled as it breaks the week phase logic.  We need to consider all weeks now that we have all fixtures.
+        let isIncomplePhase = false;
         if (fixture.finalScore === null) {
             // Mark this as the last phase.  When this phase completes, we break!
             /*
@@ -113,6 +114,7 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
             // break;
             // lastPhase = currentPhase;
             // lastWeekId = fixture.weekId;
+            isIncomplePhase = true;
         } else {
             // console.log("YES", fixture.homeTeam + " vs " + fixture.awayTeam );
         }
@@ -124,6 +126,7 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
                 phaseId: 1,
                 kickOff: fixture.kickOff,
                 fixtures: [fixture],
+                isIncomplePhase: isIncomplePhase,
             };
             weeksNextPhase[fixture.weekId] = 1;
             weekPhases.push(currentPhase);
@@ -134,6 +137,7 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
             if (fixture.kickOff === currentPhase.kickOff) {
                 // Put this fixture in the same phase
                 currentPhase.fixtures.push(fixture);
+                currentPhase.isIncomplePhase ||= isIncomplePhase;
                 continue;
             } else {
                 // Kick off time different, but the week is the same
@@ -159,6 +163,7 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
             phaseId: weeksNextPhase[fixture.weekId],
             kickOff: fixture.kickOff,
             fixtures: [fixture],
+            isIncomplePhase,
         };
         weekPhases.push(currentPhase);
 
@@ -194,6 +199,8 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
             isLastPhaseOfWeek: false,
             isOngoing: false,
             isStarted: false,
+
+            isIncomplete: phase.isIncomplePhase,
 
             fixtureGroups: [{
                 kickOff: phase.kickOff,
@@ -279,6 +286,8 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
     // const cumPhasePoints: {[key:string]: PointsRow} = {};
     const startOfWeekStandings: {[key: string]: StartOfWeekStanding} = {};
 
+    let foundIncompleteWeekPhase = false;
+
     for (const phase of mergedPhases) {
         // Process the matches by merged phase
 
@@ -287,8 +296,24 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
             phase.points[player] = getZeroPointsRow();
         }
 
+        console.log("Week " + phase.weekId + " Phase " + phase.phaseId);
+        
+        // We need to stop processing at the first incomplete week phase
+        if (foundIncompleteWeekPhase) {
+            // Ignore this one
+            console.log("Ignoring Week " + phase.weekId + " Phase " + phase.phaseId);
+            continue;
+        } else {
+            if (phase.isIncomplete) {
+                console.log("Stopping at week " + phase.weekId + " phase " + phase.phaseId + " since it is incomplete");
+                // This should then mark that the week is incomplete so we should stop adding startOfWeekStandings items after this one.
+                foundIncompleteWeekPhase = true;
+            }
+        }
+
         if (!(phase.weekId in startOfWeekStandings)) {
             // It's the start of a week, work out the standings and store it against this week id
+
             const rankings = generateRankings(cumPoints);
             startOfWeekStandings[phase.weekId] = {
                 snapshotTime: phase.fixtureGroups[0].kickOff,
