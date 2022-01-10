@@ -187,8 +187,8 @@ const triggerRebuild = async (message: string) => {
         }
     }
 
-    if (updatesMade > 0) {
-        triggerRebuild("Made " + updatesMade + " updates to the schedule");
+    if (!dryRun && updatesMade > 0) {
+        triggerRebuild("Made " + updatesMade + " updates to the schedule at " + new Date());
         console.log("Triggering rebuild...");
     }
     console.log("Finished, made " + updatesMade + " updates, found " + errorsFound + " errors that we couldn't fix automatically!");

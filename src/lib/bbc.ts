@@ -24,6 +24,7 @@ const fetchPLMatches = async (dayText: string) : Promise<Array<any>> => {
 
     const matches: Array<Match> = [];
     if (result.status === 200) {
+        console.log("RESPONSE HEADERS", result.headers);
         const matchData = result.data.payload[0].body.matchData;
         if (matchData.length > 0) {
             const eventDays = matchData[0].tournamentDatesWithEvents;
