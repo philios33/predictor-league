@@ -87,6 +87,7 @@ const triggerRebuild = async (message: string) => {
 
 (async () => {
 
+    console.log("Running at " + new Date());
     console.log("Logging in...");
     await gauth.start();
     console.log("Logged in!");

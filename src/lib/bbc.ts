@@ -12,7 +12,7 @@ type Match = {
 const fetchPLMatches = async (dayText: string) : Promise<Array<any>> => {
     const url = "https://push.api.bbci.co.uk/batch?t=%2Fdata%2Fbbc-morph-football-scores-match-list-data%2FendDate%2F" + dayText + "%2FstartDate%2F" + dayText + "%2Ftournament%2Fpremier-league%2Fversion%2F2.4.6?timeout=5";
 
-    // console.log("Fetching from: " + url);
+    console.log("Fetching from: " + url);
     const result = await axios({
         headers: {
             "cache-control": "no-cache",
