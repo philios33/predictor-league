@@ -336,7 +336,9 @@ app.get("*", function (req, res) {
         const loginTime = new Date();
         socket.on("login", (data: any) => {
             logger.writeEvent("CLIENT_SOCKET_LOGIN", {...data, socketId: socket.id});
-            loginName = data.login.username;
+            if (data.login) {
+                loginName = data.login.username;
+            }
         });
         socket.on("disconnect", () => {
             const now = new Date();
