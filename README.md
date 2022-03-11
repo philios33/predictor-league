@@ -7,9 +7,20 @@ This is a website to help with predictor points calculations.  Players can login
 
 sudo docker build -t predictor .
 
-sudo docker run -v `pwd`/signals:/home/node/signals -v `pwd`/logs:/home/node/logs -t -i -p 8081:8081 predictor
+sudo docker run --rm --env-file .env -v `pwd`/signals:/home/node/signals -v `pwd`/logs:/home/node/logs --name predictor-league_predictor_1 -t -i -p 8081:8081 predictor
 
 ## Server startup command
 
-sudo docker-compose up --build
+sudo docker-compose up --build 
+
+## Test sidecar scripts while running in docker
+
+You can launch these with the local .sh scripts:
+
+./liveScores.sh
+
+./autoRedeploy.sh (Don't test this locally, unless you are using docker-compose)
+
+./checkSchedule.sh
+
 

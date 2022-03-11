@@ -1,5 +1,9 @@
 
-const config = {
+type Config = {
+    serviceEndpoint: string
+}
+
+const config: Config = {
     serviceEndpoint: "https://predictor.30yardsniper.co.uk/"
 }
 

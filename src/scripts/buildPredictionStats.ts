@@ -24,20 +24,24 @@ for (const homeTeam in schedule.matches) {
                 // Ignore week 1 fixture
             } else {
                 // Figure out the positions of these teams at this point
-                const table = results.startOfWeekStandings[weekId].leagueTables.all;
-                const homeTeamRow = table.find(t => t.name === homeTeam);
-                const awayTeamRow = table.find(t => t.name === awayTeam);
+                if (weekId in results.startOfWeekStandings) {
+                    const table = results.startOfWeekStandings[weekId].leagueTables.all;
+                    const homeTeamRow = table.find(t => t.name === homeTeam);
+                    const awayTeamRow = table.find(t => t.name === awayTeam);
 
-                if (homeTeamRow && awayTeamRow && homeTeamRow.rank !== null && awayTeamRow.rank !== null) {
-                    matches.push({
-                        homeTeam, 
-                        awayTeam, 
-                        weekId,
-                        homeTeamRank: homeTeamRow.rank,
-                        awayTeamRank: awayTeamRow.rank,
-                    });
+                    if (homeTeamRow && awayTeamRow && homeTeamRow.rank !== null && awayTeamRow.rank !== null) {
+                        matches.push({
+                            homeTeam, 
+                            awayTeam, 
+                            weekId,
+                            homeTeamRank: homeTeamRow.rank,
+                            awayTeamRank: awayTeamRow.rank,
+                        });
+                    } else {
+                        throw new Error("Could not find the rank for teams " + homeTeam + " and " + awayTeam + " at the start of week " + weekId);
+                    }
                 } else {
-                    throw new Error("Could not find the rank for teams " + homeTeam + " and " + awayTeam + " at the start of week " + weekId);
+                    console.warn("We dont know the start of week standings for week " + weekId + " yet, so ignoring this match");
                 }
             }
         }

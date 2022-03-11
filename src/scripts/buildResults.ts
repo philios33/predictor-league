@@ -306,6 +306,9 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
         } else {
             if (phase.isIncomplete) {
                 console.log("Stopping at week " + phase.weekId + " phase " + phase.phaseId + " since it is incomplete");
+                // TODO: This causes a bug when many matches in different game weeks start at exactly the same time and you want to show all of them at once.
+                // But the website only shows 1 active game week at a time, so we can't easily fix this.
+
                 // This should then mark that the week is incomplete so we should stop adding startOfWeekStandings items after this one.
                 foundIncompleteWeekPhase = true;
             }

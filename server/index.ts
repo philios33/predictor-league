@@ -12,7 +12,10 @@ import GoogleAuth from '../src/lib/googleAuth';
 import buildDetails from '../src/compiled/build.json';
 import { Logger } from '../src/lib/logger';
 
+import { config } from './config';
+
 import socketIO from 'socket.io';
+import EventBusProcessor from '../src/lib/eventBus';
 
 export {}
 
@@ -327,6 +330,9 @@ app.get("*", function (req, res) {
     await gauth.start();
     console.log("Logged in!");
 
+    const ebp = new EventBusProcessor(gauth);
+    ebp.start();
+
     const server = http.createServer(app);
     const io = new socketIO.Server(server, {
         serveClient: false
@@ -354,6 +360,9 @@ app.get("*", function (req, res) {
     
     server.listen(PORT);
     console.log("Listening on port " + PORT);
+
+    console.log("Env is", process.env);
+    console.log("Config is", config);
 
     logger.writeEvent("STARTUP_COMPLETE", {});
 })();

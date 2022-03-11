@@ -9,6 +9,8 @@ services:
       - type: bind
         source: ./logs
         target: /home/node/logs
+    env_file:
+      - .env
     restart: always
     networks:
       - master
