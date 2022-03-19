@@ -23,4 +23,8 @@ You can launch these with the local .sh scripts:
 
 ./checkSchedule.sh
 
+## Or manually natively
+
+nodejs ./serverDist/checkSchedule.js
+
 

@@ -98,7 +98,7 @@ const triggerRebuild = async (message: string) => {
         const startTime = moment(todaysDate).startOf("day");
         const endTime = moment(todaysDate).endOf("day");
         
-        // console.log("Doing todaysDate", todaysDate, startTime, endTime);
+        console.log("Doing todaysDate", todaysDate, startTime, endTime);
 
         const matchesToday = [];
         for (const homeTeam in schedule.matches) {
@@ -111,12 +111,12 @@ const triggerRebuild = async (message: string) => {
                 }
             }
         }
-        // console.log("Matches we have today", todaysDate, matchesToday);
+        console.log("Matches we have today", todaysDate, matchesToday);
 
         const bbcMatches = await grabPLMatches([todaysDate]);
-        // console.log("BBC Matches today", bbcMatches);
+        console.log("BBC Matches today", bbcMatches);
 
-        // console.log("Now looping BBC matches for today: " + todaysDate);
+        console.log("Now looping BBC matches for today: " + todaysDate);
 
         for (const bbcMatch of bbcMatches) {
             // Make sure this bbc match appears in our schedule
@@ -136,6 +136,7 @@ const triggerRebuild = async (message: string) => {
                             updatesMade++;
                         }
                     } else {
+                        console.log("The event status is: " + bbcMatch.eventStatus);
                         const ukKickOff = moment(foundMatch.kickOff).tz("Europe/London").format("D/M@HH:mm");
                         if (ukKickOff === bbcMatch.startTime) {
                             // Scheduled match has exactly the correct kick off time!
@@ -158,7 +159,7 @@ const triggerRebuild = async (message: string) => {
             }
         }
 
-        // console.log("Now looping scheduled matches for today: " + todaysDate);
+        console.log("Now looping scheduled matches for today: " + todaysDate);
 
         for (const match of matchesToday) {
             console.log("Scheduled on " + todaysDate + " : " + match.homeTeam + " vs " + match.awayTeam);
@@ -180,9 +181,14 @@ const triggerRebuild = async (message: string) => {
                     updatesMade++;
                 }
             } else {
+                /*
                 console.log("Error: Not found this match in the BBC schedule for today: " + todaysDate);
                 errorsFound++;
                 // This could be an incorrectly scheduled match, or just one that has been rescheduled to another date already
+                */
+                // Yes we need to assume the match is postponed if it doesnt exist
+                await writeFixture(dryRun, gauth, match.homeTeam, match.awayTeam, match.match.weekId, "6/6@15:55");
+                updatesMade++;
             }
         }
     }
