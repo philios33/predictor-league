@@ -1,6 +1,6 @@
 import moment from 'moment-mini';
 import React, { useEffect, useState } from 'react';
-import compiledResults from '../../compiled/results.json' ;
+import compiledResults from '../../compiled/resultsRecent.json' ;
 import { getLogo24 } from '../../lib/logo';
 import { getPlayerNames } from '../../lib/players';
 import { Player, BuiltResults, PointsRow, PlayerPrediction } from '../../lib/types';

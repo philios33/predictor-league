@@ -232,6 +232,8 @@ export type BuiltResults = {
     awaitingScoresFor: Array<string>
 }
 
+export type BuiltPersonalTables = Record<string, PredictedLeagueTable>
+
 export type StartOfWeekStanding = {
     snapshotTime: string
     rankings: Array<Player>
@@ -255,7 +257,14 @@ export type LeagueTableRow = {
     stats: HomeAwayPoints
 }
 
+export type PredictedLeagueTableRow = {
+    name: string
+    rank: null | number
+    stats: PredictedHomeAwayPoints
+}
+
 export type LeagueTable = Array<LeagueTableRow>
+export type PredictedLeagueTable = Array<PredictedLeagueTableRow>
 
 export type HomeAwayPoints = {
     played: number
@@ -267,6 +276,10 @@ export type HomeAwayPoints = {
     points: number
     pointsAgainst: {[key: string]: number}
     awayGoalsAgainst: {[key: string]: number}
+}
+
+export type PredictedHomeAwayPoints = Omit<HomeAwayPoints, "pointsAgainst" | "awayGoalsAgainst"> & {
+    positionDifference: number
 }
 
 export type TeamPointsRow = {

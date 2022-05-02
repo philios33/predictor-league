@@ -25,6 +25,24 @@ const players = getPlayerNames();
     const weekResults = await getResults(gauth, players);
     fs.writeFileSync(__dirname + "/../compiled/results.json", JSON.stringify(weekResults, null, 4));
 
+    // Trim down the data so we only show recent data
+    const recentPhaseAmount = 30;
+    if (weekResults.mergedPhases.length > recentPhaseAmount) {
+        // Only take the last X phases?
+        weekResults.mergedPhases = weekResults.mergedPhases.slice(-recentPhaseAmount);
+        // Get week ids of these phases and remove all other tables
+        const weekIds = new Set(weekResults.mergedPhases.map(phase => phase.weekId));
+        const weekIdList = Object.keys(weekResults.startOfWeekStandings);
+        for (const weekId of weekIdList) {
+            if (weekIds.has(weekId)) {
+                // Don't remove
+            } else {
+                delete weekResults.startOfWeekStandings[weekId];
+            }
+        }
+        fs.writeFileSync(__dirname + "/../compiled/resultsRecent.json", JSON.stringify(weekResults, null, 4));
+    }
+
     console.log("Finished building data");
 })();
 
@@ -470,7 +488,7 @@ const getZeroTeamPointsRow = (name: string): TeamPointsRow => {
     }
 }
 
-const applyTeamStats = (cumTeamPoints: CumulativeTeamPoints, homeTeam: string, awayTeam: string, homeGoals: number, awayGoals: number) => {
+export const applyTeamStats = (cumTeamPoints: CumulativeTeamPoints, homeTeam: string, awayTeam: string, homeGoals: number, awayGoals: number) => {
     
     if (!(homeTeam in cumTeamPoints)) {
         cumTeamPoints[homeTeam] = getZeroTeamPointsRow(homeTeam);
@@ -614,7 +632,7 @@ const calculateLeagueTables = (cumTeamPoints: {[key:string]: TeamPointsRow}): Le
     }
 }
 
-const getLeagueTableFromCumPoints = (cumTeamPoints: {[key:string]: TeamPointsRow}, type: "homeOnly" | "awayOnly" | "all"): LeagueTable => {
+export const getLeagueTableFromCumPoints = (cumTeamPoints: {[key:string]: TeamPointsRow}, type: "homeOnly" | "awayOnly" | "all"): LeagueTable => {
     return Object.values(cumTeamPoints).map(team => {
         // Merge the home, away & any deductions in to a single row
         return {

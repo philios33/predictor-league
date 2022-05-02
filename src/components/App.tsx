@@ -22,6 +22,7 @@ import logoSmall from '../assets/logo_small.jpg';
 import logo500 from '../assets/logo_500w.png';
 import logoFull from '../assets/logo.png';
 import Cup from './pages/Cup';
+import { Tables } from './pages/Tables';
 
 const GithubUrl = "https://github.com/philios33/predictor-league";
 
@@ -71,6 +72,9 @@ function App() {
                             <Link className="btn" to="/results">Results</Link>
                         </li>
                         <li>
+                            <Link className="btn" to="/tables">Tables</Link>
+                        </li>
+                        <li>
                             <Link className="btn" to="/cup/mrEggCup2021">Cup</Link>
                         </li>
                     </ul>
@@ -98,6 +102,10 @@ function App() {
                         
                         <Route path="/results">
                             <Results />
+                        </Route>
+
+                        <Route path="/tables">
+                            <Tables />
                         </Route>
 
                         <Route path="/cup/:cupId">

@@ -91,6 +91,12 @@ export const rankLeagueTable = (rankings: LeagueTable): void => {
             nextRank++;
         }
     }
+
+    // Now that the rows are ordered, we can strip off the away goals and goals against data to decrease the data size of the results.json
+    rankings.forEach(r => {
+        r.stats.awayGoalsAgainst = {};
+        r.stats.pointsAgainst = {};
+    })
 }
 
 const arePointsDifferent = (a: HomeAwayPoints, aName: string, b: HomeAwayPoints, bName: string | null): boolean => {
