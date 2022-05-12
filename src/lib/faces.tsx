@@ -1,17 +1,17 @@
 import React from 'react';
 
 const newspapperFaces: any = {
-    'Phil': require('../assets/faces/cartoon/phil.png'),
-    'Rob': require('../assets/faces/cartoon/rob.png'),
-    'Rod': require('../assets/faces/cartoon/rod.png'),
-    'Jez': require('../assets/faces/cartoon/jez.png'),
-    'Mike': require('../assets/faces/cartoon/mike.png'),
-    'Lawro': require('../assets/faces/cartoon/lawro.png'),
-    'Damo': require('../assets/faces/cartoon/damo.png'),
-    'Dave': require('../assets/faces/cartoon/dave.png'),
-    'Ian': require('../assets/faces/cartoon/ian.png'),
+    'Phil': require('../assets/faces/circles/phil.png'),
+    'Rob': require('../assets/faces/circles/rob.png'),
+    'Rod': require('../assets/faces/circles/rod.png'),
+    'Jez': require('../assets/faces/circles/jez.png'),
+    'Mike': require('../assets/faces/circles/mike.png'),
+    'Lawro': require('../assets/faces/circles/lawro.png'),
+    'Damo': require('../assets/faces/circles/damo.png'),
+    'Dave': require('../assets/faces/circles/dave.png'),
+    'Ian': require('../assets/faces/circles/ian.png'),
 }
-const getPlayerFaceImage = (playerName: string, type: string): any => {
+export const getPlayerFaceImage = (playerName: string, type: string): any => {
     // console.log("Image is", newspapperFaces[playerName]);
     // console.log("Object keys", Object.keys(newspapperFaces[playerName]));
     if (playerName in newspapperFaces) {
