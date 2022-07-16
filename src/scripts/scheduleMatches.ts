@@ -7,18 +7,10 @@ import { writeFixture } from '../lib/writer';
 
 export {}
 
-// Week 27 Arsenal vs Liverpool will be blank if either team reach the FA Cup 5th round
-
-console.log("Note: All matches are now scheduled, you shouldn't need to run this ever again");
-const quitNow = () => {
-    process.exit(1);
-}
-quitNow();
-
 const dryRun: boolean = false;
 const expectedMatches = 10;
-const weekId: string = "38";
-const dates: Array<string> = ["2022-05-22"];
+const weekId: string = "3";
+const dates: Array<string> = ["2022-08-20", "2022-08-21", "2022-08-22"];
 
 // Note: This script now uses the cached match schedule, so make sure the cache is built with...
 // Run: npm run buildData

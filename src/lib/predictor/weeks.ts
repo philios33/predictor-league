@@ -7,7 +7,8 @@ import { WeekDates } from '../types';
 import compiledWeeks from '../../compiled/weeks.json';
 
 const SheetsApi = sheets('v4');
-const spreadsheetId = "1LH94Sk4LcDQe4DfiFNcmfZ-dNG9Wzuqh-4dWp69UEW8";
+// const spreadsheetId2021 = "1LH94Sk4LcDQe4DfiFNcmfZ-dNG9Wzuqh-4dWp69UEW8";
+const spreadsheetId = "1Tilu5utIZBXXBL2t_cikdO_NsrfbMAQ1zBx5zws9JQA";
 
 const getAllWeeksRaw = async (gauth: GoogleAuth) : Promise<any[][]> =>  {    
     const range = 'Schedule!A25:C100';

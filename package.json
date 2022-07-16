@@ -39,6 +39,7 @@
     "@types/react-dom": "^17.0.9",
     "@types/react-router-dom": "^5.1.8",
     "@types/uuid": "^8.3.1",
+    "@types/web-push": "^3.3.2",
     "@types/webpack": "^5.28.0",
     "@types/webpack-dev-server": "^3.11.5",
     "babel-loader": "^8.2.2",
@@ -56,15 +57,15 @@
     "ts-node": "^10.2.0",
     "typescript": "^4.3.5",
     "url-loader": "^4.1.1",
-    "webpack": "^5.50.0",
+    "webpack": "^5.73.0",
     "webpack-bundle-analyzer": "^4.4.2",
     "webpack-cli": "^4.7.2",
-    "webpack-dev-server": "^4.0.0-rc.0",
+    "webpack-dev-server": "^4.9.3",
     "webpack-node-externals": "^3.0.0"
   },
   "dependencies": {
     "@googleapis/sheets": "^0.3.0",
-    "axios": "^0.21.1",
+    "axios": "^0.21.4",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
     "device-detector-js": "^3.0.1",
@@ -82,6 +83,7 @@
     "socket.io": "^4.4.0",
     "socket.io-client": "^4.4.0",
     "ts-loader": "^9.2.5",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "web-push": "^3.5.0"
   }
 }

@@ -10,6 +10,9 @@ const newspapperFaces: any = {
     'Damo': require('../assets/faces/circles/damo.png'),
     'Dave': require('../assets/faces/circles/dave.png'),
     'Ian': require('../assets/faces/circles/ian.png'),
+    'Ed': require('../assets/faces/circles/ed.png'),
+    'Antoine': require('../assets/faces/circles/antoine.png'),
+    'Matt': require('../assets/faces/circles/matt.png'),
 }
 export const getPlayerFaceImage = (playerName: string, type: string): any => {
     // console.log("Image is", newspapperFaces[playerName]);

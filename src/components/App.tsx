@@ -23,6 +23,7 @@ import logo500 from '../assets/logo_500w.png';
 import logoFull from '../assets/logo.png';
 import Cup from './pages/Cup';
 import { Tables } from './pages/Tables';
+import Notifications from './pages/Notifications';
 
 const GithubUrl = "https://github.com/philios33/predictor-league";
 
@@ -48,8 +49,8 @@ function App() {
     return (
         <div className="App">
             <header>
-                <img src={logoSmall} srcSet={logoFull + " 1000w," + logo500 + " 500w"} alt="Predictor 21-22" title="Predictor 21-22"/>
-                {/*<h1>Predictor 21-22</h1>*/}
+                <img src={logoSmall} srcSet={logoFull + " 1000w," + logo500 + " 500w"} alt="Predictor 22-23" title="Predictor 22-23"/>
+                {/*<h1>Predictor 22-23</h1>*/}
                 {login !== null && <p>Logged in as: <strong>{login.username}</strong></p>}
             </header>
 
@@ -71,12 +72,14 @@ function App() {
                         <li>
                             <Link className="btn" to="/results">Results</Link>
                         </li>
+                        {/* 
                         <li>
                             <Link className="btn" to="/tables">Tables</Link>
                         </li>
                         <li>
                             <Link className="btn" to="/cup/mrEggCup2021">Cup</Link>
                         </li>
+                        */}
                     </ul>
 
                     <hr />
@@ -91,6 +94,10 @@ function App() {
                         </Route>
                         <Route path="/login">
                             <Login />
+                        </Route>
+
+                        <Route path="/notifications">
+                            <Notifications />
                         </Route>
                         
                         <Route path="/predictions/:weekId">

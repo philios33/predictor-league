@@ -40,8 +40,9 @@ const players = getPlayerNames();
                 delete weekResults.startOfWeekStandings[weekId];
             }
         }
-        fs.writeFileSync(__dirname + "/../compiled/resultsRecent.json", JSON.stringify(weekResults, null, 4));
     }
+    // The Results page uses the resultsRecent.json file, so we always need this file
+    fs.writeFileSync(__dirname + "/../compiled/resultsRecent.json", JSON.stringify(weekResults, null, 4));
 
     console.log("Finished building data");
 })();
@@ -58,6 +59,10 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
     const scores = getCachedMatchScores();
 
     const now = new Date();
+
+    // Pretend (temporarily for debugging purposes) that we are 1 month in the future
+    // now.setMonth(now.getMonth() + 1);
+
     const weekResults: WeekResults = {
         playerNames: players,
         weekIds: [],

@@ -7,6 +7,7 @@ const serverConfig = {
         redeployChecker: './server/redeployChecker.ts',
         importFinalScores: './server/importFinalScores.ts',
         checkSchedule: './server/checkSchedule.ts',
+        notificationsRunner: './server/notificationsRunner.ts',
     },
     output: {
         filename: './[name].js', // <-- Important

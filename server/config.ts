@@ -7,6 +7,10 @@ type Config = {
         user: null | string,
         password: null | string,
     }
+    vapid: {
+        public: string,
+        private: string,
+    } | null
 }
 
 const config: Config = {
@@ -14,7 +18,8 @@ const config: Config = {
         host: null,
         user: null,
         password: null,
-    }
+    },
+    vapid: null
 }
 
 if (process.env.MAIL_HOST) {
@@ -30,8 +35,16 @@ if (process.env.MAIL_PASSWORD) {
     console.log("Using Mail Password");
 }
 
-console.log("Process ENV", process.env);
-console.log("CONFIG", config);
+if (process.env.VAPID_PUBLIC && process.env.VAPID_PRIVATE) {
+    config.vapid = {
+        public: process.env.VAPID_PUBLIC,
+        private: process.env.VAPID_PRIVATE,
+    }
+    console.log("Using VAP IDs for Web Push API");
+}
+
+// console.log("Process ENV", process.env);
+// console.log("CONFIG", config);
 
 export {
     config

@@ -86,10 +86,14 @@ export const calculatePoints = (prediction: null | Prediction | HiddenPrediction
 
     const resultType = calculateResultType(prediction, finalScore);
     const scoreType = calculateFinalScoreType(finalScore);
+    let season = "22-23";
 
     if (resultType === "noPrediction") {
         // Didn't even both to predict
         points.missed ++;
+        if (season === "22-23") {
+            points.regularPoints = -1;
+        }
         return points;
 
     } else if (resultType === "hidden") {
@@ -155,10 +159,14 @@ export const calculatePoints = (prediction: null | Prediction | HiddenPrediction
     }
 
     // Give Dave 2 points for his late 0-2 Prediction for Norwich - Villa
-    if (homeTeam === "Norwich City" && awayTeam === "Aston Villa" && playerName === "Dave") {
-        // Cap to 2 points
-        points.regularPoints = 2;
+    if (season === "21-22") {
+        if (homeTeam === "Norwich City" && awayTeam === "Aston Villa" && playerName === "Dave") {
+            // Cap to 2 points
+            points.regularPoints = 2;
+        }
     }
+    
+    
     
 
     if ((prediction as Prediction).isBanker) {

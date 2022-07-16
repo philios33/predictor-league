@@ -11,11 +11,10 @@ import { getThisWeek, savePrediction, validatePlayerSecret } from '../src/lib/ap
 import GoogleAuth from '../src/lib/googleAuth';
 import buildDetails from '../src/compiled/build.json';
 import { Logger } from '../src/lib/logger';
-
 import { config } from './config';
 
 import socketIO from 'socket.io';
-import EventBusProcessor from '../src/lib/eventBus';
+import { updateUserNotificationSubscription } from '../src/lib/subscription';
 
 export {}
 
@@ -30,6 +29,7 @@ const signingSecretFile = __dirname + "/../keys/signing.key";
 const SECRET_SIGNING_KEY = fs.readFileSync(signingSecretFile);
 
 const DIST_DIR = path.join(__dirname, "..", "dist");
+const SERVER_DIR = path.join(__dirname, "..", "server");
 const PORT = 8081;
 const app = express();
 
@@ -63,6 +63,34 @@ app.get("/sitemap.xml", function (req, res) {
     res.sendFile(path.join(DIST_DIR, "sitemap.xml"));
 });
 */
+
+app.get("/service.js", function (req, res) {
+    if (config.vapid === null) {
+        res.sendStatus(404);
+        res.send("Must enable VAPID");
+    } else {
+        const fileContents = fs.readFileSync(path.join(SERVER_DIR, "service.js"));
+        const replacedContents = fileContents.toString().replace("%%VAPID%%", config.vapid.public);
+    
+        res.set("content-type", "application/javascript");
+        res.send(replacedContents);
+    }
+});
+
+app.post("/subscribe", async function(req, res) {
+    try {
+        let user = validateJWTToUser(req.headers.authorization);
+        // console.log("Subscription received for " + user + ": ", req.body);
+        await updateUserNotificationSubscription(gauth, user, req.body);
+        res.send("OK");
+    } catch(e) {
+        console.error(e);
+        res.status(500);        
+        res.send({
+            error: e.message
+        });
+    }
+});
 
 // Other services
 
@@ -240,8 +268,8 @@ const getIndexFileWithMeta = (title: string, description: string, imagePath: nul
 }
 
 const sendIndexPage = (req: express.Request, res: express.Response) => {
-    let title = "Predictor 21-22";
-    let description = "Predictor League 21-22";
+    let title = "Predictor 22-23";
+    let description = "Predictor League 22-23";
     let image: null | string = null;
     let imageWidth: null | string = null;
     let imageHeight: null | string = null;
@@ -255,6 +283,7 @@ const sendIndexPage = (req: express.Request, res: express.Response) => {
         title = "Week " + weekNum + " predictions";
         description = "Get them in.";
 
+        /*
         if (weekNum === "9") {
             description += " This Friday Arsenal take on Aston Villa in the Mr Egg memorial egg cup.";
         }
@@ -296,6 +325,7 @@ const sendIndexPage = (req: express.Request, res: express.Response) => {
             imageWidth = "853";
             imageHeight = "480";
         }
+        */
     }
     if (url === "/cup/mrEggCup2021") {
         title = "Mr Egg Memorial Egg Cup 2021";
@@ -330,8 +360,6 @@ app.get("*", function (req, res) {
     await gauth.start();
     console.log("Logged in!");
 
-    const ebp = new EventBusProcessor(gauth);
-    ebp.start();
 
     const server = http.createServer(app);
     const io = new socketIO.Server(server, {
@@ -361,8 +389,8 @@ app.get("*", function (req, res) {
     server.listen(PORT);
     console.log("Listening on port " + PORT);
 
-    console.log("Env is", process.env);
-    console.log("Config is", config);
+    // console.log("Env is", process.env);
+    // console.log("Config is", config);
 
     logger.writeEvent("STARTUP_COMPLETE", {});
 })();

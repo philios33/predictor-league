@@ -25,6 +25,7 @@ const getCupMatch = (player1Name: string, player1Progress: ProgressType, player2
     }
 }
 
+/*
 const groups: Array<CupGroup> = [{
     name: "Group A",
     players: ['Damo','Rob','Mike'],
@@ -48,29 +49,6 @@ const groups: Array<CupGroup> = [{
 const koPhase: Array<CupWeek> = [];
 const leaguePhase: Array<CupWeek> = [];
 
-/*
-koPhase.push({
-    week: "7",
-    description: "Final",
-    homeTeam: "Leeds United",
-    awayTeam: "Watford",
-    score: null,
-    matches: [
-        getCupMatch("Jez", "out", "Rob", "winner", ""),
-    ]
-});
-koPhase.push({
-    week: "6",
-    description: "Semi Finals",
-    homeTeam: "Crystal Palace",
-    awayTeam: "Brighton & Hove Albion",
-    score: null,
-    matches: [
-        getCupMatch("Jez", "through", "Phil", "out", ""),
-        getCupMatch("Ian", "out", "Rob", "through", ""),
-    ]
-});
-*/
 
 
 koPhase.push({
@@ -111,22 +89,6 @@ koPhase.push({
 });
 
 
-
-/*
-leaguePhase.push({
-    week: "5",
-    description: "Group match day 3",
-    homeTeam: "Newcastle United",
-    awayTeam: "Leeds United",
-    score: null,
-    matches: [
-        getCupMatch("Dave", null, "Ian", null, ""),
-        getCupMatch("Rob", null, "Mike", null, ""),
-        getCupMatch("Lawro", null, "Jez", null, ""),
-    ]
-});
-
-*/
 
 leaguePhase.push({
     week: "13",
@@ -209,9 +171,11 @@ leaguePhase.push({
     ]
 });
 
+*/
 
 const cupData: BuiltCups = {};
 
+/*
 cupData["mrEggCup2021"] = {
     name: "The Mr Egg Memorial Egg Cup 2021",
     details: [
@@ -281,6 +245,7 @@ cupData["mrEggCup2021"] = {
     groups: groups,
     groupPhaseWeeks: leaguePhase,
 };
+*/
 
 // Now we fill in the nulls by adding the match scores, predictions, and work out the points and match status
 const scores = getCachedMatchScores();

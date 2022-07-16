@@ -17,7 +17,8 @@ const awaitingScoresFor = cachedResults.awaitingScoresFor;
 
 const credentialsFile = __dirname + "/../keys/credentials.json";
 const gauth = new GoogleAuth(credentialsFile);
-const spreadsheetId = "1LH94Sk4LcDQe4DfiFNcmfZ-dNG9Wzuqh-4dWp69UEW8";
+// const spreadsheetId2021 = "1LH94Sk4LcDQe4DfiFNcmfZ-dNG9Wzuqh-4dWp69UEW8";
+const spreadsheetId = "1Tilu5utIZBXXBL2t_cikdO_NsrfbMAQ1zBx5zws9JQA";
 
 
 const writeCell = async (gauth: GoogleAuth, range: string, value: string) => {
@@ -61,22 +62,22 @@ function getCellRefByMatch (homeTeam: string, awayTeam: string) : string {
     const teamsList = [
         "Arsenal",
         "Aston Villa",
+        "AFC Bournemouth",
         "Brentford",
         "Brighton & Hove Albion",
-        "Burnley",
         "Chelsea",
         "Crystal Palace",
         "Everton",
+        "Fulham",
         "Leeds United",
         "Leicester City",
         "Liverpool",
         "Manchester City",
         "Manchester United",
         "Newcastle United",
-        "Norwich City",
+        "Nottingham Forest",
         "Southampton",
         "Tottenham Hotspur",
-        "Watford",
         "West Ham United",
         "Wolverhampton Wanderers",
     ];

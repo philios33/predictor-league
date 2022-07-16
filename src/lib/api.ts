@@ -333,7 +333,10 @@ export async function getWeekFixtures(gauth: GoogleAuth, weekId: string, withSco
 
             let stats: MatchPredictionStats | null = null;
             if (fixture.weekId in results.startOfWeekStandings) {
-                stats = findPlayersPredictionStats(playerName, fixture.homeTeam, fixture.awayTeam, results.startOfWeekStandings[fixture.weekId].leagueTables);
+                if (results.startOfWeekStandings[fixture.weekId].leagueTables.all.length > 0) {
+                    // There is a league table that we can use for the stats
+                    stats = findPlayersPredictionStats(playerName, fixture.homeTeam, fixture.awayTeam, results.startOfWeekStandings[fixture.weekId].leagueTables);
+                }
             }
 
             fixture.playerPredictions[playerName] = {
@@ -408,22 +411,22 @@ function getCellRefByMatch (homeTeam: string, awayTeam: string) : string {
     const teamsList = [
         "Arsenal",
         "Aston Villa",
+        "AFC Bournemouth",
         "Brentford",
         "Brighton & Hove Albion",
-        "Burnley",
         "Chelsea",
         "Crystal Palace",
         "Everton",
+        "Fulham",
         "Leeds United",
         "Leicester City",
         "Liverpool",
         "Manchester City",
         "Manchester United",
         "Newcastle United",
-        "Norwich City",
+        "Nottingham Forest",
         "Southampton",
         "Tottenham Hotspur",
-        "Watford",
         "West Ham United",
         "Wolverhampton Wanderers",
     ];
