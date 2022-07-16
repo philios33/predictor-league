@@ -12,6 +12,10 @@ const urlB64ToUint8Array = base64String => {
     return outputArray;
 }
 
+self.addEventListener('install', function(event) {
+    self.skipWaiting();
+});
+
 const notificationSubBroadcast = new BroadcastChannel('notificationSub');
 
 self.addEventListener('activate', async () => {
