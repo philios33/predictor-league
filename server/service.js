@@ -56,10 +56,22 @@ const showLocalNotification = (data, swRegistration) => {
     swRegistration.showNotification(data.title, options);
 }
 
+const openNotificationURL = (e, url) => {
+    // Close the notification popout
+    e.notification.close();
+    // Get all the Window clients
+    e.waitUntil(clients.matchAll({ type: 'window' }).then(clientsArr => {
+        // If a Window tab matching the targeted URL already exists, focus that;
+        const hadWindowToFocus = clientsArr.some(windowClient => windowClient.url === url ? (windowClient.focus(), true) : false);
+        // Otherwise, open a new tab to the applicable URL and focus it.
+        if (!hadWindowToFocus) clients.openWindow(url).then(windowClient => windowClient ? windowClient.focus() : null);
+    }));
+}
+
 self.addEventListener('notificationclick', function(event) {
     switch (event.action) {
         case 'open_url':
-            clients.openWindow(event.notification.data.url);
+            openNotificationURL(event, event.notification.data.url);
             break;
         // case 'any_other_action':
         //    clients.openWindow("https://www.example.com");

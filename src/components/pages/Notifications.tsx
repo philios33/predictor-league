@@ -43,6 +43,12 @@ export default function Notifications() {
         notificationSubBroadcast.close();
     }
 
+    const unregisterServiceWorker = async () => {
+        const swRegistration = await navigator.serviceWorker.register('/service.js');
+        await swRegistration.unregister();
+        alert("Unregistered");
+    }
+
     const registerServiceWorker = async () => {
         const swRegistration = await navigator.serviceWorker.register('/service.js');
         return swRegistration;
@@ -82,8 +88,17 @@ export default function Notifications() {
     const setup = async () => {
         try {
             check();
-            const swRegistration = await registerServiceWorker();
+            await registerServiceWorker();
             await requestNotificationPermission();
+        } catch(e) {
+            alert(e.message);
+        }
+    }
+
+    const reset = async () => {
+        try {
+            check();
+            await unregisterServiceWorker();
         } catch(e) {
             alert(e.message);
         }
@@ -93,6 +108,9 @@ export default function Notifications() {
         <div className="notifications">
             <h2>Notifications</h2>
             <button id="permission-btn" onClick={() => setup()}>Setup on this device</button>
+            <br/>
+            <br/>
+            <button onClick={() => reset()}>Reset SW</button>
         </div>
     );
 }
