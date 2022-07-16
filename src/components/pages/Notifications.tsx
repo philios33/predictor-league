@@ -110,7 +110,7 @@ export default function Notifications() {
             <button id="permission-btn" onClick={() => setup()}>Setup on this device</button>
             <br/>
             <br/>
-            <button onClick={() => reset()}>Reset SW</button>
+            { /*<button onClick={() => reset()}>Reset SW</button>*/ }
         </div>
     );
 }
