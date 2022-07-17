@@ -15,7 +15,8 @@
     "prebuildClient": "npm run buildCriticalCss",
     "buildClient": "webpack --mode production --config webpack.prod.ts",
     "buildServer": "webpack --mode production --config webpack.server.ts",
-    "buildAll": "npm run buildLogos && npm run buildData && npm run buildResults && npm run buildPredictionStats && npm run buildPersonalTables && npm run buildCups && npm run buildClient && npm run buildServer",
+    "buildServiceWorker": "webpack --mode production --config webpack.serviceworker.ts",
+    "buildAll": "npm run buildLogos && npm run buildData && npm run buildResults && npm run buildPredictionStats && npm run buildPersonalTables && npm run buildCups && npm run buildClient && npm run buildServer && npm run buildServiceWorker",
     "build": "echo 'Choose your build type'",
     "serve": "node ./serverDist/index.js"
   },
@@ -80,6 +81,7 @@
     "object-hash": "^2.2.0",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
+    "serviceworker-storage": "^0.1.0",
     "socket.io": "^4.4.0",
     "socket.io-client": "^4.4.0",
     "ts-loader": "^9.2.5",

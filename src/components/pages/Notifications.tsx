@@ -20,11 +20,14 @@ export default function Notifications() {
         }
     }
 
-    const notificationSubBroadcast = new BroadcastChannel('notificationSub');
+    
+
+    // const notificationSubBroadcast = new BroadcastChannel('notificationSub');
 
     const startup = () => {
         console.log("Starting up notifications component");
         
+        /*
         notificationSubBroadcast.onmessage = async (event) => {
             console.log("Received notification sub broadcast message");
             try {
@@ -36,17 +39,31 @@ export default function Notifications() {
                 alert(e.message);
             }
         }
+        */
+
+        const login = getLogin();
+        if (login !== null) {
+            console.log("Login found", login);
+
+            navigator.serviceWorker.ready.then(serviceWorkerRegistration => {
+                if (navigator.serviceWorker.controller !== null) {
+                    navigator.serviceWorker.controller.postMessage({
+                        action: 'LOGIN_TOKEN',
+                        loginToken: login.token,
+                    });
+                    console.log("Sent SW post message of login token!");
+                } else {
+                    console.error("SW Controller was null");
+                }
+            });
+        } else {
+            console.error("No login found");
+        }
     }
 
     const shutdown = () => {
         console.log("Shutting down notifications component");
-        notificationSubBroadcast.close();
-    }
-
-    const unregisterServiceWorker = async () => {
-        const swRegistration = await navigator.serviceWorker.register('/service.js');
-        await swRegistration.unregister();
-        alert("Unregistered");
+        // notificationSubBroadcast.close();
     }
 
     const registerServiceWorker = async () => {
@@ -64,6 +81,7 @@ export default function Notifications() {
         }
     }
 
+    /*
     const subscribeRegistration = async (subscription: any) => {
         console.log("Subscriping sub reg", subscription);
         const SERVER_URL = '/subscribe';
@@ -81,28 +99,25 @@ export default function Notifications() {
         });
         if (response.status !== 200) {
             throw new Error("Non 200 status when trying to subscribe: " + response.status);
-        }
-        
+        }  
     }
+    */
 
     const setup = async () => {
         try {
             check();
+
+            // Do this first so that the server worker is only installed and activated for the first time once permissions are accepted.
+            await requestNotificationPermission(); 
+            
             await registerServiceWorker();
-            await requestNotificationPermission();
+            
         } catch(e) {
             alert(e.message);
         }
     }
 
-    const reset = async () => {
-        try {
-            check();
-            await unregisterServiceWorker();
-        } catch(e) {
-            alert(e.message);
-        }
-    }
+    
 
     return (
         <div className="notifications">

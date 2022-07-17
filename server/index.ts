@@ -29,7 +29,7 @@ const signingSecretFile = __dirname + "/../keys/signing.key";
 const SECRET_SIGNING_KEY = fs.readFileSync(signingSecretFile);
 
 const DIST_DIR = path.join(__dirname, "..", "dist");
-const SERVER_DIR = path.join(__dirname, "..", "server");
+const SERVER_DIST_DIR = path.join(__dirname, "..", "serverDist");
 const PORT = 8081;
 const app = express();
 
@@ -69,7 +69,7 @@ app.get("/service.js", function (req, res) {
         res.sendStatus(404);
         res.send("Must enable VAPID");
     } else {
-        const fileContents = fs.readFileSync(path.join(SERVER_DIR, "service.js"));
+        const fileContents = fs.readFileSync(path.join(SERVER_DIST_DIR, "service.js"));
         const replacedContents = fileContents.toString().replace("%%VAPID%%", config.vapid.public);
     
         res.set("content-type", "application/javascript");
@@ -80,7 +80,7 @@ app.get("/service.js", function (req, res) {
 app.post("/subscribe", async function(req, res) {
     try {
         let user = validateJWTToUser(req.headers.authorization);
-        // console.log("Subscription received for " + user + ": ", req.body);
+        console.log("Push subscription received for " + user);
         await updateUserNotificationSubscription(gauth, user, req.body);
         res.send("OK");
     } catch(e) {
@@ -90,6 +90,11 @@ app.post("/subscribe", async function(req, res) {
             error: e.message
         });
     }
+});
+
+app.post("/serviceWorkerLog", async function(req, res) {
+    res.send({ok:true});
+    console.log("SERVICE WORKER LOG: " + req.body.message);
 });
 
 // Other services

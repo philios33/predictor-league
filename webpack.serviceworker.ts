@@ -1,22 +1,20 @@
-const nodeExternals = require('webpack-node-externals');
+// const nodeExternals = require('webpack-node-externals');
 const path = require('path');
 
 const serverConfig = {
     entry: {
-        index: './server/index.ts',
-        redeployChecker: './server/redeployChecker.ts',
-        importFinalScores: './server/importFinalScores.ts',
-        checkSchedule: './server/checkSchedule.ts',
-        notificationsRunner: './server/notificationsRunner.ts',
         service: './server/service.ts', // Service worker
     },
     output: {
         filename: './[name].js', // <-- Important
         libraryTarget: 'this', // <-- Important
         path: path.resolve(__dirname, 'serverDist'),
-        clean: true,
+        // clean: true,
     },
-    target: 'node', // <-- Important
+    optimization: {
+        minimize: false
+    },
+    target: 'webworker', // <-- Important
     module: {
         rules: [
             {
@@ -31,7 +29,7 @@ const serverConfig = {
     resolve: {
         extensions: [ '.ts', '.tsx', '.js' ]
     },
-    externals: [nodeExternals()] // <-- Important
+    // externals: [nodeExternals()] // <-- Important
 };
 
 

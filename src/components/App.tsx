@@ -18,9 +18,16 @@ import Login from './pages/Login';
 import { startVersionChecking, stopVersionChecking } from '../lib/versionChecker';
 import { getLogin } from '../lib/util';
 
+/*
 import logoSmall from '../assets/logo_small.jpg';
 import logo500 from '../assets/logo_500w.png';
 import logoFull from '../assets/logo.png';
+*/
+import logoSmall from '../assets/logo_2022_300.jpg';
+import logo500 from '../assets/logo_2022_500.jpg';
+import logoFull from '../assets/logo_2022_1000.jpg';
+
+
 import Cup from './pages/Cup';
 import { Tables } from './pages/Tables';
 import Notifications from './pages/Notifications';
