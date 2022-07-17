@@ -72,7 +72,7 @@ const handleLogin = async (login: any) => {
 const getLoginToken = async () => {
     const login = await storage.getItem('login');
     if (typeof login === "undefined" || login === null) {
-        throw new Error("The login is unknown, the subscription cannot be echoed back");
+        throw new Error("The login is unknown");
     }
     try {
         const data = JSON.parse(login);
@@ -85,7 +85,7 @@ const getLoginToken = async () => {
 const getLoginUsername = async () => {
     const login = await storage.getItem('login');
     if (typeof login === "undefined" || login === null) {
-        throw new Error("The login is unknown, the subscription cannot be echoed back");
+        return null;
     }
     try {
         const data = JSON.parse(login);

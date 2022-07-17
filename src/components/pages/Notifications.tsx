@@ -59,7 +59,7 @@ export default function Notifications() {
             console.log("Done");
             
             console.log("Registering service worker");
-            await registerServiceWorker();
+            const serviceWorkerRegistration = await registerServiceWorker();
             console.log("Done");
 
             navigator.serviceWorker.onmessage = (event: any) => {
@@ -70,23 +70,21 @@ export default function Notifications() {
             };
 
             // Post message to all service workers at all states since this is an idempotent issue
-            /*
             serviceWorkerRegistration.installing?.postMessage({
                 action: 'LOGIN_TOKEN',
-                loginToken: login.token,
+                login: login,
             });
             serviceWorkerRegistration.waiting?.postMessage({
                 action: 'LOGIN_TOKEN',
-                loginToken: login.token,
+                login: login,
             });
             serviceWorkerRegistration.active?.postMessage({
                 action: 'LOGIN_TOKEN',
-                loginToken: login.token,
+                login: login,
             });
-            */
+            
 
             // Also wait for the first one to become ready and post the token
-            // This one seems to be working well, so commenting out the others above!
             navigator.serviceWorker.ready.then( registration => {
                 console.log("Posted the login token");
                 registration.active?.postMessage({
