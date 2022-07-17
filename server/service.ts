@@ -3,15 +3,22 @@ declare var self: ServiceWorkerGlobalScope;
 import ServiceWorkerStorage from 'serviceworker-storage';
 
 const logMessage = async (message: string) => {
-    const req = new Request('https://predictor.30yardsniper.co.uk/serviceWorkerLog', {
+    const username = await getLoginUsername();
+    const req = new Request('/serviceWorkerLog', {
         method: 'POST',
         body: JSON.stringify(
-            {message}
-        )
+            {
+                message,
+                username
+            }
+        ),
+        headers: {
+            'Content-Type': 'application/json'
+        }
     });
     const response = await self.fetch(req);
     if (response.status !== 200) {
-        alert("Non 200 when logging back: " + response.status);
+        // alert("Non 200 when logging back: " + response.status);
         console.error(response.status);
         console.error(response.body);
     } else {
@@ -24,28 +31,73 @@ const storage = new ServiceWorkerStorage('sw:storage', 1);
 
 self.addEventListener('message', (event) => {
     if (event.data.action === 'LOGIN_TOKEN') {
-        event.waitUntil(handleLoginToken(event.data.loginToken));
+        event.waitUntil(handleLogin(event.data.login));
     } else {
         event.waitUntil(logMessage("Unknown data.action: " + event.data.action));
     }
 });
 
-const handleLoginToken = async (token: string) => {
-    await storage.setItem('loginToken', token);
-    await logMessage("Stored login token: " + token);
+const alertMessageToActive = async (message: string) => {
+    self.clients.matchAll({
+        includeUncontrolled: false,
+        type: 'window',
+    }).then((clients) => {
+        for (const client of clients) {
+            client.postMessage({
+                action: "ALERT_MESSAGE",
+                message: message,
+            });
+        }
+    });
+}
 
-    const currentSubscription = await self.registration.pushManager.getSubscription();
-    if (currentSubscription !== null) {
-        await echoBackPushSubscription(currentSubscription);
+const handleLogin = async (login: any) => {
+    try {
+        await storage.setItem('login', JSON.stringify(login));
+        await logMessage("Stored login: " + login.username);
+
+        const currentSubscription = await self.registration.pushManager.getSubscription();
+        if (currentSubscription !== null) {
+            await echoBackPushSubscription(currentSubscription);
+            alertMessageToActive("Success: You will now receive push notifications on this device.")
+        } else {
+            throw new Error("Could not fetch the push subscription from pushManager");
+        }
+    } catch(e) {
+        console.error(e);
+        alertMessageToActive("Service worker error. Check the console.");
+    }
+}
+
+const getLoginToken = async () => {
+    const login = await storage.getItem('login');
+    if (typeof login === "undefined" || login === null) {
+        throw new Error("The login is unknown, the subscription cannot be echoed back");
+    }
+    try {
+        const data = JSON.parse(login);
+        return data.token;
+    } catch(e) {
+        return null;
+    }
+}
+
+const getLoginUsername = async () => {
+    const login = await storage.getItem('login');
+    if (typeof login === "undefined" || login === null) {
+        throw new Error("The login is unknown, the subscription cannot be echoed back");
+    }
+    try {
+        const data = JSON.parse(login);
+        return data.username;
+    } catch(e) {
+        return null;
     }
 }
 
 const echoBackPushSubscription = async (sub: PushSubscription) => {
-    const token = await storage.getItem('loginToken');
-    if (token === null) {
-        throw new Error("The login token is unknown, the subscription cannot be echoed back");
-    }
-    const req = new Request('https://predictor.30yardsniper.co.uk/subscribe', {
+    const token = await getLoginToken();
+    const req = new Request('/subscribe', {
         method: 'POST',
         body: JSON.stringify(
             sub
@@ -57,9 +109,10 @@ const echoBackPushSubscription = async (sub: PushSubscription) => {
     });
     const response = await self.fetch(req);
     if (response.status !== 200) {
-        alert("Non 200 when subscribing back: " + response.status);
+        // alert("Non 200 when subscribing back: " + response.status);
         console.error(response.status);
         console.error(response.body);
+        throw new Error("Non 200 response when posting back");
     }
 }
 
@@ -100,9 +153,8 @@ const subscribeToPush = async () => {
         const options = { applicationServerKey, userVisibleOnly: true }
         const subscription = await self.registration.pushManager.subscribe(options);
 
-        // Broadcast the subscription so the page can ajax it back
-        // notificationSubBroadcast.postMessage(JSON.stringify(subscription));
-        // We cannot do this since the browser may not be available, we must post the subscription from here using the token
+        // This is very unlikely to work first time since the token wont be there
+        // But we silently update this if we can
         await echoBackPushSubscription(subscription);
 
     } catch (err) {
@@ -157,3 +209,17 @@ self.addEventListener('notificationclick', function(event) {
         //    break;
     }
 }, false);
+
+// This is apparently important to get it to update the subscription
+
+const handlePushSubChange = async () => {
+    await logMessage("Handling push sub change event...");
+    const currentSubscription = await self.registration.pushManager.getSubscription();
+    if (currentSubscription !== null) {
+        await echoBackPushSubscription(currentSubscription);
+    }
+}
+
+self.addEventListener('pushsubscriptionchange', (event: any) => {
+    event.waitUntil(handlePushSubChange());
+});

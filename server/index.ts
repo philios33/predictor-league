@@ -93,8 +93,8 @@ app.post("/subscribe", async function(req, res) {
 });
 
 app.post("/serviceWorkerLog", async function(req, res) {
+    console.log("SERVICE WORKER LOG: (" + req.body.username + ") " +  req.body.message);
     res.send({ok:true});
-    console.log("SERVICE WORKER LOG: " + req.body.message);
 });
 
 // Other services

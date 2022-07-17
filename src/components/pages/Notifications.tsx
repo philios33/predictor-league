@@ -20,45 +20,9 @@ export default function Notifications() {
         }
     }
 
-    
-
-    // const notificationSubBroadcast = new BroadcastChannel('notificationSub');
-
+ 
     const startup = () => {
         console.log("Starting up notifications component");
-        
-        /*
-        notificationSubBroadcast.onmessage = async (event) => {
-            console.log("Received notification sub broadcast message");
-            try {
-                const sub = JSON.parse(event.data);
-                await subscribeRegistration(sub);
-                alert("This device will now receive your predictor notifications");
-            } catch(e) {
-                console.error(e);
-                alert(e.message);
-            }
-        }
-        */
-
-        const login = getLogin();
-        if (login !== null) {
-            console.log("Login found", login);
-
-            navigator.serviceWorker.ready.then(serviceWorkerRegistration => {
-                if (navigator.serviceWorker.controller !== null) {
-                    navigator.serviceWorker.controller.postMessage({
-                        action: 'LOGIN_TOKEN',
-                        loginToken: login.token,
-                    });
-                    console.log("Sent SW post message of login token!");
-                } else {
-                    console.error("SW Controller was null");
-                }
-            });
-        } else {
-            console.error("No login found");
-        }
     }
 
     const shutdown = () => {
@@ -81,36 +45,55 @@ export default function Notifications() {
         }
     }
 
-    /*
-    const subscribeRegistration = async (subscription: any) => {
-        console.log("Subscriping sub reg", subscription);
-        const SERVER_URL = '/subscribe';
-        const login = getLogin();
-        if (login === null) {
-            throw new Error("Not logged in");
-        }
-        const response = await fetch(SERVER_URL, {
-            method: 'post',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': login.token,
-            },
-            body: JSON.stringify(subscription),
-        });
-        if (response.status !== 200) {
-            throw new Error("Non 200 status when trying to subscribe: " + response.status);
-        }  
-    }
-    */
-
     const setup = async () => {
         try {
+            const login = getLogin();
+            if (login === null) {
+                throw new Error("Not logged in");
+            }
             check();
 
             // Do this first so that the server worker is only installed and activated for the first time once permissions are accepted.
+            console.log("Getting notifications permission");
             await requestNotificationPermission(); 
+            console.log("Done");
             
+            console.log("Registering service worker");
             await registerServiceWorker();
+            console.log("Done");
+
+            navigator.serviceWorker.onmessage = (event: any) => {
+                // console.log("MSG calledback from SW", event);
+                if (event.data && event.data.action === "ALERT_MESSAGE") {
+                    alert(event.data.message);
+                }
+            };
+
+            // Post message to all service workers at all states since this is an idempotent issue
+            /*
+            serviceWorkerRegistration.installing?.postMessage({
+                action: 'LOGIN_TOKEN',
+                loginToken: login.token,
+            });
+            serviceWorkerRegistration.waiting?.postMessage({
+                action: 'LOGIN_TOKEN',
+                loginToken: login.token,
+            });
+            serviceWorkerRegistration.active?.postMessage({
+                action: 'LOGIN_TOKEN',
+                loginToken: login.token,
+            });
+            */
+
+            // Also wait for the first one to become ready and post the token
+            // This one seems to be working well, so commenting out the others above!
+            navigator.serviceWorker.ready.then( registration => {
+                console.log("Posted the login token");
+                registration.active?.postMessage({
+                    action: 'LOGIN_TOKEN',
+                    login: login,
+                });
+            });            
             
         } catch(e) {
             alert(e.message);

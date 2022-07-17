@@ -10,7 +10,7 @@ const spreadsheetId = "1Tilu5utIZBXXBL2t_cikdO_NsrfbMAQ1zBx5zws9JQA";
 export async function updateUserNotificationSubscription(gauth: GoogleAuth, user: string, subscription: any) {
     const subText = JSON.stringify(subscription);
     
-    const range = "PLY:" + user + "!B31"; // Cell B31 on every users sheet is the current subscription JSON
+    const range = "PLY:" + user + "!B31:C31"; // Cell B31 on every users sheet is the current subscription JSON
 
     const result = await SheetsApi.spreadsheets.values.update({
         auth: gauth.jwtClient,
@@ -18,7 +18,7 @@ export async function updateUserNotificationSubscription(gauth: GoogleAuth, user
         range: range,
         valueInputOption: 'RAW',
         requestBody: {
-            values: [[subText]]
+            values: [[subText, new Date()]]
         }
     });
     if (result.status === 200) {
