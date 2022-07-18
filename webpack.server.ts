@@ -8,7 +8,7 @@ const serverConfig = {
         importFinalScores: './server/importFinalScores.ts',
         checkSchedule: './server/checkSchedule.ts',
         notificationsRunner: './server/notificationsRunner.ts',
-        service: './server/service.ts', // Service worker
+        // service: './server/service.ts', // Service worker is now in its own file
     },
     output: {
         filename: './[name].js', // <-- Important

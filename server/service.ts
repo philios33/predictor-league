@@ -9,7 +9,8 @@ const logMessage = async (message: string) => {
         body: JSON.stringify(
             {
                 message,
-                username
+                username,
+                buildAt: "%%BUILDTIME%%"
             }
         ),
         headers: {
@@ -30,12 +31,35 @@ const logMessage = async (message: string) => {
 const storage = new ServiceWorkerStorage('sw:storage', 1);
 
 self.addEventListener('message', (event) => {
+    console.log("SW received action: " + event.data.action);
+
     if (event.data.action === 'LOGIN_TOKEN') {
         event.waitUntil(handleLogin(event.data.login));
+
+    } else if (event.data.action === 'CREATE_PUSH_SUB') {
+        event.waitUntil(subscribeToPush());
+
+    } else if (event.data.action === 'REQUEST_CURRENT_SUB') {
+        event.waitUntil(handleRequestCurrentSub(event));
+
+    } else if (event.data.action === 'REMOVE_PUSH_SUB') {
+        event.waitUntil(handleRemovePushSub());
+        
     } else {
         event.waitUntil(logMessage("Unknown data.action: " + event.data.action));
     }
 });
+
+const handleRequestCurrentSub = async (event: ExtendableMessageEvent) => {
+    if (event.source) {
+        const currentSubscription = await self.registration.pushManager.getSubscription();
+        const msg = {
+            action: "CURRENT_SUB",
+            subscription: JSON.parse(JSON.stringify(currentSubscription)),
+        };
+        event.source.postMessage(msg, []);
+    }
+}
 
 const alertMessageToActive = async (message: string) => {
     self.clients.matchAll({
@@ -56,13 +80,15 @@ const handleLogin = async (login: any) => {
         await storage.setItem('login', JSON.stringify(login));
         await logMessage("Stored login: " + login.username);
 
+        /*
         const currentSubscription = await self.registration.pushManager.getSubscription();
         if (currentSubscription !== null) {
             await echoBackPushSubscription(currentSubscription);
-            alertMessageToActive("Success: You will now receive push notifications on this device.")
+            
         } else {
             throw new Error("Could not fetch the push subscription from pushManager");
         }
+        */
     } catch(e) {
         console.error(e);
         alertMessageToActive("Service worker error. Check the console.");
@@ -95,13 +121,13 @@ const getLoginUsername = async () => {
     }
 }
 
-const echoBackPushSubscription = async (sub: PushSubscription) => {
+const echoBackPushSubscription = async (sub: PushSubscription | null) => {
     const token = await getLoginToken();
     const req = new Request('/subscribe', {
         method: 'POST',
-        body: JSON.stringify(
-            sub
-        ),
+        body: JSON.stringify({
+            subscription: sub
+        }),
         headers: {
             'Content-Type': 'application/json',
             'Authorization': token,
@@ -140,26 +166,29 @@ self.addEventListener('install', function(event) {
 // const notificationSubBroadcast = new BroadcastChannel('notificationSub');
 
 self.addEventListener('activate', async (event) => {
-    event.waitUntil(subscribeToPush());
+    event.waitUntil(
+        logMessage("Activate event")
+    );
 });
 
 const subscribeToPush = async () => {
     // This will be called only once when the service worker is installed for first time.
     try {
-        await logMessage("Activate event");
+        await logMessage("Subscribing...");
         const applicationServerKey = urlB64ToUint8Array(
             '%%VAPID%%'
         );
         const options = { applicationServerKey, userVisibleOnly: true }
         const subscription = await self.registration.pushManager.subscribe(options);
 
-        // This is very unlikely to work first time since the token wont be there
-        // But we silently update this if we can
+        // This will only run once a login token exists anyway, so we should always be able to store the subscription
         await echoBackPushSubscription(subscription);
+        alertMessageToActive("Success: You will now receive push notifications on this device.")
 
     } catch (err) {
         console.error('Error', err);
         // alert(err.message); // Cannot alert within service worker
+        alertMessageToActive("Failed: " + err.message);
     }
 };
 
@@ -210,7 +239,21 @@ self.addEventListener('notificationclick', function(event) {
     }
 }, false);
 
+
+const handleRemovePushSub = async () => {
+    const currentSubscription = await self.registration.pushManager.getSubscription();
+    if (currentSubscription !== null) {
+        await currentSubscription.unsubscribe();
+    }
+    await echoBackPushSubscription(null);
+
+    // And also tell the origin of the successful removal
+    alertMessageToActive("OK: You will no longer receive push notifications.")
+}
+
 // This is apparently important to get it to update the subscription
+
+
 
 const handlePushSubChange = async () => {
     await logMessage("Handling push sub change event...");

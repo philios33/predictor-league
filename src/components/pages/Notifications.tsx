@@ -1,9 +1,15 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import objecthash from 'object-hash';
 import { getLogin } from '../../lib/util';
+import axios from 'axios';
+import { config } from '../../config';
 
 export default function Notifications() {
     
+    const [swSubscriptionHash, setSwSubscriptionHash] = useState("");
+    const [predictorSubscriptionHash, setPredictorSubscriptionHash] = useState("");
+
     useEffect(() => {
         startup();
         return () => {
@@ -21,8 +27,85 @@ export default function Notifications() {
     }
 
  
-    const startup = () => {
+    const startup = async () => {
         console.log("Starting up notifications component");
+
+        // Request the subscription from SW
+        if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+
+            navigator.serviceWorker.onmessage = (event: any) => {
+                if (event.data && event.data.action === "CURRENT_SUB") {
+                    if (event.data.subscription === null) {
+                        setSwSubscriptionHash("No push subscription");
+                    } else {
+                        setSwSubscriptionHash("SUB-" + objecthash(event.data.subscription));
+                    }
+                } else if (event.data && event.data.action === "ALERT_MESSAGE") {
+                    alert(event.data.message);
+                }
+            };
+
+            await refreshSWSub();
+            
+        } else {
+            setSwSubscriptionHash("Service worker is not installed yet, refresh the page and try again");
+        }
+
+
+        // Fetch the current known predictor subscription
+        const login = getLogin();
+        if (login === null) {
+            setPredictorSubscriptionHash("Not logged in");
+        } else {
+            refreshPredictorSub(login);
+        }
+    }
+
+    const refreshSWSub = async () => {
+        if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+            setSwSubscriptionHash("Loading...");
+            navigator.serviceWorker.controller.postMessage({
+                action: "REQUEST_CURRENT_SUB"
+            });
+        } else {
+            alert("No Service worker");
+        }
+    }
+
+    const removeSubscription = async () => {
+        if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage({
+                action: "REMOVE_PUSH_SUB"
+            });
+        } else {
+            alert("No Service worker");
+        }
+    }
+
+    const refreshPredictorSub = async (login: any) => {
+        if (login !== null) {
+            setPredictorSubscriptionHash("Loading...");
+            const result = await axios({
+                headers: {
+                    authorization: login.token,
+                },
+                url: config.serviceEndpoint + 'subscription',
+                timeout: 5000,
+                validateStatus: () => true,
+            });
+            if (result.status === 200) {
+                const sub = result.data.subscription;
+                if (sub === null) {
+                    setPredictorSubscriptionHash("No push subscription");
+                } else {
+                    setPredictorSubscriptionHash("SUB-" + objecthash(sub));
+                }
+            } else {
+                setPredictorSubscriptionHash("Non 200 from service: " + result.status + ", " + result.data.error);
+            }
+        } else {
+            alert("No login");
+        }
     }
 
     const shutdown = () => {
@@ -30,10 +113,6 @@ export default function Notifications() {
         // notificationSubBroadcast.close();
     }
 
-    const registerServiceWorker = async () => {
-        const swRegistration = await navigator.serviceWorker.register('/service.js');
-        return swRegistration;
-    }
     const requestNotificationPermission = async () => {
         const permission = await window.Notification.requestPermission();
         // value of permission can be 'granted', 'default', 'denied'
@@ -45,54 +124,24 @@ export default function Notifications() {
         }
     }
 
+    const login = getLogin();
+
     const setup = async () => {
-        try {
-            const login = getLogin();
+        try {        
             if (login === null) {
                 throw new Error("Not logged in");
             }
             check();
 
-            // Do this first so that the server worker is only installed and activated for the first time once permissions are accepted.
-            console.log("Getting notifications permission");
             await requestNotificationPermission(); 
-            console.log("Done");
             
-            console.log("Registering service worker");
-            const serviceWorkerRegistration = await registerServiceWorker();
-            console.log("Done");
-
-            navigator.serviceWorker.onmessage = (event: any) => {
-                // console.log("MSG calledback from SW", event);
-                if (event.data && event.data.action === "ALERT_MESSAGE") {
-                    alert(event.data.message);
-                }
-            };
-
-            // Post message to all service workers at all states since this is an idempotent issue
-            serviceWorkerRegistration.installing?.postMessage({
-                action: 'LOGIN_TOKEN',
-                login: login,
-            });
-            serviceWorkerRegistration.waiting?.postMessage({
-                action: 'LOGIN_TOKEN',
-                login: login,
-            });
-            serviceWorkerRegistration.active?.postMessage({
-                action: 'LOGIN_TOKEN',
-                login: login,
-            });
-            
-
-            // Also wait for the first one to become ready and post the token
-            navigator.serviceWorker.ready.then( registration => {
-                console.log("Posted the login token");
-                registration.active?.postMessage({
-                    action: 'LOGIN_TOKEN',
-                    login: login,
+            if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+                navigator.serviceWorker.controller.postMessage({
+                    action: 'CREATE_PUSH_SUB',
                 });
-            });            
-            
+            } else {
+                throw new Error("No service worker installed, please refresh and try again");
+            }
         } catch(e) {
             alert(e.message);
         }
@@ -102,11 +151,26 @@ export default function Notifications() {
 
     return (
         <div className="notifications">
-            <h2>Notifications</h2>
-            <button id="permission-btn" onClick={() => setup()}>Setup on this device</button>
+            <h2>Push Notifications</h2>
+            
+            <h3>Current SW subscription</h3>
+            <p>
+                { swSubscriptionHash }
+            </p>
+            <button onClick={() => refreshSWSub()}>Refresh</button>
+            <br /><br />
+
+            <h3>Current saved subscription</h3>
+            <p>
+                { predictorSubscriptionHash }
+            </p>
+            <button onClick={() => refreshPredictorSub(login)}>Refresh</button>
+            <br /><br />
+
+            <button id="permission-btn" onClick={() => setup()}>Create Push Subscription (on this device)</button>
             <br/>
             <br/>
-            { /*<button onClick={() => reset()}>Reset SW</button>*/ }
+            <button onClick={() => removeSubscription()}>Remove Push Subscription</button>
         </div>
     );
 }

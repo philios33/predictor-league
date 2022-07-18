@@ -36,12 +36,33 @@ const GithubUrl = "https://github.com/philios33/predictor-league";
 
 function App() {    
 
+    const registerServiceWorker = async () => {
+        const login = getLogin();
+
+        // Once it is ready, give it the login token IF we are logged in
+        navigator.serviceWorker.ready.then( registration => {
+            if (registration.active && login !== null) {
+                console.log("Posted the login token to the ready service worker");
+                registration.active?.postMessage({
+                    action: 'LOGIN_TOKEN',
+                    login: login,
+                });
+            }
+        });
+
+        // Register SW
+        await navigator.serviceWorker.register('/service.js');
+    }
+
     const [refreshRequired, setRefreshRequired] = useState(false);
 
     useEffect(() => {
         startVersionChecking(() => {
             setRefreshRequired(true);
         });
+
+        registerServiceWorker();
+
         return () => {
             stopVersionChecking();
         }

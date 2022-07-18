@@ -14,7 +14,7 @@ import { Logger } from '../src/lib/logger';
 import { config } from './config';
 
 import socketIO from 'socket.io';
-import { updateUserNotificationSubscription } from '../src/lib/subscription';
+import { fetchUserNotificationSubscription, updateUserNotificationSubscription } from '../src/lib/subscription';
 
 export {}
 
@@ -69,11 +69,12 @@ app.get("/service.js", function (req, res) {
         res.sendStatus(404);
         res.send("Must enable VAPID");
     } else {
-        const fileContents = fs.readFileSync(path.join(SERVER_DIST_DIR, "service.js"));
-        const replacedContents = fileContents.toString().replace("%%VAPID%%", config.vapid.public);
-    
+        let fileContents = fs.readFileSync(path.join(SERVER_DIST_DIR, "service.js")).toString();
+        fileContents = fileContents.replace("%%VAPID%%", config.vapid.public);
+        fileContents = fileContents.replace("%%BUILDTIME%%", buildDetails.buildTime);
+
         res.set("content-type", "application/javascript");
-        res.send(replacedContents);
+        res.send(fileContents);
     }
 });
 
@@ -81,7 +82,7 @@ app.post("/subscribe", async function(req, res) {
     try {
         let user = validateJWTToUser(req.headers.authorization);
         console.log("Push subscription received for " + user);
-        await updateUserNotificationSubscription(gauth, user, req.body);
+        await updateUserNotificationSubscription(gauth, user, req.body.subscription);
         res.send("OK");
     } catch(e) {
         console.error(e);
@@ -92,8 +93,28 @@ app.post("/subscribe", async function(req, res) {
     }
 });
 
+app.get("/subscription", async function(req, res) {
+    try {
+        let user = validateJWTToUser(req.headers.authorization);
+        console.log("Getting push subscription for " + user);
+
+        const sub = await fetchUserNotificationSubscription(gauth, user);
+        res.send({
+            subscription: sub,
+        });
+    } catch(e) {
+        console.error(e);
+        res.status(500);        
+        res.send({
+            error: e.message
+        });
+    }
+});
+
+
+
 app.post("/serviceWorkerLog", async function(req, res) {
-    console.log("SERVICE WORKER LOG: (" + req.body.username + ") " +  req.body.message);
+    console.log("SERVICE WORKER LOG v-" + req.body.buildAt + " : (" + req.body.username + ") " +  req.body.message);
     res.send({ok:true});
 });
 

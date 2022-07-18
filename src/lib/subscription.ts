@@ -8,7 +8,10 @@ const SheetsApi = sheets('v4');
 const spreadsheetId = "1Tilu5utIZBXXBL2t_cikdO_NsrfbMAQ1zBx5zws9JQA";
 
 export async function updateUserNotificationSubscription(gauth: GoogleAuth, user: string, subscription: any) {
-    const subText = JSON.stringify(subscription);
+    let subText = "";
+    if (subscription !== null) {
+        subText = JSON.stringify(subscription);    
+    }
     
     const range = "PLY:" + user + "!B31:C31"; // Cell B31 on every users sheet is the current subscription JSON
 
