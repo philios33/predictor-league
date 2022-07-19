@@ -1,3 +1,5 @@
 // This just runs the script in notificationsRunner.ts
 
-import '../src/scripts/notificationsRunner';
+// Obsolete, this is now integrated in to the main process
+// import '../src/scripts/notificationsRunner';
+export {}

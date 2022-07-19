@@ -6,6 +6,7 @@ import http from 'http';
 import cors from 'cors';
 import compression from 'compression';
 import jwt from 'jsonwebtoken';
+import {v4 as uuid} from 'uuid';
 
 import { getThisWeek, savePrediction, validatePlayerSecret } from '../src/lib/api';
 import GoogleAuth from '../src/lib/googleAuth';
@@ -13,17 +14,24 @@ import buildDetails from '../src/compiled/build.json';
 import { Logger } from '../src/lib/logger';
 import { config } from './config';
 
-import socketIO from 'socket.io';
+import getGoogleAuth from "../src/lib/googleAuthFactory";
+import Notifications from "../src/lib/notifications";
+
+// import socketIO from 'socket.io';
 import { fetchUserNotificationSubscription, updateUserNotificationSubscription } from '../src/lib/subscription';
 
 export {}
 
 const logger = new Logger(true);
 
-const credentialsFile = __dirname + "/../keys/credentials.json";
-console.log("CREDENTIALS FILE PATH 1", credentialsFile);
 
-const gauth = new GoogleAuth(credentialsFile);
+// const spreadsheetId2021 = "1LH94Sk4LcDQe4DfiFNcmfZ-dNG9Wzuqh-4dWp69UEW8";
+const spreadsheetId = "1Tilu5utIZBXXBL2t_cikdO_NsrfbMAQ1zBx5zws9JQA";
+
+const gauth = getGoogleAuth();
+
+const notificationSender = new Notifications(gauth, spreadsheetId);
+
 
 const signingSecretFile = __dirname + "/../keys/signing.key";
 const SECRET_SIGNING_KEY = fs.readFileSync(signingSecretFile);
@@ -84,6 +92,32 @@ app.post("/subscribe", async function(req, res) {
         console.log("Push subscription received for " + user);
         await updateUserNotificationSubscription(gauth, user, req.body.subscription);
         res.send("OK");
+    } catch(e) {
+        console.error(e);
+        res.status(500);        
+        res.send({
+            error: e.message
+        });
+    }
+});
+
+app.post("/sendTestNofication", async function(req, res) {
+    try {
+        let user = validateJWTToUser(req.headers.authorization);
+        
+        const uniqueKey = "TEST-" + uuid();
+        const notificationSub = await fetchUserNotificationSubscription(gauth, user);
+        const meta = {
+            type: "TEST-MESSAGE",
+            player: user,
+            title: "Example notification",
+            message: "This is a test notification from the predictor website.",
+            notificationSub,
+            ttl: 60 * 60, // 1 hour is enough for a test
+        }
+        notificationSender.enqueueNotification(uniqueKey, meta);
+
+        res.send(JSON.stringify({ok:true}));
     } catch(e) {
         console.error(e);
         res.status(500);        
@@ -388,6 +422,8 @@ app.get("*", function (req, res) {
 
 
     const server = http.createServer(app);
+
+    /*
     const io = new socketIO.Server(server, {
         serveClient: false
     });
@@ -411,6 +447,7 @@ app.get("*", function (req, res) {
             
         })
     });
+    */
     
     server.listen(PORT);
     console.log("Listening on port " + PORT);
@@ -418,10 +455,10 @@ app.get("*", function (req, res) {
     // console.log("Env is", process.env);
     // console.log("Config is", config);
 
+    notificationSender.startup();
+
     logger.writeEvent("STARTUP_COMPLETE", {});
 })();
-
-
 
 
 // Required for control+C compatibility

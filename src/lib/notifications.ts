@@ -7,7 +7,7 @@ import nodemailer from 'nodemailer';
 import { runNotificationsLogic } from './notificationsLogic';
 import { config } from "../../server/config";
 import SMTPConnection from 'nodemailer/lib/smtp-connection';
-import HeartbeatLockFile from './heartbeatLockFile';
+// import HeartbeatLockFile from './heartbeatLockFile';
 import { pushPredictionNotification } from './subscription';
 
 const SheetsApi = sheets('v4');
@@ -27,8 +27,13 @@ export default class Notifications {
     spreadsheetId: string;
     uuid: string;
 
+    isRunning: boolean;
+
+    lastNotificationsLoad: Date;
+    lastNotificationsCheck: Date;
+    lastNotificationsSend: Date;
+
     notifications: Array<Notification>;
-    sendingNotifications: boolean;
 
     transporter: null | nodemailer.Transporter;
 
@@ -38,7 +43,11 @@ export default class Notifications {
         this.uuid = uuidv4();
 
         this.notifications = [];
-        this.sendingNotifications = false;
+
+        this.isRunning = false;
+        this.lastNotificationsLoad = new Date();
+        this.lastNotificationsCheck = new Date();
+        this.lastNotificationsSend = new Date();
 
         this.transporter = null;
         if (config.mail.host !== null && config.mail.user !== null && config.mail.password !== null) {
@@ -57,10 +66,11 @@ export default class Notifications {
 
     async startup() {
         try {
-            console.log("Logging in...");
-            await this.gauth.start();
-            console.log("Logged in!");
-
+            // This is now within the main process, so we always run this whatever
+            // It is entirely plausable that a dev process and a prod process run notification checks at the same time
+            // The problem is that with a single DB we may run in to duplicate sends, or dev sends overriding the prod send
+            // This is a problem that we will just need to be aware of and live with
+            /*
             console.log("Getting lock...");
             const lock = new HeartbeatLockFile(__dirname + "/../signals/notifications.lock.json");
             try {
@@ -69,27 +79,74 @@ export default class Notifications {
                 console.log("Failed to get lock: " + e.message);
                 process.exit(1);
             }
+            */
             
-            console.log("Obtained lock!");
+            // console.log("Obtained lock!");
 
             // Maximum execution time of 2 hours
+            // Why? There is no reason to kill the process after 2 hours
+            /*
             setTimeout(() => {
                 console.log(new Date() + " - Death after 2 hours");
                 process.exit(0);
             }, 2 * 60 * 60 * 1000);
+            */
 
-            // Reload the notifications every 5 minutes incase something changes manually
-            setInterval(() => {
-                this.loadCurrentNotifications();
-            }, 5 * 60 * 1000);
-            await this.loadCurrentNotifications();
+            try {
+                await this.checkForNewNotifications();
+                await this.loadCurrentNotifications();
+                await this.sendAllNotifications();
+            } catch(e) {
+                // First run failed
+                console.error(e);
+            }
 
-            this.startSendingNotifications();
+            // Either we are:
+            // 1. checking and adding new notifications
+            // 2. reloading the notifications in to memory
+            // 3. sending a notification
 
-            setInterval(() => {
-                this.checkForNewNotifications();
-            }, 5 * 60 * 1000);
-            this.checkForNewNotifications();
+            // Doing any of these things at the same time will just cause havock, so we need some kind of timer system on a single loop
+            setInterval(async () => {
+                if (this.isRunning) {
+                    return;
+                }
+                this.isRunning = true;
+                try {
+                    
+                    const now = new Date();
+
+                    // Should we check for new notifications that we might need to add?
+                    if (now.getTime() - this.lastNotificationsCheck.getTime() > 10 * 60 * 1000) {
+                        this.lastNotificationsCheck = now;
+                        await this.checkForNewNotifications();
+                        this.isRunning = false;
+                        return;
+                    }
+
+                    // Should we reload the current notifications from the spreadsheet?
+                    if (now.getTime() - this.lastNotificationsLoad.getTime() > 5 * 60 * 1000) {
+                        this.lastNotificationsLoad = now;
+                        await this.loadCurrentNotifications();
+                        this.isRunning = false;
+                        return;
+                    }
+
+                    // Should we sendout all of the notifications?
+                    if (now.getTime() - this.lastNotificationsSend.getTime() > 10 * 1000) {
+                        this.lastNotificationsSend = now;
+                        await this.sendAllNotifications();
+                        this.isRunning = false;
+                        return;
+                    }
+
+                } catch(e) {
+                    console.error(e);
+                }
+
+                this.isRunning = false;
+
+            }, 2000);
 
         } catch(e) {
             console.error(e);
@@ -166,11 +223,14 @@ export default class Notifications {
     async loadCurrentNotifications() : Promise<void> {
 
         // We need to be careful here of concurrency issues which could occur when refreshing the model by reading at the same time we are writing
+        // This can never happen now with the new execution model
+        /*
         if (this.sendingNotifications) {
             // Skip this is we are sending
             console.warn("Warning: Not refreshing notifications model due to notifications being sent");
             return;
         }
+        */
 
         const range = "Notifications!A3:F1000";
         const result = await SheetsApi.spreadsheets.values.get({
@@ -254,31 +314,21 @@ export default class Notifications {
         }
     }
 
-    async startSendingNotifications() {
-        setInterval(async () => {
-            if (this.sendingNotifications) {
-                return;
-            }
-
-            this.sendingNotifications = true;
-            try {
-                const toAttempt = this.notifications.filter(n => n.deliveredAt === null && n.errorText === "");
-                if (toAttempt.length > 0) {
-                    for (const notification of toAttempt) {
-                        await this.attemptToSendNotification(notification);
-                    }
+    async sendAllNotifications() {
+        try {
+            const toAttempt = this.notifications.filter(n => n.deliveredAt === null && n.errorText === "");
+            // console.log("There are " + toAttempt.length + " notifications to send...");
+            if (toAttempt.length > 0) {
+                for (const notification of toAttempt) {
+                    await this.attemptToSendNotification(notification);
                 }
-            } catch(e) {
-                console.error(e);
-                console.error("Sender locked for 10 minutes, please fix...");
-                await this.waitSeconds(600); // Wait 10 minutes before unlocking the sending because something bad happened.
             }
+        } catch(e) {
+            console.error(e);
+            console.error("Sender locked for 10 minutes, please fix...");
+            await this.waitSeconds(600); // Wait 10 minutes before unlocking the sending because something bad happened.
+        }
 
-            // Unlock
-            this.sendingNotifications = false;
-            
-        }, 10 * 1000);
-        // Check every 10 seconds
     }
 
     async attemptToSendNotification(notification: Notification) {

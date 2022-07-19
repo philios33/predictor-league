@@ -7,7 +7,7 @@ const serverConfig = {
         redeployChecker: './server/redeployChecker.ts',
         importFinalScores: './server/importFinalScores.ts',
         checkSchedule: './server/checkSchedule.ts',
-        notificationsRunner: './server/notificationsRunner.ts',
+        // notificationsRunner: './server/notificationsRunner.ts',
         // service: './server/service.ts', // Service worker is now in its own file
     },
     output: {

@@ -10,6 +10,8 @@ export default function Notifications() {
     const [swSubscriptionHash, setSwSubscriptionHash] = useState("");
     const [predictorSubscriptionHash, setPredictorSubscriptionHash] = useState("");
 
+    const login = getLogin();
+
     useEffect(() => {
         startup();
         return () => {
@@ -25,7 +27,6 @@ export default function Notifications() {
           throw new Error('No Push API Support!')
         }
     }
-
  
     const startup = async () => {
         console.log("Starting up notifications component");
@@ -40,8 +41,11 @@ export default function Notifications() {
                     } else {
                         setSwSubscriptionHash("SUB-" + objecthash(event.data.subscription));
                     }
+                    
                 } else if (event.data && event.data.action === "ALERT_MESSAGE") {
                     alert(event.data.message);
+                    refreshSWSub();
+                    refreshPredictorSub();
                 }
             };
 
@@ -57,7 +61,7 @@ export default function Notifications() {
         if (login === null) {
             setPredictorSubscriptionHash("Not logged in");
         } else {
-            refreshPredictorSub(login);
+            refreshPredictorSub();
         }
     }
 
@@ -82,7 +86,7 @@ export default function Notifications() {
         }
     }
 
-    const refreshPredictorSub = async (login: any) => {
+    const refreshPredictorSub = async () => {
         if (login !== null) {
             setPredictorSubscriptionHash("Loading...");
             const result = await axios({
@@ -108,6 +112,31 @@ export default function Notifications() {
         }
     }
 
+    const testNotification = async () => {
+        try {
+            if (login === null) {
+                throw new Error("Not logged in");
+            }
+            const result = await axios({
+                method: "POST",
+                headers: {
+                    authorization: login.token,
+                },
+                url: config.serviceEndpoint + 'sendTestNofication',
+                timeout: 5000,
+                validateStatus: () => true,
+            });
+            if (result.status === 200) {
+                alert("Test notification sent");
+            } else {
+                console.error(result.data);
+                throw new Error("Non 200 response from service, see console");
+            }
+        } catch(e) {            
+            alert("Error: " + e.message);
+        }
+    }
+
     const shutdown = () => {
         console.log("Shutting down notifications component");
         // notificationSubBroadcast.close();
@@ -123,8 +152,6 @@ export default function Notifications() {
             throw new Error('Permission not granted for Notification');
         }
     }
-
-    const login = getLogin();
 
     const setup = async () => {
         try {        
@@ -153,24 +180,29 @@ export default function Notifications() {
         <div className="notifications">
             <h2>Push Notifications</h2>
             
-            <h3>Current SW subscription</h3>
             <p>
-                { swSubscriptionHash }
+                You may setup one device to receive reminder push notifications to.  Only the latest subscription device will be used.
+                <button onClick={() => setup()}>Register this device</button>
             </p>
-            <button onClick={() => refreshSWSub()}>Refresh</button>
-            <br /><br />
-
-            <h3>Current saved subscription</h3>
+            
             <p>
-                { predictorSubscriptionHash }
+                Current service worker subscription ID: <strong>{ swSubscriptionHash }</strong>
+                <button onClick={() => refreshSWSub()}>Refresh</button>
             </p>
-            <button onClick={() => refreshPredictorSub(login)}>Refresh</button>
-            <br /><br />
 
-            <button id="permission-btn" onClick={() => setup()}>Create Push Subscription (on this device)</button>
-            <br/>
-            <br/>
-            <button onClick={() => removeSubscription()}>Remove Push Subscription</button>
+            <p>
+                Current saved subscription ID: <strong>{ predictorSubscriptionHash }</strong>
+                <button onClick={() => refreshPredictorSub()}>Refresh</button>
+            </p>
+
+            <p>    
+                <button onClick={() => testNotification()}>Test Notification</button>
+            </p>
+            
+            <p>    
+                <button onClick={() => removeSubscription()}>Remove Push Subscription</button>
+            </p>
+            
         </div>
     );
 }
