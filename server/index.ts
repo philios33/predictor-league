@@ -38,6 +38,7 @@ const SECRET_SIGNING_KEY = fs.readFileSync(signingSecretFile);
 
 const DIST_DIR = path.join(__dirname, "..", "dist");
 const SERVER_DIST_DIR = path.join(__dirname, "..", "serverDist");
+const SRC_DIR = path.join(__dirname, "..", "src");
 const PORT = 8081;
 const app = express();
 
@@ -71,6 +72,12 @@ app.get("/sitemap.xml", function (req, res) {
     res.sendFile(path.join(DIST_DIR, "sitemap.xml"));
 });
 */
+
+app.get("/manifest.json", function (req, res) {
+    let fileContents = fs.readFileSync(path.join(SRC_DIR, "manifest.json")).toString();
+    res.set("content-type", "application/json");
+    res.send(fileContents);
+});
 
 app.get("/service.js", function (req, res) {
     if (config.vapid === null) {
