@@ -9,3 +9,4 @@ declare module "*.jpg" {
 
 declare module 'lamejs';
 declare module 'serviceworker-storage';
+declare module '*.mp3';

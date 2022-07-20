@@ -27,10 +27,22 @@ import logoSmall from '../assets/logo_2022_300.jpg';
 import logo500 from '../assets/logo_2022_500.jpg';
 import logoFull from '../assets/logo_2022_1000.jpg';
 
+import alanImage from '../assets/partridge_192.jpg';
 
 import Cup from './pages/Cup';
 import { Tables } from './pages/Tables';
 import Notifications from './pages/Notifications';
+
+import { Howl } from 'howler';
+import goalSoundSource from '../assets/sounds/goal.mp3';
+import idiotSoundSource from '../assets/sounds/idiot.mp3';
+import monkeyTennisSoundSource from '../assets/sounds/monkey-tennis.mp3';
+import underpantsSoundSource from '../assets/sounds/underpants.mp3';
+const goalSound = new Howl({ src: [goalSoundSource] });
+const idiotSound = new Howl({ src: [idiotSoundSource] });
+const monkeyTennisSound = new Howl({ src: [monkeyTennisSoundSource] });
+const underpantsSound = new Howl({ src: [underpantsSoundSource] });
+
 
 const GithubUrl = "https://github.com/philios33/predictor-league";
 
@@ -54,6 +66,17 @@ function App() {
         await navigator.serviceWorker.register('/service.js');
     }
 
+    // Initialize deferredPrompt for use later to show browser install prompt.
+    let deferredPrompt: any = null;
+    const addPWAListener = () => {
+        window.addEventListener('beforeinstallprompt', (e: any) => {
+            console.log("BEFORE INSTALL PROMPT FIRED", e);
+            e.preventDefault();
+            deferredPrompt = e;
+            showTheHomeScreenModal();
+        });
+    }
+
     const [refreshRequired, setRefreshRequired] = useState(false);
 
     useEffect(() => {
@@ -63,6 +86,8 @@ function App() {
 
         registerServiceWorker();
 
+        addPWAListener();
+
         return () => {
             stopVersionChecking();
         }
@@ -71,6 +96,42 @@ function App() {
     const doRefresh = () => {
         location.reload();
     }
+
+    const [showAddToHomeScreenModal, setShowAddToHomeScreenModal] = useState(false);
+
+    const showTheHomeScreenModal = () => {
+        const neverShow = localStorage.getItem('HomeScreenNever');
+        if (neverShow === "true") {
+            return; // Never show
+        }
+
+        monkeyTennisSound.play();
+        setShowAddToHomeScreenModal(true);
+    }
+    const closeForNow = () => {
+        idiotSound.play();
+        setShowAddToHomeScreenModal(false);
+    }
+    const addToHomeScreen = async () => {
+        setShowAddToHomeScreenModal(false);
+
+        if (deferredPrompt !== null) {
+            await deferredPrompt.prompt();
+            // Wait for the user to respond to the prompt
+            const { outcome } = deferredPrompt.userChoice;
+            // Optionally, send analytics event with outcome of user choice
+            console.log(`User response to the install prompt: ${outcome}`);
+            // We've used the prompt, and can't use it again, throw it away
+            goalSound.play();
+            deferredPrompt = null;
+        }
+    }
+    const neverAddToHomeScreen = () => {
+        idiotSound.play();
+        localStorage.setItem('HomeScreenNever', 'true');
+        setShowAddToHomeScreenModal(false);
+    }
+
 
     const login = getLogin();
 
@@ -158,6 +219,25 @@ function App() {
                     <li><a target="_blank" rel="noopener" href={GithubUrl}>Github project</a></li>
                 </ul>                
             </footer>
+
+            { showAddToHomeScreenModal && (
+                <div>
+                    <div className="modalBackground">.</div>
+                    <div className="modal">
+                        <button className="close" onClick={() => closeForNow()} >x</button>
+                        <p className="Title">Add Predictor to your Home screen?</p>
+                        <p>
+                            <img src={alanImage} />
+                            Oi! Click here to add this website as an app on your device.
+
+                        </p>
+                        
+                        <button className="addYes" onClick={() => addToHomeScreen()} >Add to home screen</button>
+                        <button className="addNo" onClick={() => neverAddToHomeScreen()} >Never bother me again</button>
+                    
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
