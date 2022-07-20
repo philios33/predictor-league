@@ -3,34 +3,45 @@
     "short_name": "Predictor League",
     "scope": "https://predictor.30yardsniper.co.uk/",
     "start_url": "https://predictor.30yardsniper.co.uk/predictions",
-    "display": "browser",
+    "display": "minimal-ui",
     "background_color": "#fff",
     "description": "The premier league predictor league run by 30 Yard Sniper.",
     "categories": ["predictor", "premier league", "30 yard sniper"],
     
     "icons": [{
-        "src": "https://predictor.30yardsniper.co.uk/assets/icons/partridge_48.jpg",
+        "src": "https://predictor.30yardsniper.co.uk/assets/icons/partridge_48.png",
         "sizes": "48x48",
-        "type": "image/jpg"
+        "type": "image/png",
+        "purpose": "any"
     }, {
-        "src": "https://predictor.30yardsniper.co.uk/assets/icons/partridge_72.jpg",
+        "src": "https://predictor.30yardsniper.co.uk/assets/icons/partridge_72.png",
         "sizes": "72x72",
-        "type": "image/jpg"
+        "type": "image/png",
+        "purpose": "any"
     }, {
-        "src": "https://predictor.30yardsniper.co.uk/assets/icons/partridge_96.jpg",
+        "src": "https://predictor.30yardsniper.co.uk/assets/icons/partridge_96.png",
         "sizes": "96x96",
-        "type": "image/jpg"
+        "type": "image/png",
+        "purpose": "any"
     }, {
-        "src": "https://predictor.30yardsniper.co.uk/assets/icons/partridge_144.jpg",
+        "src": "https://predictor.30yardsniper.co.uk/assets/icons/partridge_144.png",
         "sizes": "144x144",
-        "type": "image/jpg"
+        "type": "image/png",
+        "purpose": "any"
     }, {
-        "src": "https://predictor.30yardsniper.co.uk/assets/icons/partridge_168.jpg",
+        "src": "https://predictor.30yardsniper.co.uk/assets/icons/partridge_168.png",
         "sizes": "168x168",
-        "type": "image/jpg"
+        "type": "image/png",
+        "purpose": "any"
     }, {
-        "src": "https://predictor.30yardsniper.co.uk/assets/icons/partridge_192.jpg",
+        "src": "https://predictor.30yardsniper.co.uk/assets/icons/partridge_192.png",
         "sizes": "192x192",
-        "type": "image/jpg"
+        "type": "image/png",
+        "purpose": "any"
+    }, {
+        "src": "https://predictor.30yardsniper.co.uk/assets/icons/partridge_512.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "any"
     }]
 }
