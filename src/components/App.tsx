@@ -37,11 +37,9 @@ import { Howl } from 'howler';
 import goalSoundSource from '../assets/sounds/goal.mp3';
 import idiotSoundSource from '../assets/sounds/idiot.mp3';
 import monkeyTennisSoundSource from '../assets/sounds/monkey-tennis.mp3';
-import underpantsSoundSource from '../assets/sounds/underpants.mp3';
 const goalSound = new Howl({ src: [goalSoundSource] });
 const idiotSound = new Howl({ src: [idiotSoundSource] });
 const monkeyTennisSound = new Howl({ src: [monkeyTennisSoundSource] });
-const underpantsSound = new Howl({ src: [underpantsSoundSource] });
 
 
 const GithubUrl = "https://github.com/philios33/predictor-league";

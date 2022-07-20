@@ -14,6 +14,10 @@ import { config } from '../../config';
 import CupMatchDetails from '../CupMatchDetails';
 import PredictionModal from '../PredictionModal';
 
+import { Howl } from 'howler';
+import underpantsSoundSource from '../assets/sounds/underpants.mp3';
+const underpantsSound = new Howl({ src: [underpantsSoundSource] });
+
 function PredictionsWeek() {
 
     const { weekId } = useParams() as {weekId: string};
@@ -186,6 +190,10 @@ function PredictionsWeek() {
                 const login = getLogin();
                 if (login === null) {
                     throw new Error("Not logged in");
+                }
+
+                if (homeGoals === 9 && awayGoals === 9) {
+                    underpantsSound.play();
                 }
                 
                 const result = await axios({
