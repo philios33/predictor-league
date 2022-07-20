@@ -75,6 +75,13 @@ function App() {
             deferredPrompt = e;
             showTheHomeScreenModal();
         });
+        window.addEventListener('appinstalled', () => {
+            setHomeScreenInstalled(true);
+            setShowAddToHomeScreenModal(false);
+            deferredPrompt = null;
+            goalSound.play();
+            console.log('PWA was installed');
+        });
     }
 
     const [refreshRequired, setRefreshRequired] = useState(false);
@@ -98,8 +105,13 @@ function App() {
     }
 
     const [showAddToHomeScreenModal, setShowAddToHomeScreenModal] = useState(false);
+    const [homeScreenInstalled, setHomeScreenInstalled] = useState(false);
 
     const showTheHomeScreenModal = () => {
+        if (homeScreenInstalled) {
+            return; // Already installed
+        }
+
         const neverShow = localStorage.getItem('HomeScreenNever');
         if (neverShow === "true") {
             return; // Never show
@@ -122,7 +134,6 @@ function App() {
             // Optionally, send analytics event with outcome of user choice
             console.log(`User response to the install prompt: ${outcome}`);
             // We've used the prompt, and can't use it again, throw it away
-            goalSound.play();
             deferredPrompt = null;
         }
     }
