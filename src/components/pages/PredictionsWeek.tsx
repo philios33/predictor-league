@@ -15,7 +15,7 @@ import CupMatchDetails from '../CupMatchDetails';
 import PredictionModal from '../PredictionModal';
 
 import { Howl } from 'howler';
-import underpantsSoundSource from '../assets/sounds/underpants.mp3';
+import underpantsSoundSource from '../../assets/sounds/underpants.mp3';
 const underpantsSound = new Howl({ src: [underpantsSoundSource] });
 
 function PredictionsWeek() {
