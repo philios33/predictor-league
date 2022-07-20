@@ -202,6 +202,11 @@ self.addEventListener('push', function(event) {
     }
 });
 
+// This is useful for doing offline mode asset caching for future requests, but since this app doesnt make many resource requests, we don't need to do anything here.
+self.addEventListener('fetch',(e) => {
+    // console.log("fetch", e)
+});
+
 const showLocalNotification = (data: any, swRegistration: ServiceWorkerRegistration) => {
     const options = {
         body: data.body,
