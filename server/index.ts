@@ -42,6 +42,8 @@ const SRC_DIR = path.join(__dirname, "..", "src");
 const PORT = 8081;
 const app = express();
 
+app.disable('x-powered-by');
+
 // Allow CORS
 app.use(cors());
 
@@ -137,7 +139,7 @@ app.post("/sendTestNofication", async function(req, res) {
 app.get("/subscription", async function(req, res) {
     try {
         let user = validateJWTToUser(req.headers.authorization);
-        console.log("Getting push subscription for " + user);
+        // console.log("Getting push subscription for " + user);
 
         const sub = await fetchUserNotificationSubscription(gauth, user);
         res.send({
@@ -155,7 +157,7 @@ app.get("/subscription", async function(req, res) {
 
 
 app.post("/serviceWorkerLog", async function(req, res) {
-    console.log("SERVICE WORKER LOG v-" + req.body.buildAt + " : (" + req.body.username + ") " +  req.body.message);
+    console.log(new Date() + " SW LOG v-" + req.body.buildAt + " : (" + req.body.username + ") " +  req.body.message);
     res.send({ok:true});
 });
 
@@ -163,6 +165,10 @@ app.post("/serviceWorkerLog", async function(req, res) {
 
 app.get("/version", async(req, res) => {
     res.send(buildDetails);
+});
+
+app.get("/echoHeaders", async(req, res) => {
+    res.send(req.headers);
 });
 
 app.post("/loginService", async (req, res) => {
