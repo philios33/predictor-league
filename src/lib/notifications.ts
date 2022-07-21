@@ -321,7 +321,7 @@ export default class Notifications {
         await this.waitSeconds(1);
 
         try {
-            if (config.vapid && notification.meta.notificationSub !== null) {
+            if (config.vapid && typeof notification.meta.notificationSub === "object" && notification.meta.notificationSub !== null) {
                 // Great, we can push the notification using the appropriate players subscription
                 await pushPredictionNotification(config.vapid.public, config.vapid.private, notification.meta.notificationSub, notification.meta.title, notification.meta.message, notification.meta.ttl);
             } else {
