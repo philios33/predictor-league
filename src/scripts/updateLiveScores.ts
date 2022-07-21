@@ -207,6 +207,7 @@ const getFinalScores = async () => {
             message: "Live scores script: " + e.message,
         }
         try {
+            await gauth.start();
             await enqueueNotificationWithoutUniquenessCheck(gauth, spreadsheetId, uniqueId, meta);
         } catch(e) {
             console.error("Failed to write new notification");

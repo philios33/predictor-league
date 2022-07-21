@@ -12,7 +12,9 @@ export default class GoogleAuth {
     }
 
     async start() {
-        this.jwtClient = await this.getJWTClient();
+        if (this.jwtClient === null) {
+            this.jwtClient = await this.getJWTClient();
+        }
     }
 
     async getJWTClient() {
