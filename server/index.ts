@@ -167,10 +167,6 @@ app.get("/version", async(req, res) => {
     res.send(buildDetails);
 });
 
-app.get("/echoHeaders", async(req, res) => {
-    res.send(req.headers);
-});
-
 app.post("/loginService", async (req, res) => {
     try {
         // Validate the secret is correct for this player
@@ -191,7 +187,7 @@ app.post("/loginService", async (req, res) => {
         });
 
         logger.writeEvent("LOGIN_SUCCESS", {
-            ip: req.headers['real-ip'],
+            ip: req.headers['x-real-ip'],
             subject: name,
         });
 
@@ -200,7 +196,7 @@ app.post("/loginService", async (req, res) => {
         });
     } catch(e) {
         logger.writeEvent("LOGIN_FAIL", {
-            ip: req.headers['real-ip'],
+            ip: req.headers['x-real-ip'],
             message: e.message,
         });
 
@@ -248,7 +244,7 @@ app.get("/service/getThisWeek/:id", async (req, res) => {
         const data = await getThisWeek(gauth, weekId, user);
 
         logger.writeEvent("LOAD_PREDICTIONS_SUCCESS", {
-            ip: req.headers['real-ip'],
+            ip: req.headers['x-real-ip'],
             user: user,
             by: origUser,
             week: weekId,
@@ -258,7 +254,7 @@ app.get("/service/getThisWeek/:id", async (req, res) => {
     } catch(e) {
 
         logger.writeEvent("LOAD_PREDICTIONS_FAIL", {
-            ip: req.headers['real-ip'],
+            ip: req.headers['x-real-ip'],
             message: e.message,
         });
 
@@ -282,7 +278,7 @@ app.post("/service/postPrediction/:weekId", async (req, res) => {
         const data = await savePrediction(gauth, weekId, user, req.body.homeTeam, req.body.awayTeam, req.body.homeGoals, req.body.awayGoals, req.body.isBanker);
 
         logger.writeEvent("SAVE_PREDICTION_SUCCESS", {
-            ip: req.headers['real-ip'],
+            ip: req.headers['x-real-ip'],
             user: user,
             week: weekId,
             homeTeam: req.body.homeTeam,
@@ -295,7 +291,7 @@ app.post("/service/postPrediction/:weekId", async (req, res) => {
         res.send(data);
     } catch(e) {
         logger.writeEvent("SAVE_PREDICTION_FAIL", {
-            ip: req.headers['real-ip'],
+            ip: req.headers['x-real-ip'],
             message: e.message,
         });
 

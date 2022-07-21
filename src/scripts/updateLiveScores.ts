@@ -7,6 +7,7 @@ import { sheets } from '@googleapis/sheets';
 import GoogleAuth from "../lib/googleAuth";
 
 import { getCachedResults } from '../lib/predictor/cachedResults';
+import { enqueueNotificationWithoutUniquenessCheck } from "../lib/notificationEnqueue";
 const cachedResults = getCachedResults();
 
 const SheetsApi = sheets('v4');
@@ -192,7 +193,24 @@ const getFinalScores = async () => {
             console.log("Finished, not waiting for any results");
         }
 
+        throw new Error("This is a test");
+
     } catch(e) {
         console.error(e);
+
+        // Something went wrong
+        // Add email notification to Phil
+        const uniqueId = new Date().toISOString();
+        const meta = {
+            type: "WEBSITE-ERROR",
+            title: "Website Error",
+            message: "Live scores script: " + e.message,
+        }
+        try {
+            await enqueueNotificationWithoutUniquenessCheck(gauth, spreadsheetId, uniqueId, meta);
+        } catch(e) {
+            console.error("Failed to write new notification");
+            console.error(e);
+        }
     }
 })();

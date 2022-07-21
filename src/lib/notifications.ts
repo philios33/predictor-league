@@ -9,6 +9,7 @@ import { config } from "../../server/config";
 import SMTPConnection from 'nodemailer/lib/smtp-connection';
 // import HeartbeatLockFile from './heartbeatLockFile';
 import { pushPredictionNotification } from './subscription';
+import { enqueueNotificationWithoutUniquenessCheck } from './notificationEnqueue';
 
 const SheetsApi = sheets('v4');
 
@@ -280,38 +281,22 @@ export default class Notifications {
             // console.log("Already have: " + uniqueKey + ", doing nothing");
             return;
         }
-        console.log(new Date() + " - Appending notification: " + uniqueKey);
 
-        const uuid = uuidv4();
-        const occurredAt = new Date();
-        const range = "Notifications!A3:D3";
-        const result = await SheetsApi.spreadsheets.values.append({
-            auth: this.gauth.jwtClient,
-            spreadsheetId: this.spreadsheetId,
-            range: range,
-            insertDataOption: "INSERT_ROWS",
-            valueInputOption: 'RAW',
-            requestBody: {
-                values: [[uuid, occurredAt.toISOString(), uniqueKey, JSON.stringify(notificationMeta)]]
-            }
+        const { uuid, occurredAt } = await enqueueNotificationWithoutUniquenessCheck(this.gauth, this.spreadsheetId, uniqueKey, notificationMeta);
+
+        // OK
+        this.notifications.push({
+            rowNumber: this.notifications.length + 3,
+            uuid,
+            occurredAt,
+            uniqueKey,
+            meta: notificationMeta,
+            deliveredAt: null,
+            errorText: "",
         });
-        if (result.status === 200) {
-            // OK
-            this.notifications.push({
-                rowNumber: this.notifications.length + 3,
-                uuid,
-                occurredAt,
-                uniqueKey,
-                meta: notificationMeta,
-                deliveredAt: null,
-                errorText: "",
-            });
 
-            return;
-        } else {
-            console.error(result);
-            throw new Error("Non 200 response: " + result.status);
-        }
+        return;
+        
     }
 
     async sendAllNotifications() {
@@ -403,7 +388,7 @@ export default class Notifications {
             const result = await this.transporter.sendMail({
                 from: sendFrom,
                 to: sendTo,
-                subject: notification.meta.player + " " + notification.meta.type,
+                subject: "PREDICTOR-" + notification.meta.type + (notification.meta.player ? (" for " + notification.meta.player) : ""),
                 text: "Notification " + notification.uuid + "\n" + JSON.stringify(notification.meta, null, 4),
             });
             if (result.accepted) {

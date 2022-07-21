@@ -13,6 +13,7 @@ import moment from "moment-timezone";
 import { writeFixture } from "../lib/writer";
 import { sheets } from '@googleapis/sheets';
 import fs from 'fs';
+import { enqueueNotificationWithoutUniquenessCheck } from "../lib/notificationEnqueue";
 
 const SheetsApi = sheets('v4');
 
@@ -88,118 +89,138 @@ const triggerRebuild = async (message: string) => {
 
 (async () => {
 
-    console.log("Running at " + new Date());
-    console.log("Logging in...");
-    await gauth.start();
-    console.log("Logged in!");
-    
-    
-
-    for(const todaysDate of datesInFuture) {
-        const startTime = moment(todaysDate).startOf("day");
-        const endTime = moment(todaysDate).endOf("day");
+    try {
+        console.log("Running at " + new Date());
+        console.log("Logging in...");
+        await gauth.start();
+        console.log("Logged in!");
         
-        console.log("Doing todaysDate", todaysDate, startTime, endTime);
+        
 
-        const matchesToday = [];
-        for (const homeTeam in schedule.matches) {
-            for (const awayTeam in schedule.matches[homeTeam].against) {
-                const match = schedule.matches[homeTeam].against[awayTeam];
-                const kickOff = new Date(match.kickOff);
-                if (startTime.isBefore(kickOff) && endTime.isAfter(kickOff)) {
-                    // Kick off is on this day
-                    matchesToday.push({homeTeam, awayTeam, match});
+        for(const todaysDate of datesInFuture) {
+            const startTime = moment(todaysDate).startOf("day");
+            const endTime = moment(todaysDate).endOf("day");
+            
+            console.log("Doing todaysDate", todaysDate, startTime, endTime);
+
+            const matchesToday = [];
+            for (const homeTeam in schedule.matches) {
+                for (const awayTeam in schedule.matches[homeTeam].against) {
+                    const match = schedule.matches[homeTeam].against[awayTeam];
+                    const kickOff = new Date(match.kickOff);
+                    if (startTime.isBefore(kickOff) && endTime.isAfter(kickOff)) {
+                        // Kick off is on this day
+                        matchesToday.push({homeTeam, awayTeam, match});
+                    }
                 }
             }
-        }
-        console.log("Matches we have today", todaysDate, matchesToday);
+            console.log("Matches we have today", todaysDate, matchesToday);
 
-        const bbcMatches = await grabPLMatches([todaysDate]);
-        console.log("BBC Matches today", bbcMatches);
+            const bbcMatches = await grabPLMatches([todaysDate]);
+            console.log("BBC Matches today", bbcMatches);
 
-        console.log("Now looping BBC matches for today: " + todaysDate);
+            console.log("Now looping BBC matches for today: " + todaysDate);
 
-        for (const bbcMatch of bbcMatches) {
-            // Make sure this bbc match appears in our schedule
-            console.log("BBC on " + todaysDate + " : " + bbcMatch.homeTeam + " vs " + bbcMatch.awayTeam);
-            
-            if (bbcMatch.homeTeam in schedule.matches) {
-                if (bbcMatch.awayTeam in schedule.matches[bbcMatch.homeTeam].against) {
-                    const foundMatch = schedule.matches[bbcMatch.homeTeam].against[bbcMatch.awayTeam];
-                    if (bbcMatch.eventStatus === "postponed") {
-                        // The kickoff time must be a special value if the match is postponed
-                        if (foundMatch.kickOff === "2023-06-06T14:55:00.000Z") {
-                            // Yes this match is still postponed
-                            console.log("This match is still postponed");
+            for (const bbcMatch of bbcMatches) {
+                // Make sure this bbc match appears in our schedule
+                console.log("BBC on " + todaysDate + " : " + bbcMatch.homeTeam + " vs " + bbcMatch.awayTeam);
+                
+                if (bbcMatch.homeTeam in schedule.matches) {
+                    if (bbcMatch.awayTeam in schedule.matches[bbcMatch.homeTeam].against) {
+                        const foundMatch = schedule.matches[bbcMatch.homeTeam].against[bbcMatch.awayTeam];
+                        if (bbcMatch.eventStatus === "postponed") {
+                            // The kickoff time must be a special value if the match is postponed
+                            if (foundMatch.kickOff === "2023-06-06T14:55:00.000Z") {
+                                // Yes this match is still postponed
+                                console.log("This match is still postponed");
+                            } else {
+                                console.log("Problem: The match is postponed, but we have it scheduled, postponing...");
+                                await writeFixture(dryRun, gauth, bbcMatch.homeTeam, bbcMatch.awayTeam, foundMatch.weekId, "6/6@15:55");
+                                updatesMade++;
+                            }
                         } else {
-                            console.log("Problem: The match is postponed, but we have it scheduled, postponing...");
-                            await writeFixture(dryRun, gauth, bbcMatch.homeTeam, bbcMatch.awayTeam, foundMatch.weekId, "6/6@15:55");
-                            updatesMade++;
+                            console.log("The event status is: " + bbcMatch.eventStatus);
+                            const ukKickOff = moment(foundMatch.kickOff).tz("Europe/London").format("D/M@HH:mm");
+                            if (ukKickOff === bbcMatch.startTime) {
+                                // Scheduled match has exactly the correct kick off time!
+                                console.log("Correct KO time");
+                            } else {
+                                // Incorrect kickoff
+                                // The match was probably rescheduled from postponed or to a different day
+                                console.log("Problem: We have " + foundMatch.weekId + "|" + ukKickOff + " but the correct UK KO from BBC is apparently " + bbcMatch.startTime + " updating...");
+                                await writeFixture(dryRun, gauth, bbcMatch.homeTeam, bbcMatch.awayTeam, foundMatch.weekId, bbcMatch.startTime);
+                                updatesMade++;
+                            }
                         }
                     } else {
-                        console.log("The event status is: " + bbcMatch.eventStatus);
-                        const ukKickOff = moment(foundMatch.kickOff).tz("Europe/London").format("D/M@HH:mm");
-                        if (ukKickOff === bbcMatch.startTime) {
-                            // Scheduled match has exactly the correct kick off time!
-                            console.log("Correct KO time");
-                        } else {
-                            // Incorrect kickoff
-                            // The match was probably rescheduled from postponed or to a different day
-                            console.log("Problem: We have " + foundMatch.weekId + "|" + ukKickOff + " but the correct UK KO from BBC is apparently " + bbcMatch.startTime + " updating...");
-                            await writeFixture(dryRun, gauth, bbcMatch.homeTeam, bbcMatch.awayTeam, foundMatch.weekId, bbcMatch.startTime);
-                            updatesMade++;
-                        }
+                        console.log("Error: We don't have this match scheduled yet, please run the scheduleMatches script since we dont know the week id for it");
+                        errorsFound++;
                     }
                 } else {
                     console.log("Error: We don't have this match scheduled yet, please run the scheduleMatches script since we dont know the week id for it");
                     errorsFound++;
                 }
-            } else {
-                console.log("Error: We don't have this match scheduled yet, please run the scheduleMatches script since we dont know the week id for it");
-                errorsFound++;
             }
-        }
 
-        console.log("Now looping scheduled matches for today: " + todaysDate);
+            console.log("Now looping scheduled matches for today: " + todaysDate);
 
-        for (const match of matchesToday) {
-            console.log("Scheduled on " + todaysDate + " : " + match.homeTeam + " vs " + match.awayTeam);
-            // Make sure the match of today exists in the BBC list
-            const foundMatch = bbcMatches.find(i => i.homeTeam === match.homeTeam && i.awayTeam === match.awayTeam);
+            for (const match of matchesToday) {
+                console.log("Scheduled on " + todaysDate + " : " + match.homeTeam + " vs " + match.awayTeam);
+                // Make sure the match of today exists in the BBC list
+                const foundMatch = bbcMatches.find(i => i.homeTeam === match.homeTeam && i.awayTeam === match.awayTeam);
 
-            if (foundMatch) {
-                // The kickoff time must still match up
-                const ukKickOff = moment(match.match.kickOff).tz("Europe/London").format("D/M@HH:mm");
-                if (ukKickOff === foundMatch.startTime) {
-                    // Scheduled match has exactly the correct kick off time!
-                    console.log("Correct KO time");
+                if (foundMatch) {
+                    // The kickoff time must still match up
+                    const ukKickOff = moment(match.match.kickOff).tz("Europe/London").format("D/M@HH:mm");
+                    if (ukKickOff === foundMatch.startTime) {
+                        // Scheduled match has exactly the correct kick off time!
+                        console.log("Correct KO time");
+                    } else {
+                        // Incorrect kickoff
+                        console.log("Problem: We have " + match.match.weekId + "|" + ukKickOff + " but the correct UK KO from BBC is apparently " + foundMatch.startTime + " updating...");
+                        // This could be a rescheduled kick off at a different time on the same day
+                        // Since we know the week id, we can just update it
+                        await writeFixture(dryRun, gauth, match.homeTeam, match.awayTeam, match.match.weekId, foundMatch.startTime);
+                        updatesMade++;
+                    }
                 } else {
-                    // Incorrect kickoff
-                    console.log("Problem: We have " + match.match.weekId + "|" + ukKickOff + " but the correct UK KO from BBC is apparently " + foundMatch.startTime + " updating...");
-                    // This could be a rescheduled kick off at a different time on the same day
-                    // Since we know the week id, we can just update it
-                    await writeFixture(dryRun, gauth, match.homeTeam, match.awayTeam, match.match.weekId, foundMatch.startTime);
+                    /*
+                    console.log("Error: Not found this match in the BBC schedule for today: " + todaysDate);
+                    errorsFound++;
+                    // This could be an incorrectly scheduled match, or just one that has been rescheduled to another date already
+                    */
+                    // Yes we need to assume the match is postponed if it doesnt exist
+                    await writeFixture(dryRun, gauth, match.homeTeam, match.awayTeam, match.match.weekId, "6/6@15:55");
                     updatesMade++;
                 }
-            } else {
-                /*
-                console.log("Error: Not found this match in the BBC schedule for today: " + todaysDate);
-                errorsFound++;
-                // This could be an incorrectly scheduled match, or just one that has been rescheduled to another date already
-                */
-                // Yes we need to assume the match is postponed if it doesnt exist
-                await writeFixture(dryRun, gauth, match.homeTeam, match.awayTeam, match.match.weekId, "6/6@15:55");
-                updatesMade++;
             }
         }
-    }
 
-    if (!dryRun && updatesMade > 0) {
-        triggerRebuild("Made " + updatesMade + " updates to the schedule at " + new Date());
-        console.log("Triggering rebuild...");
-    }
-    console.log("Finished, made " + updatesMade + " updates, found " + errorsFound + " errors that we couldn't fix automatically!");
+        if (!dryRun && updatesMade > 0) {
+            triggerRebuild("Made " + updatesMade + " updates to the schedule at " + new Date());
+            console.log("Triggering rebuild...");
+        }
+        console.log("Finished, made " + updatesMade + " updates, found " + errorsFound + " errors that we couldn't fix automatically!");
+        if (true || errorsFound > 0) {
+            throw new Error("Script completed with " + errorsFound + " errors, please check logs");
+        }
+    } catch(e) {
+        // Something went wrong
+        // Add email notification to Phil
+        const uniqueId = new Date().toISOString();
+        const meta = {
+            type: "WEBSITE-ERROR",
+            title: "Website Error",
+            message: "Check schedule script: " + e.message,
+        }
+        try {
+            await enqueueNotificationWithoutUniquenessCheck(gauth, spreadsheetId, uniqueId, meta);
+        } catch(e) {
+            console.error("Failed to write new notification");
+            console.error(e);
+        }
 
+    }
 })();
 
 export {}
