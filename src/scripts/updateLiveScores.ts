@@ -193,7 +193,6 @@ const getFinalScores = async () => {
             console.log("Finished, not waiting for any results");
         }
 
-        throw new Error("This is a test");
 
     } catch(e) {
         console.error(e);
