@@ -201,7 +201,7 @@ const triggerRebuild = async (message: string) => {
             console.log("Triggering rebuild...");
         }
         console.log("Finished, made " + updatesMade + " updates, found " + errorsFound + " errors that we couldn't fix automatically!");
-        if (true || errorsFound > 0) {
+        if (errorsFound > 0) {
             throw new Error("Script completed with " + errorsFound + " errors, please check logs");
         }
     } catch(e) {
@@ -210,8 +210,8 @@ const triggerRebuild = async (message: string) => {
         const uniqueId = new Date().toISOString();
         const meta = {
             type: "WEBSITE-ERROR",
-            title: "Website Error",
-            message: "Check schedule script: " + e.message,
+            title: "Predictor Website Error: Check schedule script",
+            message: e.message,
         }
         try {
             await enqueueNotificationWithoutUniquenessCheck(gauth, spreadsheetId, uniqueId, meta);

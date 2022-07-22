@@ -385,10 +385,15 @@ export default class Notifications {
             const sendFrom = "phil@mariphil.wedding";
             const sendTo = "phil@code67.com";
 
+            let subject = "PREDICTOR-" + notification.meta.type + (notification.meta.player ? (" for " + notification.meta.player) : "");
+            if (notification.meta.type === "WEBSITE-ERROR" && "title" in notification.meta) {
+                subject = notification.meta.title;
+            }
+
             const result = await this.transporter.sendMail({
                 from: sendFrom,
                 to: sendTo,
-                subject: "PREDICTOR-" + notification.meta.type + (notification.meta.player ? (" for " + notification.meta.player) : ""),
+                subject: subject,
                 text: "Notification " + notification.uuid + "\n" + JSON.stringify(notification.meta, null, 4),
             });
             if (result.accepted) {

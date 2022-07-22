@@ -202,8 +202,8 @@ const getFinalScores = async () => {
         const uniqueId = new Date().toISOString();
         const meta = {
             type: "WEBSITE-ERROR",
-            title: "Website Error",
-            message: "Live scores script: " + e.message,
+            title: "Predictor Website Error: Live scores script",
+            message: e.message,
         }
         try {
             await gauth.start();
