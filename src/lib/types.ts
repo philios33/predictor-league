@@ -405,3 +405,9 @@ export type PredictionStats = {
     draws: number
     losses: number
 }
+
+export type Profile = {
+    username: string
+    avatarId: string
+    catchphrase: string
+}

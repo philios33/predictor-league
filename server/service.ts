@@ -4,7 +4,7 @@ import ServiceWorkerStorage from 'serviceworker-storage';
 
 const logMessage = async (message: string) => {
     const username = await getLoginUsername();
-    const req = new Request('/serviceWorkerLog', {
+    const req = new Request('/service/serviceWorkerLog', {
         method: 'POST',
         body: JSON.stringify(
             {
@@ -123,7 +123,7 @@ const getLoginUsername = async () => {
 
 const echoBackPushSubscription = async (sub: PushSubscription | null) => {
     const token = await getLoginToken();
-    const req = new Request('/subscribe', {
+    const req = new Request('/service/subscribe', {
         method: 'POST',
         body: JSON.stringify({
             subscription: sub

@@ -37,6 +37,7 @@ import { Howl } from 'howler';
 import goalSoundSource from '../assets/sounds/goal.mp3';
 import idiotSoundSource from '../assets/sounds/idiot.mp3';
 import monkeyTennisSoundSource from '../assets/sounds/monkey-tennis.mp3';
+import Profile from './pages/Profile';
 const goalSound = new Howl({ src: [goalSoundSource] });
 const idiotSound = new Howl({ src: [idiotSoundSource] });
 const monkeyTennisSound = new Howl({ src: [monkeyTennisSoundSource] });
@@ -65,18 +66,19 @@ function App() {
     }
 
     // Initialize deferredPrompt for use later to show browser install prompt.
-    let deferredPrompt: any = null;
+    const [deferredPrompt, setDeferredPrompt] = useState(null as any);
+
     const addPWAListener = () => {
         window.addEventListener('beforeinstallprompt', (e: any) => {
             console.log("BEFORE INSTALL PROMPT FIRED", e);
             e.preventDefault();
-            deferredPrompt = e;
+            setDeferredPrompt(e);
             showTheHomeScreenModal();
         });
         window.addEventListener('appinstalled', () => {
             setHomeScreenInstalled(true);
             setShowAddToHomeScreenModal(false);
-            deferredPrompt = null;
+            setDeferredPrompt(null);
             goalSound.play();
             console.log('PWA was installed');
         });
@@ -115,7 +117,9 @@ function App() {
             return; // Never show
         }
 
-        monkeyTennisSound.play();
+        // We cant play a sound here because there will be no screen interaction at this point
+        // TODO, wait for screen interaction and then wait for a 3 second pause in activity, then trigger
+        // monkeyTennisSound.play();
         setShowAddToHomeScreenModal(true);
     }
     const closeForNow = () => {
@@ -126,13 +130,16 @@ function App() {
         setShowAddToHomeScreenModal(false);
 
         if (deferredPrompt !== null) {
+            // This is a good place to do the sound since it will confirm that the prompt is working and will be after interaction
+            monkeyTennisSound.play();
+
             await deferredPrompt.prompt();
             // Wait for the user to respond to the prompt
             const { outcome } = deferredPrompt.userChoice;
             // Optionally, send analytics event with outcome of user choice
             console.log(`User response to the install prompt: ${outcome}`);
             // We've used the prompt, and can't use it again, throw it away
-            deferredPrompt = null;
+            setDeferredPrompt(null);
         }
     }
     const neverAddToHomeScreen = () => {
@@ -211,6 +218,10 @@ function App() {
 
                         <Route path="/tables">
                             <Tables />
+                        </Route>
+
+                        <Route path="/profile">
+                            <Profile />
                         </Route>
 
                         <Route path="/cup/:cupId">

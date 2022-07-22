@@ -93,7 +93,7 @@ export default function Notifications() {
                 headers: {
                     authorization: login.token,
                 },
-                url: config.serviceEndpoint + 'subscription',
+                url: config.serviceEndpoint + 'service/subscription',
                 timeout: 5000,
                 validateStatus: () => true,
             });
@@ -122,7 +122,7 @@ export default function Notifications() {
                 headers: {
                     authorization: login.token,
                 },
-                url: config.serviceEndpoint + 'sendTestNofication',
+                url: config.serviceEndpoint + 'service/sendTestNofication',
                 timeout: 5000,
                 validateStatus: () => true,
             });

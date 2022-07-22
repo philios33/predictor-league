@@ -68,7 +68,7 @@ function Login() {
 
             const result = await axios({
                 method: "POST",
-                url: config.serviceEndpoint + "loginService",
+                url: config.serviceEndpoint + "service/loginService",
                 data: {
                     username: formState.username,
                     password: formState.password,

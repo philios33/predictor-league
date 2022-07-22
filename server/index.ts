@@ -19,6 +19,7 @@ import Notifications from "../src/lib/notifications";
 
 // import socketIO from 'socket.io';
 import { fetchUserNotificationSubscription, updateUserNotificationSubscription } from '../src/lib/subscription';
+import { Profile } from '../src/lib/types';
 
 export {}
 
@@ -95,7 +96,7 @@ app.get("/service.js", function (req, res) {
     }
 });
 
-app.post("/subscribe", async function(req, res) {
+app.post("/service/subscribe", async function(req, res) {
     try {
         let user = validateJWTToUser(req.headers.authorization);
         console.log("Push subscription received for " + user);
@@ -110,7 +111,7 @@ app.post("/subscribe", async function(req, res) {
     }
 });
 
-app.post("/sendTestNofication", async function(req, res) {
+app.post("/service/sendTestNofication", async function(req, res) {
     try {
         let user = validateJWTToUser(req.headers.authorization);
         
@@ -136,7 +137,7 @@ app.post("/sendTestNofication", async function(req, res) {
     }
 });
 
-app.get("/subscription", async function(req, res) {
+app.get("/service/subscription", async function(req, res) {
     try {
         let user = validateJWTToUser(req.headers.authorization);
         // console.log("Getting push subscription for " + user);
@@ -154,12 +155,39 @@ app.get("/subscription", async function(req, res) {
     }
 });
 
-
-
-app.post("/serviceWorkerLog", async function(req, res) {
+app.post("/service/serviceWorkerLog", async function(req, res) {
     console.log(new Date() + " SW LOG v-" + req.body.buildAt + " : (" + req.body.username + ") " +  req.body.message);
     res.send({ok:true});
 });
+
+// Profile
+
+app.get("/service/profile", async function(req, res) {
+    try {
+        let user = validateJWTToUser(req.headers.authorization);
+
+        // TODO Look up avatar from lib when written
+        let avatarId = "myAvatarId2345897325";
+        let catchphrase = "I've got noooo catchphrase.";
+
+        const profile: Profile = {
+            username: user,
+            avatarId: avatarId,
+            catchphrase: catchphrase,
+        }
+        res.send({
+            profile: profile,
+        });
+    } catch(e) {
+        console.error(e);
+        res.status(500);        
+        res.send({
+            error: e.message
+        });
+    }
+
+});
+
 
 // Other services
 
@@ -167,7 +195,7 @@ app.get("/version", async(req, res) => {
     res.send(buildDetails);
 });
 
-app.post("/loginService", async (req, res) => {
+app.post("/service/loginService", async (req, res) => {
     try {
         // Validate the secret is correct for this player
         const name = req.body.username;
