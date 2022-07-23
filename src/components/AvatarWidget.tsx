@@ -8,6 +8,7 @@ import { getLogin } from '../lib/util';
 
 import 'cropperjs/dist/cropper.css';
 import './AvatarWidget.scss';
+import { drawPlayerImage } from '../lib/faces';
 
 function AvatarWidget() {
 
@@ -230,7 +231,11 @@ function AvatarWidget() {
                 <div className={currentAvatarClassName}>
                     <h3>Your current avatar</h3>
 
-                    <img className="myAvatar" src={"/service/avatar/" + profile.username + "/" + profile.avatarId} />
+                    { profile.avatarId === null ? (
+                        drawPlayerImage(profile.username)
+                    ) : (
+                        <img className="myAvatar" src={"/service/avatar/" + profile.username + "/" + profile.avatarId} />
+                    )}
 
                     <button className="btn" onClick={() => changeAvatar()}>Change</button>
                     { /*<p className="note">Note: Your new avatar will only be used in future standings tables.</p>*/ }

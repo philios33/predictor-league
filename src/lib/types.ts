@@ -408,8 +408,8 @@ export type PredictionStats = {
 
 export type Profile = {
     username: string
-    avatarId: string
-    catchphrase: string
+    avatarId: string | null
+    catchphrase: string | null
 }
 
 export type AvatarProfileEvent = {
