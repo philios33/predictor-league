@@ -8,4 +8,5 @@
 /logs/*
 !/logs/.gitkeep
 /todo.txt
-
+/uploads/incoming/*
+/uploads/avatars/*

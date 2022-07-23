@@ -23,13 +23,18 @@ const serverConfig = {
                 test: /\.tsx?$/,
                 loader: 'ts-loader',
                 options: {
-                    // transpileOnly: true
+                    transpileOnly: true // This REALLY speeds things up
                 }
             }
         ]
     },
     resolve: {
         extensions: [ '.ts', '.tsx', '.js' ]
+    },
+    optimization: {
+        removeAvailableModules: false,
+        removeEmptyChunks: false,
+        splitChunks: false,
     },
     externals: [nodeExternals()] // <-- Important
 };

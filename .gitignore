@@ -12,3 +12,5 @@
 !/logs/.gitkeep
 /todo.txt
 /.env
+/uploads/incoming/*
+/uploads/avatars/*

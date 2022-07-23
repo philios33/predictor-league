@@ -1,7 +1,7 @@
 import moment from 'moment-mini';
 import React, { useEffect, useState } from 'react';
 import compiledResults from '../../compiled/resultsRecent.json' ;
-import { getPlayerFaceImage } from '../../lib/faces';
+import { drawPlayerImage } from '../../lib/faces';
 import { getLogo24 } from '../../lib/logo';
 import { getPlayerNames } from '../../lib/players';
 import { Player, BuiltResults, PointsRow, PlayerPrediction } from '../../lib/types';
@@ -10,13 +10,7 @@ import PremierLeagueTable from '../PremierLeagueTable';
 
 const results: BuiltResults = compiledResults as unknown as BuiltResults;
 
-
-const drawPlayerImage = (playerName: string) => {
-    const img = getPlayerFaceImage(playerName, "newspapper");
-    return <img className="faceImage" src={img} alt={playerName} title={playerName} />
-}
-
-const getStandingsTable = (players: Array<Player>, user: null | string) => {
+const getStandingsTable = (players: Array<Player>, user: null | string, atTimestamp: Date) => {
     return <table>
         <thead>
             <tr>
@@ -57,7 +51,7 @@ const getStandingsTable = (players: Array<Player>, user: null | string) => {
                 return <tr key={player.name} className={player.name === user ? "myUser" : ""}>
                     <td>{player.rank}</td>
                     <td className="faceCell">
-                        {drawPlayerImage(player.name)}
+                        {drawPlayerImage(player.name, atTimestamp)}
                         {player.name}
                     </td>
 
@@ -159,7 +153,7 @@ function Results() {
 
     return (
         <div className="results">
-           <h2>Results</h2>
+           <h2>Results Feed</h2>
 
            {(results.mergedPhases.map(phase => (
                 phase.isStarted && (
@@ -175,7 +169,7 @@ function Results() {
                             )
                         )}
 
-                        {getStandingsTable(phase.cumRankings, user)}
+                        {getStandingsTable(phase.cumRankings, user, new Date(phase.fixtureGroups[phase.fixtureGroups.length - 1].kickOff))}
                         
                         <div className="fullWidthScroller">
                             <table className="predictions">
@@ -245,6 +239,69 @@ function Results() {
                     </div>
                 )
            )).reverse())}
+
+           <hr />
+           <h3>Season preview</h3>
+           <table className="competitors">
+                <tbody>
+                    <tr>
+                        <td className="faceCell">
+                            {drawPlayerImage(players[0])}
+                            {players[0]}
+                        </td>
+                        <td className="faceCell">
+                            {drawPlayerImage(players[1])}
+                            {players[1]}
+                        </td>
+                        <td className="faceCell">
+                            {drawPlayerImage(players[2])}
+                            {players[2]}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td className="faceCell">
+                            {drawPlayerImage(players[3])}
+                            {players[3]}
+                        </td>
+                        <td className="faceCell">
+                            {drawPlayerImage(players[4])}
+                            {players[4]}
+                        </td>
+                        <td className="faceCell">
+                            {drawPlayerImage(players[5])}
+                            {players[5]}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td className="faceCell">
+                            {drawPlayerImage(players[6])}
+                            {players[6]}
+                        </td>
+                        <td className="faceCell">
+                            {drawPlayerImage(players[7])}
+                            {players[7]}
+                        </td>
+                        <td className="faceCell">
+                            {drawPlayerImage(players[8])}
+                            {players[8]}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td className="faceCell">
+                            {drawPlayerImage(players[9])}
+                            {players[9]}
+                        </td>
+                        <td className="faceCell">
+                            {drawPlayerImage(players[10])}
+                            {players[10]}
+                        </td>
+                        <td className="faceCell">
+                            {drawPlayerImage(players[11])}
+                            {players[11]}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     );
 }

@@ -7,6 +7,7 @@ import cors from 'cors';
 import compression from 'compression';
 import jwt from 'jsonwebtoken';
 import {v4 as uuid} from 'uuid';
+import multer from 'multer';
 
 import { getThisWeek, savePrediction, validatePlayerSecret } from '../src/lib/api';
 import GoogleAuth from '../src/lib/googleAuth';
@@ -20,6 +21,7 @@ import Notifications from "../src/lib/notifications";
 // import socketIO from 'socket.io';
 import { fetchUserNotificationSubscription, updateUserNotificationSubscription } from '../src/lib/subscription';
 import { Profile } from '../src/lib/types';
+import ProfileEvents from '../src/lib/profileEvents';
 
 export {}
 
@@ -32,6 +34,7 @@ const spreadsheetId = "1Tilu5utIZBXXBL2t_cikdO_NsrfbMAQ1zBx5zws9JQA";
 const gauth = getGoogleAuth();
 
 const notificationSender = new Notifications(gauth, spreadsheetId);
+const profileEvents = new ProfileEvents(gauth, spreadsheetId);
 
 
 const signingSecretFile = __dirname + "/../keys/signing.key";
@@ -42,6 +45,12 @@ const SERVER_DIST_DIR = path.join(__dirname, "..", "serverDist");
 const SRC_DIR = path.join(__dirname, "..", "src");
 const PORT = 8081;
 const app = express();
+
+if (!fs.existsSync(__dirname + "/../uploads/incoming")) {
+    fs.mkdirSync(__dirname + "/../uploads/incoming");
+}
+
+const upload = multer({ dest: __dirname + '/../uploads/incoming' });
 
 app.disable('x-powered-by');
 
@@ -166,15 +175,8 @@ app.get("/service/profile", async function(req, res) {
     try {
         let user = validateJWTToUser(req.headers.authorization);
 
-        // TODO Look up avatar from lib when written
-        let avatarId = "myAvatarId2345897325";
-        let catchphrase = "I've got noooo catchphrase.";
+        const profile = profileEvents.getCurrentProfile(user);
 
-        const profile: Profile = {
-            username: user,
-            avatarId: avatarId,
-            catchphrase: catchphrase,
-        }
         res.send({
             profile: profile,
         });
@@ -185,7 +187,72 @@ app.get("/service/profile", async function(req, res) {
             error: e.message
         });
     }
+});
 
+app.get("/service/avatar/:username/:avatarId", async function(req, res) {
+    // Get this avatar file, assume jpeg
+    const avatarsDir = path.resolve(__dirname + "/../uploads/avatars");
+    const fileName = req.params.username + "/" + req.params.avatarId + ".jpg";
+    const imageFile = avatarsDir + "/" + fileName;
+    if (fs.existsSync(imageFile)) {
+        res.set("Content-Type", "image/jpeg");
+        res.set("cache-control", "public, max-age=31536000, immutable"); // Since an image will never change its data
+        res.sendFile(fileName, {root: avatarsDir});
+    } else {
+        res.status(404);
+        res.send("Not found: " + imageFile);
+    }
+});
+
+app.post("/service/avatar", upload.single("avatarImage"), async function(req, res) {
+    try {
+        let user = validateJWTToUser(req.headers.authorization);
+        
+        if (req.file) {
+            if (req.file.mimetype === "image/jpg" || req.file.mimetype === "image/jpeg") {
+                // Copy the file to user avatar space
+                const id = uuid();
+                const tmpPath = req.file.path;
+
+                // Make avatars dir if doesn't exist
+                if (!fs.existsSync(__dirname + "/../uploads/avatars")) {
+                    fs.mkdirSync(__dirname + "/../uploads/avatars");
+                }
+                if (!fs.existsSync(__dirname + "/../uploads/avatars/" + user)) {
+                    fs.mkdirSync(__dirname + "/../uploads/avatars/" + user);
+                }
+
+                const newPath = __dirname + "/../uploads/avatars/" + user + "/" + id + ".jpg";
+                fs.copyFileSync(tmpPath, newPath);
+                fs.unlinkSync(tmpPath);
+
+                // Add row in profile events log to register the new avatar
+                await profileEvents.enqueueProfileEvent({
+                    occurredAt: new Date(),
+                    username: user,
+                    type: "NEW-AVATAR", 
+                    meta: {
+                        avatarId: id,
+                    }
+                });
+
+            } else {
+                throw new Error("You must submit a image/jpeg, not a: " + req.file.mimetype);
+            }
+        } else {
+            throw new Error("No avatar file was uploaded");
+        }
+
+        res.send({
+            ok: true,
+        });
+    } catch(e) {
+        console.error(e);
+        res.status(500);        
+        res.send({
+            error: e.message
+        });
+    }
 });
 
 
@@ -457,7 +524,6 @@ app.get("*", function (req, res) {
     await gauth.start();
     console.log("Logged in!");
 
-
     const server = http.createServer(app);
 
     /*
@@ -485,14 +551,15 @@ app.get("*", function (req, res) {
         })
     });
     */
+
+    await notificationSender.startup();
+    await profileEvents.startup();
     
     server.listen(PORT);
     console.log("Listening on port " + PORT);
 
     // console.log("Env is", process.env);
     // console.log("Config is", config);
-
-    notificationSender.startup();
 
     logger.writeEvent("STARTUP_COMPLETE", {});
 })();

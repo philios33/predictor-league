@@ -94,8 +94,8 @@ export default class Notifications {
             */
 
             try {
-                await this.checkForNewNotifications();
                 await this.loadCurrentNotifications();
+                await this.checkForNewNotifications();
                 await this.sendAllNotifications();
             } catch(e) {
                 // First run failed

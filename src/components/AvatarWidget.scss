@@ -2,4 +2,89 @@
     width: 100%;
     padding: 15px;
     background-color: lightblue;
+
+    .newAvatar, .currentAvatar {
+        margin: 1em auto;
+        max-width: 768px;
+        transition: opacity 0.5s;
+        opacity: 1;
+    }
+
+    .newAvatar {
+        display: flex;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        height: 100%;
+    }
+
+    .box {
+        padding: 0.5em;
+        width: 100%;
+        margin:0.5em;
+    }
+    
+    .box-2 {
+        padding: 0.5em;
+        width: 100%;
+    }
+
+    @media (min-width:600px) {
+        .box-2 {
+            padding: 0.5em;
+            width: calc(100%/2 - 1em);
+        }
+    }
+
+    .btn{
+        padding: 0.5em 1em;
+        margin:0.8em 0.3em;
+        display:inline-block;
+        cursor:pointer;
+    }
+    
+    img.myAvatar {
+        display: block;
+        max-width: 100%;
+        margin: 10px auto;
+        border-radius: 50%;
+
+    }
+
+    .result {
+        background-color: yellow;
+        width: 100%;
+        max-width: 400px;
+        height: 100%;
+        max-height: 400px;
+    }
+
+    .preview {
+        width: 166px;
+        height: 166px;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+
+    .cropper-crop-box {
+        opacity: 0.8;
+    }
+    .cropper-face {
+        opacity: 0.5;
+        border-radius: 50%;
+        border: 3px solid #00FF00;
+    }
+
+    .hiding {
+        opacity: 0;
+    }
+    .hidden {
+        opacity: 0;
+        display: none;
+    }
+
+    .note {
+        font-size: 12px;
+        color: grey;
+        font-style: italic;
+    }
 }

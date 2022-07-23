@@ -172,10 +172,13 @@ function App() {
                             <Link className="btn" to="/">Home</Link>
                         </li>
                         <li>
+                            <Link className="btn" to="/profile">Profile</Link>
+                        </li>
+                        <li>
                             <Link className="btn" to="/predictions">Predictions</Link>
                         </li>
                         <li>
-                            <Link className="btn" to="/results">Results</Link>
+                            <Link className="btn" to="/feed">Feed</Link>
                         </li>
                         {/* 
                         <li>
@@ -212,7 +215,7 @@ function App() {
                             <Predictions />
                         </Route>
                         
-                        <Route path="/results">
+                        <Route path="/feed">
                             <Results />
                         </Route>
 

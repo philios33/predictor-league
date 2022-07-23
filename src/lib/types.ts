@@ -411,3 +411,9 @@ export type Profile = {
     avatarId: string
     catchphrase: string
 }
+
+export type AvatarProfileEvent = {
+    at: string
+    avatarId: string
+}
+export type BuiltAvatarHistory = Record<string, Array<AvatarProfileEvent>>

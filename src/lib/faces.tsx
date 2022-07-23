@@ -1,6 +1,9 @@
 import React from 'react';
+import { getCachedAvatarHistory } from './predictor/cachedAvatars';
 
-const newspapperFaces: any = {
+
+
+const defaultFaces: any = {
     'Phil': require('../assets/faces/circles/phil.png'),
     'Rob': require('../assets/faces/circles/rob.png'),
     'Rod': require('../assets/faces/circles/rod.png'),
@@ -14,18 +17,53 @@ const newspapperFaces: any = {
     'Antoine': require('../assets/faces/circles/antoine.png'),
     'Matt': require('../assets/faces/circles/matt.png'),
 }
-export const getPlayerFaceImage = (playerName: string, type: string): any => {
+const getDefaultFaceImage = (playerName: string): any => {
     // console.log("Image is", newspapperFaces[playerName]);
     // console.log("Object keys", Object.keys(newspapperFaces[playerName]));
-    if (playerName in newspapperFaces) {
-        return newspapperFaces[playerName].default;
+    if (playerName in defaultFaces) {
+        return defaultFaces[playerName].default;
     } else {
         throw new Error("Not found player name: " + playerName);
     }
     
 }
 
-export const drawPlayerImage = (playerName: string) => {
-    const img = getPlayerFaceImage(playerName, "newspapper");
+const avatarHistory = getCachedAvatarHistory();
+
+const getAvatarIdUrl = (username: string, avatarId: string) => {
+    return "/service/avatar/" + username + "/" + avatarId;
+}
+
+export const drawPlayerImage = (playerName: string, atSnapshotTime?: Date) => {
+    let img = getDefaultFaceImage(playerName);
+
+    // At compile time, we download all profile events so we can work out which avatarIds are applicable for each player at which timestamp
+    // This will make it very easy to respond with the correct avatar image here
+    // BUT this will noticably not update the avatar until the website rebuilds
+    const avatarChanges = avatarHistory[playerName];
+
+    if (avatarChanges.length > 0) {
+        if (atSnapshotTime) {
+            for (const event of avatarChanges) {
+                if (new Date(event.at) < atSnapshotTime) {
+                    // console.log("Applicable avatar " + event.avatarId + " for " + playerName, atSnapshotTime);
+                    img = getAvatarIdUrl(playerName, event.avatarId);
+                }
+            }
+        } else {
+            // No specific time, use latest
+            
+            const last = avatarChanges[avatarChanges.length - 1];
+            if (last) {
+                // console.log("Using avatar " + last.avatarId + " for " + playerName, atSnapshotTime);
+                img = getAvatarIdUrl(playerName, last.avatarId);
+            } else {
+                // throw new Error("Cannot get here");
+            }
+        }
+    } else {
+        // Use default
+    }
+
     return <img className="faceImage" src={img} alt={playerName} title={playerName} />
 }

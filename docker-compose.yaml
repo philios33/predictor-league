@@ -9,6 +9,9 @@ services:
       - type: bind
         source: ./logs
         target: /home/node/logs
+      - type: bind
+        source: ./uploads
+        target: /home/node/uploads
     env_file:
       - .env
     restart: always

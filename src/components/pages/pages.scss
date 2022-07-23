@@ -314,7 +314,12 @@ span.points {
     .faceImage {
         width: 60px;
         display: inline-block;
+        
     }
+}
+
+.faceImage {
+    border-radius: 50%;
 }
 
 .upcomingPredictionWeeks {
