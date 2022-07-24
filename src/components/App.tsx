@@ -45,7 +45,7 @@ const monkeyTennisSound = new Howl({ src: [monkeyTennisSoundSource] });
 
 const GithubUrl = "https://github.com/philios33/predictor-league";
 
-function App() {    
+function App() {
 
     const registerServiceWorker = async () => {
         const login = getLogin();
@@ -148,6 +148,12 @@ function App() {
         setShowAddToHomeScreenModal(false);
     }
 
+    const logout = () => {
+        if (confirm("Are you sure you want to logout?")) {
+            localStorage.removeItem('login');
+            doRefresh();
+        }
+    }
 
     const login = getLogin();
 
@@ -156,7 +162,7 @@ function App() {
             <header>
                 <img src={logoSmall} srcSet={logoFull + " 1000w," + logo500 + " 500w"} alt="Predictor 22-23" title="Predictor 22-23"/>
                 {/*<h1>Predictor 22-23</h1>*/}
-                {login !== null && <p>Logged in as: <strong>{login.username}</strong></p>}
+                {login !== null && <p>Logged in as: <strong>{login.username}</strong> <div className="logoutLink" onClick={() => logout()}>Logout</div></p>}
             </header>
 
             {refreshRequired && (

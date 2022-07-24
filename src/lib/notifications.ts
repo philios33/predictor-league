@@ -10,6 +10,7 @@ import SMTPConnection from 'nodemailer/lib/smtp-connection';
 // import HeartbeatLockFile from './heartbeatLockFile';
 import { pushPredictionNotification } from './subscription';
 import { enqueueNotificationWithoutUniquenessCheck } from './notificationEnqueue';
+import { Logger } from './logger';
 
 const SheetsApi = sheets('v4');
 
@@ -38,7 +39,9 @@ export default class Notifications {
 
     transporter: null | nodemailer.Transporter;
 
-    constructor(gauth: GoogleAuth, spreadsheetId: string) {
+    logger: Logger;
+
+    constructor(logger: Logger, gauth: GoogleAuth, spreadsheetId: string) {
         this.gauth = gauth;
         this.spreadsheetId = spreadsheetId;
         this.uuid = uuidv4();
@@ -63,6 +66,8 @@ export default class Notifications {
             this.transporter = nodemailer.createTransport(sendmailOptions);
             console.log("Mail Transporter is set!");
         }
+
+        this.logger = logger;
     }
 
     async startup() {
@@ -265,7 +270,8 @@ export default class Notifications {
     }
 
     async checkForNewNotifications() : Promise<void> {
-        console.log(new Date() + " - Checking for new notifications...");
+        // console.log(new Date() + " - Checking for new notifications...");
+        this.logger.writeEvent("CHECKING_FOR_NOTIFICATIONS", {});
 
         // Splitting this logic out so it doesn't contaminate this generic notifications logic
         await runNotificationsLogic(this.gauth, async (uniqueKey: string, meta: any) => {
@@ -281,6 +287,10 @@ export default class Notifications {
             // console.log("Already have: " + uniqueKey + ", doing nothing");
             return;
         }
+
+        this.logger.writeEvent("NEW_NOTIFICATION", {
+            key: uniqueKey,
+        });
 
         const { uuid, occurredAt } = await enqueueNotificationWithoutUniquenessCheck(this.gauth, this.spreadsheetId, uniqueKey, notificationMeta);
 

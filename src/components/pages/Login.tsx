@@ -49,7 +49,7 @@ function Login() {
     const [isLoading, setLoading] = useState(false);
     const [errorMessage, setError] = useState(null as null | string);
 
-    const [redirectTo, setRedirect] = useState(null as null | string);
+    // const [redirectTo, setRedirect] = useState(null as null | string);
 
     const doLogin = async (e : null | React.MouseEvent<HTMLInputElement, MouseEvent> = null, formState: FormState) => {
         if (e !== null) {
@@ -82,7 +82,10 @@ function Login() {
                 token: result.data.token,
             }));
 
-            setRedirect("/predictions");
+            // This forces a refresh and so reloads the login widget properly
+            window.location.href="/predictions";
+
+            // setRedirect("/predictions");
 
         } catch(e) {
             setLoading(false);
@@ -90,12 +93,14 @@ function Login() {
         }
     }
 
+    /*
     if (redirectTo !== null) {
         return <div>
             <p>Redirecting to {redirectTo}</p>
             <Redirect to={redirectTo} />
         </div>
     }
+    */
     return (
         <div className="login">
             <div className="content">

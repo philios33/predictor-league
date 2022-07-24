@@ -21,7 +21,7 @@ type ProfileAvatarChange = {
     await gauth.start();
     console.log("Logged in!");
 
-    const pe = new ProfileEvents(gauth, spreadsheetId);
+    const pe = new ProfileEvents(null, gauth, spreadsheetId);
     await pe.startup();
     console.log("Loaded profile events, caching avatar history");
     

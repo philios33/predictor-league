@@ -11,6 +11,7 @@ import SMTPConnection from 'nodemailer/lib/smtp-connection';
 import { pushPredictionNotification } from './subscription';
 import { enqueueNotificationWithoutUniquenessCheck } from './notificationEnqueue';
 import { getPlayerNames } from './players';
+import { Logger } from './logger';
 
 const SheetsApi = sheets('v4');
 
@@ -42,7 +43,9 @@ export default class ProfileEvents {
 
     profiles: Record<string, PlayerProfile>
 
-    constructor(gauth: GoogleAuth, spreadsheetId: string) {
+    logger: Logger | null;
+
+    constructor(logger: Logger | null, gauth: GoogleAuth, spreadsheetId: string) {
         this.gauth = gauth;
         this.spreadsheetId = spreadsheetId;
         this.uuid = uuidv4();
@@ -55,6 +58,8 @@ export default class ProfileEvents {
         this.lastEventsProcessed = new Date();
 
         this.profiles = {};
+
+        this.logger = logger;
     }
 
     async startup() {
@@ -65,6 +70,7 @@ export default class ProfileEvents {
             } catch(e) {
                 // First run failed
                 console.error(e);
+                throw e;
             }
 
             // Either we are:
@@ -99,6 +105,10 @@ export default class ProfileEvents {
 
                 } catch(e) {
                     console.error(e);
+
+                    this.logger?.writeEvent("PROFILE_EVENTS_CYCLE_FAILED", {
+                        message: e.message,
+                    });
                 }
 
                 this.isRunning = false;
@@ -159,7 +169,7 @@ export default class ProfileEvents {
                 }
             }
             this.profiles = newCache; // Replace with the newly computed cache
-            console.log("Loaded " + this.events.length + " existing profile events");
+            // console.log("Loaded " + this.events.length + " existing profile events");
 
             // console.log(this.notifications);
         } else {
@@ -175,6 +185,7 @@ export default class ProfileEvents {
         this.lastEventsProcessed = d; // Specify that the last events processed was ages ago so this runs during the next cycle
 
         // TODO, await here until the incoming queue has been emptied/processed
+        // This is the lazy way
         await this.waitSeconds(2);
     }
 
@@ -208,7 +219,7 @@ export default class ProfileEvents {
 
     async enqueueProfileEventToSpreadsheetUtil(gauth: GoogleAuth, spreadsheetId: string, username: string, type: string, eventMeta: any) : Promise<{ occurredAt: Date}> {
 
-        console.log(new Date() + " - Appending profile event " + type + " for: " + username);
+        // console.log(new Date() + " - Appending profile event " + type + " for: " + username);
     
         const occurredAt = new Date();
         const range = "Profile!A3:D3";

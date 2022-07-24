@@ -10,7 +10,6 @@ import {v4 as uuid} from 'uuid';
 import multer from 'multer';
 
 import { getThisWeek, savePrediction, validatePlayerSecret } from '../src/lib/api';
-import GoogleAuth from '../src/lib/googleAuth';
 import buildDetails from '../src/compiled/build.json';
 import { Logger } from '../src/lib/logger';
 import { config } from './config';
@@ -20,21 +19,19 @@ import Notifications from "../src/lib/notifications";
 
 // import socketIO from 'socket.io';
 import { fetchUserNotificationSubscription, updateUserNotificationSubscription } from '../src/lib/subscription';
-import { Profile } from '../src/lib/types';
 import ProfileEvents from '../src/lib/profileEvents';
 
 export {}
 
 const logger = new Logger(true);
 
-
 // const spreadsheetId2021 = "1LH94Sk4LcDQe4DfiFNcmfZ-dNG9Wzuqh-4dWp69UEW8";
 const spreadsheetId = "1Tilu5utIZBXXBL2t_cikdO_NsrfbMAQ1zBx5zws9JQA";
 
 const gauth = getGoogleAuth();
 
-const notificationSender = new Notifications(gauth, spreadsheetId);
-const profileEvents = new ProfileEvents(gauth, spreadsheetId);
+const notificationSender = new Notifications(logger, gauth, spreadsheetId);
+const profileEvents = new ProfileEvents(logger, gauth, spreadsheetId);
 
 
 const signingSecretFile = __dirname + "/../keys/signing.key";
@@ -108,10 +105,14 @@ app.get("/service.js", function (req, res) {
 app.post("/service/subscribe", async function(req, res) {
     try {
         let user = validateJWTToUser(req.headers.authorization);
-        console.log("Push subscription received for " + user);
+        logger.writeEvent("PUSH_SUBSCRIPTION_RECEIVED", {user});
         await updateUserNotificationSubscription(gauth, user, req.body.subscription);
         res.send("OK");
     } catch(e) {
+        logger.writeEvent("WEBSITE_ERROR", {
+            location: "/service/subscribe",
+            error: e.message
+        });
         console.error(e);
         res.status(500);        
         res.send({
@@ -135,9 +136,14 @@ app.post("/service/sendTestNofication", async function(req, res) {
             ttl: 60 * 60, // 1 hour is enough for a test
         }
         notificationSender.enqueueNotification(uniqueKey, meta);
+        logger.writeEvent("TEST_NOTIFICATION", {triggeredBy: user});
 
         res.send(JSON.stringify({ok:true}));
     } catch(e) {
+        logger.writeEvent("WEBSITE_ERROR", {
+            location: "/service/sendTestNofication",
+            error: e.message
+        });
         console.error(e);
         res.status(500);        
         res.send({
@@ -156,6 +162,10 @@ app.get("/service/subscription", async function(req, res) {
             subscription: sub,
         });
     } catch(e) {
+        logger.writeEvent("WEBSITE_ERROR", {
+            location: "/service/subscription",
+            error: e.message
+        });
         console.error(e);
         res.status(500);        
         res.send({
@@ -165,7 +175,11 @@ app.get("/service/subscription", async function(req, res) {
 });
 
 app.post("/service/serviceWorkerLog", async function(req, res) {
-    console.log(new Date() + " SW LOG v-" + req.body.buildAt + " : (" + req.body.username + ") " +  req.body.message);
+    logger.writeEvent("SW_LOG", {
+        swBuild: req.body.buildAt,
+        user: req.body.username,
+        message: req.body.message,
+    });
     res.send({ok:true});
 });
 
@@ -236,6 +250,10 @@ app.post("/service/avatar", upload.single("avatarImage"), async function(req, re
                     }
                 });
 
+                logger.writeEvent("NEW_AVATAR_UPLOADED", {
+                    user: user,
+                });
+
             } else {
                 throw new Error("You must submit a image/jpeg, not a: " + req.file.mimetype);
             }
@@ -247,6 +265,10 @@ app.post("/service/avatar", upload.single("avatarImage"), async function(req, re
             ok: true,
         });
     } catch(e) {
+        logger.writeEvent("WEBSITE_ERROR", {
+            location: "/service/avatar",
+            error: e.message
+        });
         console.error(e);
         res.status(500);        
         res.send({
@@ -348,7 +370,8 @@ app.get("/service/getThisWeek/:id", async (req, res) => {
         res.send(data);
     } catch(e) {
 
-        logger.writeEvent("LOAD_PREDICTIONS_FAIL", {
+        logger.writeEvent("WEBSITE_ERROR", {
+            location: req.url,
             ip: req.headers['x-real-ip'],
             message: e.message,
         });
@@ -385,7 +408,8 @@ app.post("/service/postPrediction/:weekId", async (req, res) => {
 
         res.send(data);
     } catch(e) {
-        logger.writeEvent("SAVE_PREDICTION_FAIL", {
+        logger.writeEvent("WEBSITE_ERROR", {
+            location: req.url,
             ip: req.headers['x-real-ip'],
             message: e.message,
         });
