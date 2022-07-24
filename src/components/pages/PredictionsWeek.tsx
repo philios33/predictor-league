@@ -559,7 +559,7 @@ function PredictionsWeek() {
                     )}
                     
                     {isEditing ? (
-                        <input type="number" disabled={isSaving || isError} value={homeGoalsTxt} max={20} min={0} onChange={(e) => {setPrediction("homeTeam", e.target.value, fixture.homeTeam, fixture.awayTeam)}} />
+                        <input type="number" disabled={isSaving || isError} value={homeGoalsTxt} max={9} min={0} onChange={(e) => {setPrediction("homeTeam", e.target.value, fixture.homeTeam, fixture.awayTeam)}} />
                     ) : (
                         <input disabled={true} value={homeGoalsTxt} readOnly={true} />
                     )}                    
@@ -575,7 +575,7 @@ function PredictionsWeek() {
                     <br/>
 
                     {isEditing ? (
-                        <input type="number" disabled={isSaving || isError} value={awayGoalsTxt} max={20} min={0} onChange={(e) => {setPrediction("awayTeam", e.target.value, fixture.homeTeam, fixture.awayTeam)}} /> 
+                        <input type="number" disabled={isSaving || isError} value={awayGoalsTxt} max={9} min={0} onChange={(e) => {setPrediction("awayTeam", e.target.value, fixture.homeTeam, fixture.awayTeam)}} /> 
                     ) : (
                         <input disabled={true} value={awayGoalsTxt} readOnly={true} />
                     )}
