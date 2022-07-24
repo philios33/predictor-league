@@ -184,7 +184,7 @@ function App() {
                             <Link className="btn" to="/predictions">Predictions</Link>
                         </li>
                         <li>
-                            <Link className="btn" to="/feed">Feed</Link>
+                            <Link className="btn" to="/results">Results</Link>
                         </li>
                         {/* 
                         <li>
@@ -221,7 +221,7 @@ function App() {
                             <Predictions />
                         </Route>
                         
-                        <Route path="/feed">
+                        <Route path="/results">
                             <Results />
                         </Route>
 
