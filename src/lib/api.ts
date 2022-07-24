@@ -543,11 +543,11 @@ export async function savePrediction(gauth: GoogleAuth, weekId: string, userName
         // Delete this score by writing "" in the cell
         removingPrediction = true;
     } else {
-        if (homeScore < 0 || homeScore > 20) {
-            throw new Error("Home score out of range (0-20)");
+        if (homeScore < 0 || homeScore > 9) {
+            throw new Error("Home score out of range (0-9)");
         }
-        if (awayScore < 0 || awayScore > 20) {
-            throw new Error("Away score out of range (0-20)");
+        if (awayScore < 0 || awayScore > 9) {
+            throw new Error("Away score out of range (0-9)");
         }
     }
 
