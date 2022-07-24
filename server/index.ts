@@ -393,9 +393,8 @@ app.post("/service/postPrediction/:weekId", async (req, res) => {
         const user = validateJWTToUser(req.headers.authorization);
         // const user = "Lawro";
         const weekId = req.params.weekId;
-        const data = await savePrediction(gauth, weekId, user, req.body.homeTeam, req.body.awayTeam, req.body.homeGoals, req.body.awayGoals, req.body.isBanker);
-
-        logger.writeEvent("SAVE_PREDICTION_SUCCESS", {
+        
+        logger.writeEvent("STORING_PREDICTION", {
             ip: req.headers['x-real-ip'],
             user: user,
             week: weekId,
@@ -405,6 +404,8 @@ app.post("/service/postPrediction/:weekId", async (req, res) => {
             awayGoals: req.body.awayGoals,
             isBanker: req.body.isBanker,
         });
+
+        const data = await savePrediction(gauth, weekId, user, req.body.homeTeam, req.body.awayTeam, req.body.homeGoals, req.body.awayGoals, req.body.isBanker);
 
         res.send(data);
     } catch(e) {

@@ -1,14 +1,22 @@
 
 import React, { useEffect, useState } from 'react';
 import objecthash from 'object-hash';
-import { getLogin } from '../../lib/util';
+import { getLogin } from '../lib/util';
 import axios from 'axios';
-import { config } from '../../config';
+import { config } from '../config';
+
+type PushStatus = "CHECKING" | "UNAVAILABLE" | "ENABLED_THIS" | "ENABLED_OTHER" | "DISABLED"
+
+import './Notifications.scss';
 
 export default function Notifications() {
     
     const [swSubscriptionHash, setSwSubscriptionHash] = useState("");
     const [predictorSubscriptionHash, setPredictorSubscriptionHash] = useState("");
+
+
+    const [currentStatus, setCurrentStatus] = useState("CHECKING" as PushStatus);
+    const [statusMessage, setStatusMessage] = useState("Checking...");
 
     const login = getLogin();
 
@@ -53,17 +61,47 @@ export default function Notifications() {
             
         } else {
             setSwSubscriptionHash("Service worker is not installed yet, refresh the page and try again");
+            setCurrentStatus("UNAVAILABLE");
+            setStatusMessage("Service worker is not installed yet, refresh the page and try again");
         }
 
-
-        // Fetch the current known predictor subscription
-        const login = getLogin();
         if (login === null) {
             setPredictorSubscriptionHash("Not logged in");
+            setCurrentStatus("UNAVAILABLE");
+            setStatusMessage("Not logged in");
         } else {
             refreshPredictorSub();
         }
     }
+
+    const subRE = new RegExp("^SUB");
+    useEffect(() => {
+        if (swSubscriptionHash === "Loading..." || predictorSubscriptionHash === "Loading..." ) {
+            return
+        }
+        if (swSubscriptionHash.match(subRE)) {
+            if (predictorSubscriptionHash.match(subRE)) {
+                // Both installed
+                if (swSubscriptionHash === predictorSubscriptionHash) {
+                    // Same
+                    setCurrentStatus("ENABLED_THIS");
+                } else {
+                    // Other
+                    setCurrentStatus("ENABLED_OTHER");
+                }
+            } else {
+                // Strange scenario, not submitted back yet
+                setCurrentStatus("DISABLED");
+            }
+        } else {
+            if (predictorSubscriptionHash.match(subRE)) {
+                setCurrentStatus("ENABLED_OTHER");
+            } else {
+                setCurrentStatus("DISABLED");
+            }
+        }
+
+    }, [swSubscriptionHash, predictorSubscriptionHash])
 
     const refreshSWSub = async () => {
         if (navigator.serviceWorker && navigator.serviceWorker.controller) {
@@ -72,7 +110,8 @@ export default function Notifications() {
                 action: "REQUEST_CURRENT_SUB"
             });
         } else {
-            alert("No Service worker");
+            console.error("No service worker");
+            // alert("No Service worker");
         }
     }
 
@@ -82,7 +121,8 @@ export default function Notifications() {
                 action: "REMOVE_PUSH_SUB"
             });
         } else {
-            alert("No Service worker");
+            console.error("No service worker");
+            // alert("No Service worker");
         }
     }
 
@@ -108,7 +148,8 @@ export default function Notifications() {
                 setPredictorSubscriptionHash("Non 200 from service: " + result.status + ", " + result.data.error);
             }
         } else {
-            alert("No login");
+            console.error("No login");
+            // alert("No login");
         }
     }
 
@@ -158,7 +199,13 @@ export default function Notifications() {
             if (login === null) {
                 throw new Error("Not logged in");
             }
-            check();
+            try {
+                check();
+            } catch(e) {
+                setCurrentStatus("UNAVAILABLE");
+                setStatusMessage(e.message);
+                return;
+            }
 
             await requestNotificationPermission(); 
             
@@ -174,17 +221,52 @@ export default function Notifications() {
         }
     }
 
-    
+    const renderStatusText = () => {
+        if (currentStatus === "CHECKING") {
+            return "Checking...";
+        } else if (currentStatus === "UNAVAILABLE") {
+            return "Sorry this feature is unavailable on this device";
+        } else if (currentStatus === "ENABLED_THIS") {
+            return "Enabled on this device";
+        } else if (currentStatus === "ENABLED_OTHER") {
+            return "Enabled on another device";
+        } else if (currentStatus === "DISABLED") {
+            return "Disabled";
+        }
+    }
+
+    if (login === null) {
+        return null;
+    }
 
     return (
         <div className="notifications">
-            <h2>Push Notifications</h2>
+            <h3>Push Notifications</h3>
             
             <p>
-                You may setup one device to receive reminder push notifications to.  Only the latest subscription device will be used.
-                <button onClick={() => setup()}>Register this device</button>
+                Status: {renderStatusText()}
+                { currentStatus === "UNAVAILABLE" && (
+                    <>
+                        <br />
+                        <em>{statusMessage}</em>
+                    </>
+                )}
             </p>
+
+            { currentStatus === "DISABLED" && (
+                <p>
+                    You may setup one device to receive reminder push notifications to.  Only the latest setup device will be used.
+                    <button className="btn" onClick={() => setup()}>Register this device</button>
+                </p>
+            )}
+            { currentStatus === "ENABLED_OTHER" && (
+                <p>
+                    You can setup this device instead.
+                    <button className="btn" onClick={() => setup()}>Register this device</button>
+                </p>
+            )}
             
+            {/*
             <p>
                 Current service worker subscription ID: <strong>{ swSubscriptionHash }</strong>
                 <button onClick={() => refreshSWSub()}>Refresh</button>
@@ -194,15 +276,18 @@ export default function Notifications() {
                 Current saved subscription ID: <strong>{ predictorSubscriptionHash }</strong>
                 <button onClick={() => refreshPredictorSub()}>Refresh</button>
             </p>
+            */}
 
-            <p>    
-                <button onClick={() => testNotification()}>Test Notification</button>
-            </p>
-            
-            <p>    
-                <button onClick={() => removeSubscription()}>Remove Push Subscription</button>
-            </p>
-            
+            { (currentStatus === "ENABLED_THIS" || currentStatus === "ENABLED_OTHER") && (
+                <>
+                    <p>    
+                        <button className="btn" onClick={() => testNotification()}>Test Notification</button>
+                    </p>
+                    <p>    
+                        <button className="btn" onClick={() => removeSubscription()}>Remove Push Subscription</button>
+                    </p>
+                </>
+            )}
         </div>
     );
 }

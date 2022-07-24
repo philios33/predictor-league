@@ -31,7 +31,7 @@ import alanImage from '../assets/partridge_192.jpg';
 
 import Cup from './pages/Cup';
 import { Tables } from './pages/Tables';
-import Notifications from './pages/Notifications';
+import Notifications from './Notifications';
 
 import { Howl } from 'howler';
 import goalSoundSource from '../assets/sounds/goal.mp3';
