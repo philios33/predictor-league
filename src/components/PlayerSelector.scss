@@ -1,0 +1,32 @@
+.playerSelector {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    .playerSquare {
+        display: inline-block;
+        margin: 3px;
+        padding: 3px;
+        cursor: pointer;
+        border: 2px solid transparent;
+        &.selected {
+            border: 2px solid green;
+        }
+        img {
+            width: 50px;
+        }
+    }
+}
+
+@media (min-width:650px) {
+    .playerSelector {
+        max-width: 700px;
+        .playerSquare {
+            display: inline-block;
+            margin: 5px;
+            padding: 5px;
+            img {
+                width: 83px;
+            }
+        }
+    }
+}
