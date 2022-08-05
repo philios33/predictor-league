@@ -456,8 +456,27 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
         }
     }
 
+    // Strip the mergedPhases of weeks/phases that have not started
+    let earliestPhaseNotStarted: null | number = null;
+    for (let phaseIndex = mergedPhases.length - 1; phaseIndex >= 0; phaseIndex--) {
+        const thisPhase = mergedPhases[phaseIndex];
+        if (thisPhase.isStarted || thisPhase.isOngoing) {
+            // console.log("This one has started: " + thisPhase.weekId);
+            break;
+        } else {
+            // console.log("Yes, this phase is not started yet: " + thisPhase.weekId + "-" + thisPhase.phaseId);
+            earliestPhaseNotStarted = phaseIndex;
+        }
+    }
+
+    let finalMergedPhases = mergedPhases;
+    if (earliestPhaseNotStarted !== null) {
+        // console.log("Taking things from 0 - " + earliestPhaseNotStarted);
+        finalMergedPhases = mergedPhases.slice(0, earliestPhaseNotStarted);
+    }
+
     return {
-        mergedPhases,
+        mergedPhases: finalMergedPhases,
         startOfWeekStandings,
         nextRedeploy: nextKickoff ? nextKickoff.toISOString() : null, // This is the date of when the website should next auto redeploy.  Schedule at the next kick off time since this could release some predictions.
         awaitingScoresFor,
