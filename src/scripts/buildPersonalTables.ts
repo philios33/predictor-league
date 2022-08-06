@@ -42,6 +42,15 @@ const gauth = new GoogleAuth(credentialsFile);
 
 const players = getPlayerNames();
 
+
+async function sleep(secs: number) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve(null);
+        }, secs * 1000);
+    })
+}
+
 (async () => {
     console.log("Logging in... buildPersonalTables.ts");
     await gauth.start();
@@ -52,6 +61,7 @@ const players = getPlayerNames();
     const realTable: CumulativeTeamPoints = {};
     for (const playerName of players) {
         // Grab the predictions data
+        await sleep(20); // Ensures we only get 3 players data per minute
         console.log("Getting predictions for: " + playerName);
         const playerData = await getAllUserPredictions(gauth, playerName);
         console.log("Done");

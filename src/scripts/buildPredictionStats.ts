@@ -86,6 +86,15 @@ function findSegmentFromRank(rank: number) {
     }
 }
 
+
+async function sleep(secs: number) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve(null);
+        }, secs * 1000);
+    })
+}
+
 async function getPredictionStats(gauth: GoogleAuth, players: string[]) : Promise<BuiltPredictionStats> {
     // For each player, grab the predictions data
     
@@ -96,6 +105,7 @@ async function getPredictionStats(gauth: GoogleAuth, players: string[]) : Promis
         const predictionStats: TeamsPredictionStats = {};
 
         // Grab the data
+        await sleep(20); // Ensures we only get 3 players data per minute
         const playerData = await getAllUserPredictions(gauth, player);
 
         for (const match of matches) {

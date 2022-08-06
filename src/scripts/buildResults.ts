@@ -47,6 +47,13 @@ const players = getPlayerNames();
     console.log("Finished building data");
 })();
 
+async function sleep(secs: number) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve(null);
+        }, secs * 1000);
+    })
+}
 
 export async function getResults(gauth: GoogleAuth, players: Array<string>): Promise<BuiltResults> {
 
@@ -268,6 +275,7 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
     };
     for (const player of players) {
         // Grab the data
+        await sleep(20); // Ensures we only get 3 players data per minute
         const playerData = await getAllUserPredictions(gauth, player);
         playerPredictions[player] = {
             predictions: playerData.homeTeams,
