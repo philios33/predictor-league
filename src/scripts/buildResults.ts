@@ -10,6 +10,11 @@ import { getAllUserPredictions } from "../lib/predictor/predictions";
 import moment from "moment-mini";
 import { rankLeagueTable } from "../lib/predictor/table";
 
+if ("HOME" in process.env) {
+    if (process.env["HOME"] === "/home/phil") {
+        process.env["LOCALDEV"] = "yes";
+    }
+}
 
 const credentialsFile = __dirname + "/../../keys/credentials.json";
 const gauth = new GoogleAuth(credentialsFile);
@@ -275,7 +280,12 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
     };
     for (const player of players) {
         // Grab the data
-        await sleep(20); // Ensures we only get 3 players data per minute
+        if (!("LOCALDEV" in process.env)) {
+            await sleep(20); // Ensures we only get 3 players data per minute
+        } else {
+            console.log("Local dev detected, only 1 second throttle");
+            await sleep(1);
+        }
         const playerData = await getAllUserPredictions(gauth, player);
         playerPredictions[player] = {
             predictions: playerData.homeTeams,

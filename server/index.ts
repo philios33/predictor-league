@@ -20,6 +20,7 @@ import Notifications from "../src/lib/notifications";
 // import socketIO from 'socket.io';
 import { fetchUserNotificationSubscription, updateUserNotificationSubscription } from '../src/lib/subscription';
 import ProfileEvents from '../src/lib/profileEvents';
+import { getPieChartSVG } from './piechart';
 
 export {}
 
@@ -282,6 +283,22 @@ app.post("/service/avatar", upload.single("avatarImage"), async function(req, re
 
 app.get("/version", async(req, res) => {
     res.send(buildDetails);
+});
+
+app.get("/piechart/:version/:correct/:incorrect", async(req, res) => {
+    const correct = parseInt(req.params.correct);
+    const incorrect = parseInt(req.params.incorrect);
+    if (correct + incorrect > 0) {
+        const svgText = getPieChartSVG(correct, incorrect);
+        res.set("content-type", "image/svg+xml; charset=iso-8859-1");
+        res.set("cache-control", "public, max-age=31536000, immutable");
+        res.send(svgText);
+    } else {
+        res.status(500);        
+        res.send({
+            error: "Invalid inputs"
+        });
+    }
 });
 
 app.post("/service/loginService", async (req, res) => {

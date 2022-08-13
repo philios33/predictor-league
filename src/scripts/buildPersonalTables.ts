@@ -8,6 +8,12 @@ import { rankLeagueTable } from "../lib/predictor/table";
 import { CumulativeTeamPoints, LeagueTable, PredictedLeagueTable, UserPredictions } from '../lib/types';
 import { applyTeamStats, getLeagueTableFromCumPoints } from "./buildResults";
 
+if ("HOME" in process.env) {
+    if (process.env["HOME"] === "/home/phil") {
+        process.env["LOCALDEV"] = "yes";
+    }
+}
+
 const results = getCachedResults();
 
 const convertToPredictedTable = (table: LeagueTable, real: LeagueTable) : PredictedLeagueTable => {
@@ -61,7 +67,12 @@ async function sleep(secs: number) {
     const realTable: CumulativeTeamPoints = {};
     for (const playerName of players) {
         // Grab the predictions data
-        await sleep(20); // Ensures we only get 3 players data per minute
+        if (!("LOCALDEV" in process.env)) {
+            await sleep(20); // Ensures we only get 3 players data per minute
+        } else {
+            console.log("Local dev detected, only 1 second throttle");
+            await sleep(1);
+        }
         console.log("Getting predictions for: " + playerName);
         const playerData = await getAllUserPredictions(gauth, playerName);
         console.log("Done");

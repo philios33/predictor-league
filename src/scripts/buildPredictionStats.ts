@@ -8,6 +8,12 @@ import { getCachedResults } from '../lib/predictor/cachedResults';
 import { getAllUserPredictions } from "../lib/predictor/predictions";
 import { BuiltPredictionStats, PredictionStats, TeamsPredictionStats } from '../lib/types';
 
+if ("HOME" in process.env) {
+    if (process.env["HOME"] === "/home/phil") {
+        process.env["LOCALDEV"] = "yes";
+    }
+}
+
 const schedule = getCachedMatchSchedule();
 const results = getCachedResults();
 
@@ -105,7 +111,13 @@ async function getPredictionStats(gauth: GoogleAuth, players: string[]) : Promis
         const predictionStats: TeamsPredictionStats = {};
 
         // Grab the data
-        await sleep(20); // Ensures we only get 3 players data per minute
+        if (!("LOCALDEV" in process.env)) {
+            console.log(process.env);
+            await sleep(20); // Ensures we only get 3 players data per minute
+        } else {
+            console.log("Local dev detected, only 1 second throttle");
+            await sleep(1);
+        }
         const playerData = await getAllUserPredictions(gauth, player);
 
         for (const match of matches) {

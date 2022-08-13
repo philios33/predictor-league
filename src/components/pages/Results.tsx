@@ -17,30 +17,26 @@ const getStandingsTable = (players: Array<Player>, user: null | string, atTimest
                 <th>Rank</th>
                 <th>Name</th>
 
-                <th title="Predictions Made">PRE</th>
-                <th title="Predictions Missed">MIS</th>
+                <th title="Predictions made">PRE</th>
+                <th title="Predictions missed">MIS</th>
 
                 {/*<th title="Correct Scores Bankered">CSB</th>
                 <th title="Correct Scores Non Bankered">CSN</th>*/}
-                <th title="Correct Scores">CS</th>
+                <th title="Correct scores">CS</th>
 
                 {/*<th title="Correct Goal Difference Bankered">CGB</th>
                 <th title="Correct Goal Difference Non Bankered">CGN</th>*/}
-                <th title="Correct Goal Difference">CGD</th>
+                <th title="Correct goal difference">CGD</th>
 
                 {/*<th title="Correct Result Bankered">CRB</th>
                 <th title="Correct Result Non Bankered">CRN</th>*/}
-                <th title="Correct Result, Wrong Goal Difference">WGD</th>
+                <th title="Correct result, wrong goal difference">WGD</th>
 
-                <th title="Total Correct Results">TCR</th>
+                <th title="Hitrate (Correct results from total predicted)">HIT</th>
 
-                {/*<th title="Incorrect Results Bankered">INB</th>
-                <th title="Incorrect Results Non Bankered">INN</th>*/}
-                <th title="Total Incorrect Results">TIR</th>
-
-                <th title="Regular Points">RPT</th>
-                <th title="Banker Points">BPT</th>
-                <th title="Total Points">PTS</th>
+                <th title="Regular points">RPT</th>
+                <th title="Banker points">BPT</th>
+                <th title="Total points">PTS</th>
             </tr>
         </thead>
         <tbody>
@@ -70,12 +66,11 @@ const getStandingsTable = (players: Array<Player>, user: null | string, atTimest
                     <td>{points.correctOutcomeNonBankered}</td>*/}
                     <td>{points.correctOutcomeTotal}</td>
 
-                    <td>{points.correctTotal}</td>
-
-                    {/*<td>{points.incorrectBankered}</td>
-                    <td>{points.incorrectNonBankered}</td>*/}
-                    <td>{points.incorrectTotal}</td>
-
+                    <td>
+                        <img className="pie" src={"/piechart/1/" + points.correctTotal + "/" + points.incorrectTotal} />
+                        <p className="pieText">{Math.round(points.correctTotal / (points.correctTotal + points.incorrectTotal) * 100)}%</p>
+                    </td>
+                    
                     <td>{points.regularPoints}</td>
                     <td>{points.bankerPoints}</td>
                     <td className="totalPoints">{points.totalPoints}</td>
