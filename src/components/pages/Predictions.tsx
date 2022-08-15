@@ -71,7 +71,7 @@ function Predictions(props: Props) {
                 } else {
                     const kickOff = new Date(match.kickOff);
                     const daysUntilKickOff = Math.floor((kickOff.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-                    if (daysUntilKickOff < 12) { // TODO Put this back to 7 once the first week is underway
+                    if (daysUntilKickOff < 7) {
                         if (kickOff > now) {
                             // UPCOMING (within 7 days)
                             weekFreq[match.weekId].upcoming++;
