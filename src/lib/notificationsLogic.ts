@@ -7,13 +7,23 @@ import moment from "moment-timezone";
 import GoogleAuth from "./googleAuth";
 import { Notification } from "./notifications";
 import { getPlayerNames } from "./players";
-import { getCachedResults } from "../lib/predictor/cachedResults";
+// import { getCachedResults } from "../lib/predictor/cachedResults";
 import { getAllUserPredictions } from "./predictor/predictions";
 import { PredictionFixture, UserPredictions } from "./types";
 import { fetchUserNotificationSubscription } from "./subscription";
+import { getCachedMatchSchedule } from "./predictor/cached";
 
 const allPlayers = getPlayerNames();
-const results = getCachedResults();
+// const results = getCachedResults();
+// We can't use the cached results to fetch the upcoming matches, that is silly
+const fixtures = getCachedMatchSchedule();
+
+type ScheduledFixture = {
+    homeTeam: string
+    awayTeam: string
+    kickOff: Date
+    weekId: string
+}
 
 export async function runNotificationsLogic(gauth: GoogleAuth, enqueueNotification: (uniqueKey: string, meta: any) => Promise<void>) {
 
@@ -24,34 +34,51 @@ export async function runNotificationsLogic(gauth: GoogleAuth, enqueueNotificati
         playerPredictions[player] = playerData;
     }
     
-    const upcomingMatches: Array<PredictionFixture> = [];
+    const upcomingMatches: Array<ScheduledFixture> = [];
     const upcomingDays = 4;
     const now = moment();
     const todaysDate = now.format("YYYY-MM-DD");
     const upcomingLimit = moment().add(upcomingDays, "days");
 
-    const softLimit = moment().add(1, "days"); // Soft
-    const hardLimit = moment().add(2, "hours"); // Hard
-
-    for (const phase of results.mergedPhases) {
-        for (const [i, fg] of phase.fixtureGroups.entries()) {
-            const kickOff = new Date(fg.kickOff);
-            if (upcomingLimit.isAfter(kickOff)) {
-                upcomingMatches.push(...fg.fixtures);
+    // This just gets the upcoming kickoffs
+    for (const homeTeam in fixtures.matches) {
+        const awayTeams = fixtures.matches[homeTeam].against;
+        for (const awayTeam in awayTeams) {
+            const thisMatch = awayTeams[awayTeam];
+            const kickOff = new Date(thisMatch.kickOff);
+            if (upcomingLimit.isAfter(kickOff) && now.isBefore(kickOff)) {
+                upcomingMatches.push({
+                    homeTeam,
+                    awayTeam,
+                    kickOff,
+                    weekId: thisMatch.weekId,
+                });
             }
         }
     }
-    console.log("Checking predictions for the next " + upcomingMatches.length + " matches");
-    // console.log(upcomingMatches);
-    // Matches should already be in order
+
+    upcomingMatches.sort((a, b) => {
+        return a.kickOff.getTime() - b.kickOff.getTime();
+    });
+
+    const softLimit = moment().add(1, "days"); // Soft
+    const hardLimit = moment().add(2, "hours"); // Hard
+
+    // console.log("Checking predictions for the next " + upcomingMatches.length + " matches which occur betweeen now and the next " + upcomingDays + " days");
+    
+    // console.log(JSON.stringify(upcomingMatches, null, 4));
+    
 
     for (const player of allPlayers) {
         // console.log("Doing player: " + player);
         const predictions = playerPredictions[player];
         let predicted = 0;
-        const unpredicted: Array<PredictionFixture> = [];
+        const unpredicted: Array<ScheduledFixture> = [];
         for (const match of upcomingMatches) {
+            // console.log("Doing match: " + match.homeTeam + " vs " + match.awayTeam);
             if (match.homeTeam in predictions.homeTeams && match.awayTeam in predictions.homeTeams[match.homeTeam].against) {
+                // const prediction = predictions.homeTeams[match.homeTeam].against[match.awayTeam];
+                // console.log("We have this prediction", prediction);
                 // We have this prediction
                 predicted++;
             } else {
@@ -98,6 +125,9 @@ export async function runNotificationsLogic(gauth: GoogleAuth, enqueueNotificati
 
                 const notificationSub = await fetchUserNotificationSubscription(gauth, player);
 
+                // console.warn("Will enqueue notification: " + uniqueKey);
+                // process.exit(1);
+                
                 await enqueueNotification(uniqueKey, {
                     type,
                     player,
@@ -107,6 +137,7 @@ export async function runNotificationsLogic(gauth: GoogleAuth, enqueueNotificati
                     ttl: 3 * 24 * 60 * 60, // Just use a TTL of 3 days so that notifications don't get too stale
                     // We don't really want to timeout a notification after the relevant time period since we want to show that a notification is there.
                 });
+                
             }
         } else {
             // console.log("Player has no unpredicted fixtures");
