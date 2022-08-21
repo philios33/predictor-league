@@ -334,10 +334,14 @@ export default class Notifications {
             if (config.vapid && typeof notification.meta.notificationSub === "object" && notification.meta.notificationSub !== null) {
                 // Great, we can push the notification using the appropriate players subscription
                 await pushPredictionNotification(config.vapid.public, config.vapid.private, notification.meta.notificationSub, notification.meta.title, notification.meta.message, notification.meta.ttl);
-            } else {
+            }
+            
+            // Note: Due to the fact that some people setup notifications in chrome on their iPad/macbook, but then use iPhones as their every day phone, they don't get the notifications properly.
+            // Because of this problem, and until iPhones properly support Web Push Notifications, I should always get an email for any notification!
+            // else {
                 // Fallback to emailing Phil
                 await this.sendEmailNotificationToPhil(notification);
-            }
+            // }
 
             // Update the delivered timestamp
             const now = new Date();
