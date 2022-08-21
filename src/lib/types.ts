@@ -185,7 +185,7 @@ export type Phase = {
     phaseId: number
     kickOff: string
     fixtures: Array<PredictionFixture>
-    isIncomplePhase: boolean
+    isIncompletePhase: boolean
 }
 
 export type FixtureGroup = {
