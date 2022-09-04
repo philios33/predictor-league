@@ -730,28 +730,35 @@ const generateRankings = (cumPoints: {[key: string]: PointsRow}) : Array<Player>
     }
 
     const sortedPlayersRank = playersRank.sort((a,b) => {
-        if (a.points.totalPoints === b.points.totalPoints) {
+        const acpr = a.points as ConcisePointsRow;
+        const bcpr = b.points as ConcisePointsRow;
+
+        const apm = getPointsMetricForSorting(acpr);
+        const bpm = getPointsMetricForSorting(bcpr);
+
+        if (apm === bpm) {
             return a.name.localeCompare(b.name);
         } else {
-            return b.points.totalPoints - a.points.totalPoints;
+            return bpm - apm;
         }
     });
 
     let nextRank = 1;
     let lastRank = 0;
-    let lastPoints = 0;
+    let lastPointsMetric = 0;
     for (const playerRank of sortedPlayersRank) {
         if (nextRank === 1) {
             playerRank.rank = 1;
             lastRank = 1;
-            lastPoints = playerRank.points.totalPoints;
+            lastPointsMetric = getPointsMetricForSorting(playerRank.points as ConcisePointsRow);
             nextRank++;
         } else {
-            if (playerRank.points.totalPoints < lastPoints) {
+            const thisPointsMetric = getPointsMetricForSorting(playerRank.points as ConcisePointsRow);
+            if (thisPointsMetric < lastPointsMetric) {
                 // Use next rank
                 playerRank.rank = nextRank;
                 lastRank = nextRank;
-                lastPoints = playerRank.points.totalPoints;
+                lastPointsMetric = thisPointsMetric;
             } else {
                 // Use the same rank
                 playerRank.rank = lastRank;
@@ -760,4 +767,8 @@ const generateRankings = (cumPoints: {[key: string]: PointsRow}) : Array<Player>
         }
     }
     return sortedPlayersRank;
+}
+
+function getPointsMetricForSorting(a: ConcisePointsRow) {
+    return (a.totalPoints * 1000) + a.correctScoresTotal;
 }
