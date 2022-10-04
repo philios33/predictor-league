@@ -1,0 +1,112 @@
+TO FIX
+
+-2 Setup PWA feature allowing push messages to phone OS.  
+    We know push notifications will never work on iPhones, so not sure how many iPhone users there are.  Probably most people.
+    Better to ping a message to ME that contains the message that I can copy to whatsapp!
+    So, I am continuing with WPA if I can get it to send a notification to me.
+    * Write a socket.io server to server.
+    * Write a working socket.io client that will continuously try to connect and send a message every 1 minute.
+    * Get working on real site on HTTPS
+
+    This is now in it's own branch.
+    I decided to keep the socket.io for reporting of agent string so we can see what people are using.
+    I will implement WebPush API by storing a PushSubscription per user (in Sheets DB).
+    I will improve the hidden /notifications page to get it to work for me only.  All notifications will get sent to me first.
+    Then we need to write a message sending system that decides which messages get sent out on a cron.
+    Email and Push messages are possible.
+
+    * BUT FIRST, write a script that reports when a player hasn't done their predictions for an upcoming match yet.
+    
+-1 Add FORM of last 5 matches to the PL table AND to the prediction list
+-1 Banker tables: See a players banker performance.
+        Team, Times chosen, Correct, Incorrect, Success Rate, Bonus Points, Penalty Points, Total points
+
+0. Remove keys from the docker image, this is bad practise
+0. Cleanup CSS
+0. Split up the Results component to make things cleaner
+
+1. Link to Mikes recaps on the results feed
+1. Change title of the predictions page to say the week # (can we do this without SSR?)
+1. Highlight the winner of the week either by bolding the name, or creating a new section.
+1. Add total correct colspan=3 cell
+1. Add previous position in results table and up, down, across arrows. (2nd column)
+
+
+
+
+# Big Features
+
+
+1. Make the Teams Table - This will be interesting
+    Grid of teams by players and how many points in total they have from their matches (including banker points)
+    Highest scoring happy face
+    Accolade name or CONTESTED
+
+2. Create an audio section where players can record tips for each other
+    Recordings are stored locally, (can we covert to mp3 before upload?)
+        Yes, use: https://github.com/zhuker/lamejs
+    You can only make 1 tip per week
+    Only open it up to Robin first?
+
+3. Create front page standings graph with floating faces, league table, weeks slider, colours etc
+
+4. Player pages, "Choose a lad", show image and stats, bio, accolades, points by week, points by team, show table if all predictions correct
+
+
+## Accolade ideas
+
+Most points - Heavyweight Title - He's number 1
+
+Most perfect scores - Score king - He really knows the score
+Most correct GD results - The statistician - He knows the goal difference
+Most correct results - Pools master - He should play the pools more often
+
+Most correct home win predictions - Home boy - He loves a home win
+Most correct draw predictions - Draw master - He loves a draw
+Most correct away win predictions - Away fan - He loves an away win
+
+Most banker points - Confidence king - He loves to commit
+Longest banker streak - Show boater - He just keeps getting them right
+
+Highest weekly points - Top Gun - When he goes, he goes big
+Lowest weekly points - Limbo champion - When he goes low, he goes very low
+
+## Prize with description
+
+Team belts - Best at predicting the score of Team XXX
+
+The Arsenal Gun collection
+The Aston Villa Villa
+The AFC Bournemouth Jason Bourne Mouth
+The Brentford Ford
+The Brighton & Hove Alpen
+The Burnley Burns ward (search simpsons burns ward)
+The Chelsea Bun
+The Crystal Palace Palace
+The Everton Mint
+The Fulham Ham
+The Leeds Dog lead
+The Leicester Red Leicester
+The Liverpool Swimming pool
+The Manchester City Toilet
+The Manchester United Unicycle
+The Newcastle Castle
+The Norwich City Canary Cage
+The Nottingham Forest Tree
+The Southampton Plankton
+The Tottenham Hotspur spurs
+The Watford Junction
+The West Ham Ham
+The Wolverhampton Wanderers Zimmer frame
+
+
+## TODO
+
+3. Begin with event based solution example using event tooling repo.
+    A consumer should console.warn if RECONNECTING for more than 10 minutes, every 10 minutes.
+        Not sure we can detect mongo connection drop though.
+    
+   
+
+    
+
