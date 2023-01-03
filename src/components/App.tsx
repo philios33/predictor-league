@@ -186,10 +186,10 @@ function App() {
                         <li>
                             <Link className="btn" to="/results">Results</Link>
                         </li>
-                        {/* 
                         <li>
                             <Link className="btn" to="/tables">Tables</Link>
                         </li>
+                        {/* 
                         <li>
                             <Link className="btn" to="/cup/mrEggCup2021">Cup</Link>
                         </li>

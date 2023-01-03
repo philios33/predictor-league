@@ -400,8 +400,9 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
                             }
                         }
                         const prediction = fixture.playerPredictions[player].prediction;
-                        
-                        const points = calculatePoints(prediction, fixture.finalScore, fixture.bankerMultiplier, fixture.homeTeam, fixture.awayTeam, player);
+
+                        const missedSoFar = cumPoints[player]?.missed || 0;
+                        const points = calculatePoints(prediction, fixture.finalScore, fixture.bankerMultiplier, fixture.homeTeam, fixture.awayTeam, player, missedSoFar);
                         phase.points[player] = addPoints(phase.points[player], points);
                         cumPoints[player]  = addPoints(cumPoints[player], points);
 

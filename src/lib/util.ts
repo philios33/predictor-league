@@ -52,7 +52,7 @@ export const calculateResultType = (prediction: null | Prediction | HiddenPredic
     throw new Error("Impossible situation");
 }
 
-export const calculatePoints = (prediction: null | Prediction | HiddenPrediction, finalScore: FinalScore, bankerMultiplier: number, homeTeam: string, awayTeam: string, playerName: string) : PointsRow => {
+export const calculatePoints = (prediction: null | Prediction | HiddenPrediction, finalScore: FinalScore, bankerMultiplier: number, homeTeam: string, awayTeam: string, playerName: string, missedSoFar: number) : PointsRow => {
 
     if (typeof bankerMultiplier !== "number") {
         throw new Error("Banker multiplier MUST be a number but was of type: " + typeof bankerMultiplier);
@@ -92,11 +92,16 @@ export const calculatePoints = (prediction: null | Prediction | HiddenPrediction
         // Didn't even both to predict
         points.missed ++;
         if (season === "22-23") {
-            points.regularPoints = -1;
+            if (missedSoFar > 0) {
+                points.regularPoints = -1;
+            }
         }
+
+        points.totalPoints = points.regularPoints
         return points;
 
     } else if (resultType === "hidden") {
+        
         return points;
 
     }

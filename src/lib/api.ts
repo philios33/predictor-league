@@ -369,7 +369,8 @@ export async function getWeekFixtures(gauth: GoogleAuth, weekId: string, withSco
                 // const bankerMultiplier = results.startOfWeekStandings[weekId]?.bankerMultipliers[playerName] || 2;
                 const bankerMultiplier = getBankerMultiplier(fixture.weekId, fixture.homeTeam, fixture.awayTeam, results.startOfWeekStandings[fixture.weekId].leagueTables);
                 
-                const points = calculatePoints(prediction, fixture.finalScore, bankerMultiplier, fixture.homeTeam, fixture.awayTeam, playerName);
+                const missedSoFar = playerPredictions[playerName].cumPoints?.missed || 0;
+                const points = calculatePoints(prediction, fixture.finalScore, bankerMultiplier, fixture.homeTeam, fixture.awayTeam, playerName, missedSoFar);
                 if (playerName in fixture.playerPredictions) {
                     fixture.playerPredictions[playerName].points = {
                         type: calculateResultType(prediction, fixture.finalScore),
