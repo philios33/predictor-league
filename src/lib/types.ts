@@ -341,8 +341,8 @@ export type CupMatchGame = {
 export type CupWeek = {
     week: string
     description: string
-    homeTeam: string
-    awayTeam: string
+    homeTeam: string | null
+    awayTeam: string | null
     score: null | FinalScore
     matches: Array<CupMatchGame>
 }
