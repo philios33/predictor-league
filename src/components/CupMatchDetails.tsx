@@ -8,6 +8,12 @@ type Props = {
 }
 
 function CupMatchDetails(props: Props) {
+    if (props.fixture.fixture.home === null) {
+        return null;
+    }
+    if (props.fixture.fixture.away === null) {
+        return null;
+    }
     return <>
         <tr className="cupMatchDetails">
             <td colSpan={7}>

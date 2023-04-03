@@ -255,10 +255,10 @@ koPhase.push({
     awayTeam: null,
     score: null,
     matches: [
-        getCupMatch("Phil", null, null, null, "Phil vs Rod or Mike"),
+        getCupMatch("Phil", null, "Mike", null, ""),
         getCupMatch("Matt", null, "Rob", null, ""),
         getCupMatch("Lawro", null, "Ed", null, ""),
-        getCupMatch("Ian", null, null, null, "Ian vs Jez or Dave"),
+        getCupMatch("Ian", null, "Dave", null, ""),
     ]
 });
 koPhase.push({
@@ -268,10 +268,10 @@ koPhase.push({
     awayTeam: null,
     score: null,
     matches: [
-        getCupMatch("Damo", "out", "Matt", "through", "8 : 21"),
-        getCupMatch("Phil", "through", "Antoine", "out", "31 : 5"),
-        getCupMatch("Jez", null, "Dave", null, "3 : 7 (L)"),
-        getCupMatch("Mike", "out", "Rod", "through", "20 : 32"),
+        getCupMatch("Damo", "out", "Matt", "through", "15 : 20"),
+        getCupMatch("Phil", "through", "Antoine", "out", "30 : 4"),
+        getCupMatch("Jez", "out", "Dave", "through", "2 : 6"),
+        getCupMatch("Mike", "through", "Rod", "out", "34 : 31"),
     ]
 });
 

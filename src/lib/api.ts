@@ -276,13 +276,15 @@ export async function getWeekFixtures(gauth: GoogleAuth, weekId: string, withSco
                         if (phaseWeek.homeTeam === homeTeam && phaseWeek.awayTeam === awayTeam) {
                             for (const thisMatch of phaseWeek.matches) {
                                 // If the match is relevant to this person
-                                if (withPredictions.includes(thisMatch.away.name) || withPredictions.includes(thisMatch.home.name)) {
-                                    // Yes
-                                    cupMatches.push({
-                                        cupName: thisCup.name,
-                                        weekDescription: phaseWeek.description,
-                                        fixture: thisMatch
-                                    });
+                                if (thisMatch.home !== null && thisMatch.away !== null) {
+                                    if (withPredictions.includes(thisMatch.away.name) || withPredictions.includes(thisMatch.home.name)) {
+                                        // Yes
+                                        cupMatches.push({
+                                            cupName: thisCup.name,
+                                            weekDescription: phaseWeek.description,
+                                            fixture: thisMatch
+                                        });
+                                    }
                                 }
                             }
                         }
@@ -291,13 +293,15 @@ export async function getWeekFixtures(gauth: GoogleAuth, weekId: string, withSco
                         if (phaseWeek.homeTeam === homeTeam && phaseWeek.awayTeam === awayTeam) {
                             for (const thisMatch of phaseWeek.matches) {
                                 // If the match is relevant to this person
-                                if (withPredictions.includes(thisMatch.away.name) || withPredictions.includes(thisMatch.home.name)) {
-                                    // Yes
-                                    cupMatches.push({
-                                        cupName: thisCup.name,
-                                        weekDescription: phaseWeek.description,
-                                        fixture: thisMatch
-                                    });
+                                if (thisMatch.home !== null && thisMatch.away !== null) {
+                                    if (withPredictions.includes(thisMatch.away.name) || withPredictions.includes(thisMatch.home.name)) {
+                                        // Yes
+                                        cupMatches.push({
+                                            cupName: thisCup.name,
+                                            weekDescription: phaseWeek.description,
+                                            fixture: thisMatch
+                                        });
+                                    }
                                 }
                             }
                         }
