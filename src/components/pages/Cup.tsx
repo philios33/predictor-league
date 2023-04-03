@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router';
 
 import eggCupSmallImage from '../../assets/egg_cup_small.jpg';
+import chipsCupImage from '../../assets/chips_cup.jpg';
 import mrEggImage from '../../assets/mr_egg.jpg';
+import mrChipsImage from '../../assets/mr_chips_80.jpg';
 
 import { getCachedCups } from '../../lib/predictor/cachedCups';
 import CupGroupStandings from '../CupGroupStandings';
@@ -39,8 +41,16 @@ function Cup() {
                 <h1>{cup.name}</h1>
             )}
             
+            {cup.name === "The Mr Egg Memorial Egg Cup 2021" && (
+                <img className="cupImage" src={eggCupSmallImage} />
+            )}
 
-            <img className="cupImage" src={eggCupSmallImage} />
+            {cup.name === "The Mr Chips Memorial Chips Cup 2022/23" && (
+                <>
+                    <img src={mrChipsImage} alt="Mr Chips" />
+                    <img className="cupImage" src={chipsCupImage} />
+                </>
+            )}
 
             {!viewingRules ? (
                 <>

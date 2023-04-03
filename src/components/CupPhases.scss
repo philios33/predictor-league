@@ -62,4 +62,14 @@
             }
         }
     }
+
+    td.through {
+        background-color: #66ff66;
+    }
+    td.out {
+        background-color: #ff6666;
+    }
+    td.greyOut {
+        color: grey;
+    }
 }

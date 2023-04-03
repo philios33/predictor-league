@@ -540,6 +540,13 @@ const sendIndexPage = (req: express.Request, res: express.Response) => {
         imageWidth = "640";
         imageHeight = "480";
     }
+    if (url === "/cup/mrChipsMemorialChipsCup2022") {
+        title = "Mr Chips Memorial Chips Cup 2022/23";
+        description = "Who will be the champion of chips?";
+        image = "https://predictor.30yardsniper.co.uk/assets/mr_chips_640.jpg";
+        imageWidth = "640";
+        imageHeight = "480";
+    }
 
     const out = getIndexFileWithMeta(title, description, image, imageWidth, imageHeight);
     res.send(out);
@@ -594,8 +601,8 @@ app.get("*", function (req, res) {
     });
     */
 
-    await notificationSender.startup();
-    await profileEvents.startup();
+    // await notificationSender.startup();
+    // await profileEvents.startup();
     
     server.listen(PORT);
     console.log("Listening on port " + PORT);

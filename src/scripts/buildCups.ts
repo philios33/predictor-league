@@ -6,15 +6,15 @@ import { rankLeagueTable } from "../lib/predictor/table";
 
 export {}
 
-const getCupMatch = (player1Name: string, player1Progress: ProgressType, player2Name: string, player2Progress: ProgressType, matchText: string): CupMatchGame => {
+const getCupMatch = (player1Name: string | null, player1Progress: ProgressType, player2Name: string | null, player2Progress: ProgressType, matchText: string): CupMatchGame => {
     return {
-        home: {
+        home: player1Name === null ? null : {
             name: player1Name,
             prediction: null,
             cupGoals: null,
             progress: player1Progress,
         },
-        away: {
+        away: player2Name === null ? null : {
             name: player2Name,
             prediction: null,
             cupGoals: null,
@@ -249,16 +249,29 @@ cupData["mrEggCup2021"] = {
 
 const koPhase: Array<CupWeek> = [];
 koPhase.push({
+    week: "30",
+    description: "Quarter Finals",
+    homeTeam: null,
+    awayTeam: null,
+    score: null,
+    matches: [
+        getCupMatch("Phil", null, null, null, "Phil vs Rod or Mike"),
+        getCupMatch("Matt", null, "Rob", null, ""),
+        getCupMatch("Lawro", null, "Ed", null, ""),
+        getCupMatch("Ian", null, null, null, "Ian vs Jez or Dave"),
+    ]
+});
+koPhase.push({
     week: "29",
     description: "Qualifying KO round",
     homeTeam: null,
     awayTeam: null,
     score: null,
     matches: [
-        getCupMatch("Damo", null, "Matt", null, "32 : -1"),
-        getCupMatch("Phil", null, "Antoine", null, "24 : 31"),
-        getCupMatch("Jez", null, "Dave", null, ""),
-        getCupMatch("Mike", null, "Rod", null, ""),
+        getCupMatch("Damo", "out", "Matt", "through", "8 : 21"),
+        getCupMatch("Phil", "through", "Antoine", "out", "31 : 5"),
+        getCupMatch("Jez", null, "Dave", null, "3 : 7 (L)"),
+        getCupMatch("Mike", "out", "Rod", "through", "20 : 32"),
     ]
 });
 
@@ -411,55 +424,58 @@ for (const cupId in cupData) {
             phaseWeek.score = getMatchScore(phaseWeek.week, phaseWeek.homeTeam, phaseWeek.awayTeam);
             if (phaseWeek.score !== null) {
                 console.log("The score was: " + phaseWeek.score.homeTeam + " - " + phaseWeek.score.awayTeam);
+                
                 for (const match of phaseWeek.matches) {
-                    const [homePrediction, homePoints] = getPlayerPredictionPoints(phaseWeek.homeTeam, phaseWeek.awayTeam, match.home.name);
-                    if (homePrediction !== null) {
-                        match.home.prediction = homePrediction.homeTeam + " - " + homePrediction.awayTeam;
-                        if (homePoints !== null) {
-                            match.home.cupGoals = pointsToCupGoals(homePoints);
+                    if (match.home !== null && match.away !== null)  {
+                        const [homePrediction, homePoints] = getPlayerPredictionPoints(phaseWeek.homeTeam, phaseWeek.awayTeam, match.home.name);
+                        if (homePrediction !== null) {
+                            match.home.prediction = homePrediction.homeTeam + " - " + homePrediction.awayTeam;
+                            if (homePoints !== null) {
+                                match.home.cupGoals = pointsToCupGoals(homePoints);
+                            }
                         }
-                    }
 
-                    const [awayPrediction, awayPoints] = getPlayerPredictionPoints(phaseWeek.homeTeam, phaseWeek.awayTeam, match.away.name);
-                    if (awayPrediction) {
-                        match.away.prediction = awayPrediction.homeTeam + " - " + awayPrediction.awayTeam;
-                        if (awayPoints !== null) {
-                            match.away.cupGoals = pointsToCupGoals(awayPoints);
+                        const [awayPrediction, awayPoints] = getPlayerPredictionPoints(phaseWeek.homeTeam, phaseWeek.awayTeam, match.away.name);
+                        if (awayPrediction) {
+                            match.away.prediction = awayPrediction.homeTeam + " - " + awayPrediction.awayTeam;
+                            if (awayPoints !== null) {
+                                match.away.cupGoals = pointsToCupGoals(awayPoints);
+                            }
                         }
-                    }
-                    
-                    if (match.home.cupGoals !== null && match.away.cupGoals !== null) {
-
-                        const homeStats = getPlayerStatsByName(thisCup.groups, match.home.name);
-                        const awayStats = getPlayerStatsByName(thisCup.groups, match.away.name);
-
-                        homeStats.played++;
-                        awayStats.played++;
-                        homeStats.goalsFor += match.home.cupGoals;
-                        homeStats.goalsAgainst += match.away.cupGoals;
-                        awayStats.goalsFor += match.away.cupGoals;
-                        awayStats.goalsAgainst += match.home.cupGoals;
                         
-                        if (match.home.cupGoals > match.away.cupGoals) {
-                            match.status = "homeWin";
-                            homeStats.wins++;
-                            homeStats.points += 3;
-                            awayStats.losses++;
-                        } else if (match.home.cupGoals < match.away.cupGoals) {
-                            match.status = "awayWin";
-                            awayStats.wins++;
-                            awayStats.points += 3;
-                            homeStats.losses++;
+                        if (match.home.cupGoals !== null && match.away.cupGoals !== null) {
+
+                            const homeStats = getPlayerStatsByName(thisCup.groups, match.home.name);
+                            const awayStats = getPlayerStatsByName(thisCup.groups, match.away.name);
+
+                            homeStats.played++;
+                            awayStats.played++;
+                            homeStats.goalsFor += match.home.cupGoals;
+                            homeStats.goalsAgainst += match.away.cupGoals;
+                            awayStats.goalsFor += match.away.cupGoals;
+                            awayStats.goalsAgainst += match.home.cupGoals;
+                            
+                            if (match.home.cupGoals > match.away.cupGoals) {
+                                match.status = "homeWin";
+                                homeStats.wins++;
+                                homeStats.points += 3;
+                                awayStats.losses++;
+                            } else if (match.home.cupGoals < match.away.cupGoals) {
+                                match.status = "awayWin";
+                                awayStats.wins++;
+                                awayStats.points += 3;
+                                homeStats.losses++;
+                            } else {
+                                match.status = "draw";
+                                homeStats.points += 1;
+                                homeStats.draws++;
+                                awayStats.points += 1;
+                                awayStats.draws++;
+                            }
+                            console.log("Finished match: " + match.home.name + " (" + match.home.prediction + ") vs " + match.away.name + " (" + match.away.prediction + ") the result was " + match.home.cupGoals + " - " + match.away.cupGoals + " so a " + match.status);
                         } else {
-                            match.status = "draw";
-                            homeStats.points += 1;
-                            homeStats.draws++;
-                            awayStats.points += 1;
-                            awayStats.draws++;
+                            console.log("Couldn't get prediction or points for match: " + match.home.name + " vs " + match.away.name);
                         }
-                        console.log("Finished match: " + match.home.name + " (" + match.home.prediction + ") vs " + match.away.name + " (" + match.away.prediction + ") the result was " + match.home.cupGoals + " - " + match.away.cupGoals + " so a " + match.status);
-                    } else {
-                        console.log("Couldn't get prediction or points for match: " + match.home.name + " vs " + match.away.name);
                     }
                 }
             } else {
@@ -487,33 +503,35 @@ for (const cupId in cupData) {
             if (phaseWeek.score !== null) {
                 console.log("The score was: " + phaseWeek.score.homeTeam + " - " + phaseWeek.score.awayTeam);
                 for (const match of phaseWeek.matches) {
-                    const [homePrediction, homePoints] = getPlayerPredictionPoints(phaseWeek.homeTeam, phaseWeek.awayTeam, match.home.name);
-                    if (homePrediction !== null) {
-                        match.home.prediction = homePrediction.homeTeam + " - " + homePrediction.awayTeam;
-                        if (homePoints !== null) {
-                            match.home.cupGoals = pointsToCupGoals(homePoints);
+                    if (match.home !== null && match.away !== null)  {
+                        const [homePrediction, homePoints] = getPlayerPredictionPoints(phaseWeek.homeTeam, phaseWeek.awayTeam, match.home.name);
+                        if (homePrediction !== null) {
+                            match.home.prediction = homePrediction.homeTeam + " - " + homePrediction.awayTeam;
+                            if (homePoints !== null) {
+                                match.home.cupGoals = pointsToCupGoals(homePoints);
+                            }
                         }
-                    }
 
-                    const [awayPrediction, awayPoints] = getPlayerPredictionPoints(phaseWeek.homeTeam, phaseWeek.awayTeam, match.away.name);
-                    if (awayPrediction) {
-                        match.away.prediction = awayPrediction.homeTeam + " - " + awayPrediction.awayTeam;
-                        if (awayPoints !== null) {
-                            match.away.cupGoals = pointsToCupGoals(awayPoints);
+                        const [awayPrediction, awayPoints] = getPlayerPredictionPoints(phaseWeek.homeTeam, phaseWeek.awayTeam, match.away.name);
+                        if (awayPrediction) {
+                            match.away.prediction = awayPrediction.homeTeam + " - " + awayPrediction.awayTeam;
+                            if (awayPoints !== null) {
+                                match.away.cupGoals = pointsToCupGoals(awayPoints);
+                            }
                         }
-                    }
-                    
-                    if (match.home.cupGoals !== null && match.away.cupGoals !== null) {
-                        if (match.home.cupGoals > match.away.cupGoals) {
-                            match.status = "homeWin";
-                        } else if (match.home.cupGoals < match.away.cupGoals) {
-                            match.status = "awayWin";
+                        
+                        if (match.home.cupGoals !== null && match.away.cupGoals !== null) {
+                            if (match.home.cupGoals > match.away.cupGoals) {
+                                match.status = "homeWin";
+                            } else if (match.home.cupGoals < match.away.cupGoals) {
+                                match.status = "awayWin";
+                            } else {
+                                match.status = "draw";
+                            }
+                            console.log("Finished match: " + match.home.name + " (" + match.home.prediction + ") vs " + match.away.name + " (" + match.away.prediction + ") the result was " + match.home.cupGoals + " - " + match.away.cupGoals + " so a " + match.status);
                         } else {
-                            match.status = "draw";
+                            console.log("Couldn't get prediction or points for match: " + match.home.name + " vs " + match.away.name);
                         }
-                        console.log("Finished match: " + match.home.name + " (" + match.home.prediction + ") vs " + match.away.name + " (" + match.away.prediction + ") the result was " + match.home.cupGoals + " - " + match.away.cupGoals + " so a " + match.status);
-                    } else {
-                        console.log("Couldn't get prediction or points for match: " + match.home.name + " vs " + match.away.name);
                     }
                 }
             } else {

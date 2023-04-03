@@ -331,8 +331,8 @@ export type CupMatchTeam = {
 export type MatchStatusType = "upcoming" | "homeWin" | "draw" | "awayWin"
 
 export type CupMatchGame = {
-    home: CupMatchTeam
-    away: CupMatchTeam
+    home: CupMatchTeam | null
+    away: CupMatchTeam | null
     // score: string
     text: string
     status: MatchStatusType
