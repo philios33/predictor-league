@@ -36,7 +36,7 @@ function Login() {
         password: "",
     } as FormState);
 
-    const handleForm = (e: any, type: "username" | "password") => {
+    const handleForm = (e, type: "username" | "password") => {
         e.preventDefault();
         const value = e.target.value;
         setFormState(oldState => {

@@ -114,7 +114,7 @@ const getFinalScores = async () => {
 
     if (result.status === 200) {
 
-        const finalScores = [];
+        const finalScores: Array<{homeTeam: any, homeScore: any, awayTeam: any, awayScore: any}> = [];
         if ("payload" in result.data && result.data.payload !== null && result.data.payload instanceof Array && result.data.payload.length > 0) {
             const firstPayload = result.data.payload[0];
             for (const tournament of firstPayload.body.matchData) {
@@ -163,7 +163,7 @@ const getFinalScores = async () => {
             // console.log("CURRENT FINAL SCORES", scores);
 
             // Make sure all scores exist that we are looking for
-            const foundResults = [];
+            const foundResults: Array<{homeTeam: any, awayTeam: any, score: string}> = [];
             for (const waitingFor of awaitingScoresFor) {
                 const found = scores.find(result => ((result.homeTeam + " vs " + result.awayTeam) === waitingFor));
                 if (found) {

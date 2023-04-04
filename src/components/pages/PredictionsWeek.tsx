@@ -61,7 +61,7 @@ function PredictionsWeek() {
             
     }
 
-    const clickedRefresh = (e: any) => {
+    const clickedRefresh = (e) => {
         e.preventDefault();
         loadPredictions();
     }
@@ -393,7 +393,7 @@ function PredictionsWeek() {
     useEffect(() => {
         if (weekData && weekData.loggedInAs) {
             const weekId = weekData.week.id;
-            if (weekId in results.startOfWeekStandings) {
+            if (weekId in (results as unknown as BuiltResults).startOfWeekStandings) {
                 const table = (results as unknown as BuiltResults).startOfWeekStandings[weekId]?.leagueTables;
                 if (table) {
                     for (const fixture of weekData.fixtures) {
@@ -719,7 +719,7 @@ function PredictionsWeek() {
             <h2>Predictions {weekData && <small>- {weekData.loggedInAs} {weekData.week.name}</small>}</h2>
 
             {weekId !== "1" && (
-                weekId in results.startOfWeekStandings ? (
+                weekId in (results as unknown as BuiltResults).startOfWeekStandings ? (
                     isTableOpen ? (
                         <PremierLeagueTable data={(results as unknown as BuiltResults).startOfWeekStandings[weekId].leagueTables} name={"League table at the start of this week"} snapshotAt={(results as unknown as BuiltResults).startOfWeekStandings[weekId].snapshotTime} maxRank={20} showTableTypeDropdown={true} />
                     ) : (

@@ -5,9 +5,9 @@ This is a website to help with predictor points calculations.  Players can login
 
 ## Docker commands
 
-sudo docker build -t predictor .
+sudo docker build -t predictor . --progress=plain
 
-sudo docker run --rm --env-file .env -v `pwd`/signals:/home/node/signals -v `pwd`/logs:/home/node/logs --name predictor-league_predictor_1 -t -i -p 8081:8081 predictor
+sudo docker run --rm --env-file .env -v `pwd`/signals:/home/node/signals -v `pwd`/logs:/home/node/logs -v `pwd`/uploads:/home/node/uploads --name predictor-league_predictor_1 -t -i -p 8081:8081 predictor
 
 ## Server startup command
 

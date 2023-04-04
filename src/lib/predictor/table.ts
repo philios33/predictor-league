@@ -58,7 +58,7 @@ export const rankLeagueTable = (rankings: LeagueTable): void => {
     // Populate rankings here by starting at rank 1 and giving the next rank if the next team is different
     let nextRank = 1;
     let lastRank = 0;
-    let lastTeamName = null;
+    let lastTeamName: null | string = null;
     let lastTeam: HomeAwayPoints = {
         points: 0,
         goalsFor: 0,

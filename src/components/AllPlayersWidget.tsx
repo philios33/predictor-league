@@ -63,7 +63,7 @@ function AllPlayersWidget(props: Props) {
         })
     }
 
-    let relevantPredictions = null;
+    let relevantPredictions: null | WeekFixtures = null;
     if (showingUser !== null && showingUser in playerPredictions) {
         relevantPredictions = playerPredictions[showingUser];
     }

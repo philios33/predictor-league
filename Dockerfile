@@ -1,17 +1,18 @@
-FROM node:14-alpine
+FROM node:16-alpine
 
 WORKDIR /home/node/
+USER node
 
-COPY ./package*.json ./
+COPY --chown=node ./package*.json ./
 RUN npm ci
 
-COPY ./src ./src/
-COPY ./server ./server/
-COPY .babelrc tsconfig.json webpack*.ts ./
-COPY ./keys ./keys/
+COPY --chown=node ./src ./src/
+COPY --chown=node ./server ./server/
+COPY --chown=node .babelrc tsconfig.json webpack*.ts ./
+COPY --chown=node ./keys ./keys/
 
 # Break the cache here by copying the special signals file to trigger a redeploy, even if code hasn't changed
-COPY ./signals/redeploy.txt ./signals/redeploy.txt
+COPY --chown=node ./signals/redeploy.txt ./signals/redeploy.txt
 
 RUN npm run buildAll
 

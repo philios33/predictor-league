@@ -14,6 +14,7 @@ import { writeFixture } from "../lib/writer";
 import { sheets } from '@googleapis/sheets';
 import fs from 'fs';
 import { enqueueNotificationWithoutUniquenessCheck } from "../lib/notificationEnqueue";
+import { Scheduled } from "../lib/types";
 
 const SheetsApi = sheets('v4');
 
@@ -28,7 +29,7 @@ const dryRun = false;
 
 const now = new Date();
 
-let datesInFuture = [];
+let datesInFuture: Array<string> = [];
 for (let currentDayOffset = 0; currentDayOffset <= inToTheFuture; currentDayOffset++) {
     const thisDay = moment(now).add(currentDayOffset, "days");
     datesInFuture.push(thisDay.format("YYYY-MM-DD"));
@@ -103,7 +104,7 @@ const triggerRebuild = async (message: string) => {
             
             console.log("Doing todaysDate", todaysDate, startTime, endTime);
 
-            const matchesToday = [];
+            const matchesToday: Array<{homeTeam: string, awayTeam: string, match: Scheduled}> = [];
             for (const homeTeam in schedule.matches) {
                 for (const awayTeam in schedule.matches[homeTeam].against) {
                     const match = schedule.matches[homeTeam].against[awayTeam];

@@ -3,7 +3,7 @@
     "lib": ["dom", "dom.iterable", "esnext", "webworker"],
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "strict": true,
@@ -16,7 +16,8 @@
     "noEmit": false,
     "jsx": "react",
     "typeRoots" : ["node_modules/@types", "src/types"],
-    "allowUnreachableCode": true
+    "allowUnreachableCode": true,
+    "useUnknownInCatchVariables": false
   },
   "include": [
     "src",
