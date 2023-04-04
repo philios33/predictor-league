@@ -44,6 +44,9 @@ const getStandingsTable = (players: Array<Player>, user: null | string, atTimest
 
                 const points = player.points as PointsRow;
 
+                const percCorrect = Math.round(points.correctTotal / (points.correctTotal + points.incorrectTotal) * 100);
+
+
                 return <tr key={player.name} className={player.name === user ? "myUser" : ""}>
                     <td>{player.rank}</td>
                     <td className="faceCell">
@@ -67,8 +70,8 @@ const getStandingsTable = (players: Array<Player>, user: null | string, atTimest
                     <td>{points.correctOutcomeTotal}</td>
 
                     <td>
-                        <img className="pie" src={"/piechart/1/" + points.correctTotal + "/" + points.incorrectTotal} />
-                        <p className="pieText">{Math.round(points.correctTotal / (points.correctTotal + points.incorrectTotal) * 100)}%</p>
+                        <img className="pie" src={"/piechart/1/" + percCorrect + "/" + (100 - percCorrect)} />
+                        <p className="pieText">{percCorrect}%</p>
                     </td>
                     
                     <td>{points.regularPoints}</td>

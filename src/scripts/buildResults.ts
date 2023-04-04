@@ -31,7 +31,7 @@ const players = getPlayerNames();
     fs.writeFileSync(__dirname + "/../compiled/results.json", JSON.stringify(weekResults, null, 4));
 
     // Trim down the data so we only show recent data
-    const recentPhaseAmount = 30;
+    const recentPhaseAmount = 10;
     if (weekResults.mergedPhases.length > recentPhaseAmount) {
         // Only take the last X phases?
         weekResults.mergedPhases = weekResults.mergedPhases.slice(-recentPhaseAmount);
