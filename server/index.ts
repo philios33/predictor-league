@@ -601,8 +601,8 @@ app.get("*", function (req, res) {
     });
     */
 
-    // await notificationSender.startup();
-    // await profileEvents.startup();
+    await notificationSender.startup();
+    await profileEvents.startup();
     
     server.listen(PORT);
     console.log("Listening on port " + PORT);
