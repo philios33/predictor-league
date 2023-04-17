@@ -249,14 +249,24 @@ cupData["mrEggCup2021"] = {
 
 const koPhase: Array<CupWeek> = [];
 koPhase.push({
+    week: "32",
+    description: "Final",
+    homeTeam: null,
+    awayTeam: null,
+    score: null,
+    matches: [
+        getCupMatch("Ed", null, "Dave", null, ""),
+    ]
+});
+koPhase.push({
     week: "31",
     description: "Semi Finals",
     homeTeam: null,
     awayTeam: null,
     score: null,
     matches: [
-        getCupMatch("Dave", null, "Phil", null, ""),
-        getCupMatch("Rob", null, "Ed", null, ""),
+        getCupMatch("Dave", "through", "Phil", "out", "7 : 2"),
+        getCupMatch("Rob", "out", "Ed", "through", "2 : 9"),
     ]
 });
 koPhase.push({
