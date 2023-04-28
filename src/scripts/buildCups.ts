@@ -25,33 +25,32 @@ const getCupMatch = (player1Name: string | null, player1Progress: ProgressType, 
     }
 }
 
-/*
-const groups: Array<CupGroup> = [{
+
+const egroups: Array<CupGroup> = [{
     name: "Group A",
-    players: ['Damo','Rob','Mike'],
+    players: ['Antoine','Dave','Lawro','Phil'],
     table: null,
-    playersProgressed: ['Damo'],
-    playersKnockedOut: ['Rob','Mike'],
+    playersProgressed: [],
+    playersKnockedOut: [],
 },{
     name: "Group B",
-    players: ['Rod','Jez','Ian'],
+    players: ['Damo','Ian','Jez','Rob'],
     table: null,
-    playersProgressed: ['Ian'],
-    playersKnockedOut: ['Rod','Jez'],
+    playersProgressed: [],
+    playersKnockedOut: [],
 },{
     name: "Group C",
-    players: ['Lawro','Dave','Phil'],
+    players: ['Ed','Matt','Mike','Rod'],
     table: null,
-    playersProgressed: ['Lawro','Phil'],
-    playersKnockedOut: ['Dave'],
+    playersProgressed: [],
+    playersKnockedOut: [],
 }];
 
-const koPhase: Array<CupWeek> = [];
-const leaguePhase: Array<CupWeek> = [];
+const ekoPhase: Array<CupWeek> = [];
+const eleaguePhase: Array<CupWeek> = [];
 
-
-
-koPhase.push({
+/*
+ekoPhase.push({
     week: "19",
     description: "Final",
     homeTeam: "Brighton & Hove Albion",
@@ -64,7 +63,7 @@ koPhase.push({
 
 
 
-koPhase.push({
+ekoPhase.push({
     week: "16",
     description: "Semi Final Replays",
     homeTeam: "Crystal Palace",
@@ -76,7 +75,7 @@ koPhase.push({
     ]
 });
 
-koPhase.push({
+ekoPhase.push({
     week: "14",
     description: "Semi Finals",
     homeTeam: "Newcastle United",
@@ -88,9 +87,10 @@ koPhase.push({
     ]
 });
 
+*/
 
-
-leaguePhase.push({
+/*
+eleaguePhase.push({
     week: "13",
     description: "Group match day 6",
     homeTeam: "Crystal Palace",
@@ -103,7 +103,7 @@ leaguePhase.push({
     ]
 });
 
-leaguePhase.push({
+eleaguePhase.push({
     week: "12",
     description: "Group match day 5",
     homeTeam: "Burnley",
@@ -116,7 +116,7 @@ leaguePhase.push({
     ]
 });
 
-leaguePhase.push({
+eleaguePhase.push({
     week: "11",
     description: "Group match day 4",
     homeTeam: "Everton",
@@ -129,7 +129,7 @@ leaguePhase.push({
     ]
 });
 
-leaguePhase.push({
+eleaguePhase.push({
     week: "10",
     description: "Group match day 3",
     homeTeam: "Tottenham Hotspur",
@@ -143,7 +143,7 @@ leaguePhase.push({
 });
 
 
-leaguePhase.push({
+eleaguePhase.push({
     week: "9",
     description: "Group match day 2",
     homeTeam: "Arsenal",
@@ -156,46 +156,45 @@ leaguePhase.push({
     ]
 });
 
+*/
 
-
-leaguePhase.push({
-    week: "8",
+eleaguePhase.push({
+    week: "33",
     description: "Group match day 1",
-    homeTeam: "Everton",
-    awayTeam: "West Ham United",
+    homeTeam: null,
+    awayTeam: null,
     score: null,
     matches: [
-        getCupMatch("Damo", null, "Rob", null, ""),
-        getCupMatch("Rod", null, "Jez", null, ""),
-        getCupMatch("Lawro", null, "Dave", null, ""),
+        getCupMatch("Antoine", null, "Dave", null, "-3 : 0"),
+        getCupMatch("Lawro", null, "Phil", null, "4 : 3"),
+        getCupMatch("Damo", null, "Ian", null, "-2 : 5"),
+        getCupMatch("Jez", null, "Rob", null, "5 : 0"),
+        getCupMatch("Ed", null, "Matt", null, "-3 : 3"),
+        getCupMatch("Mike", null, "Rod", null, "7 : 0"),
     ]
 });
 
-*/
-
 const cupData: BuiltCups = {};
 
-/*
-cupData["mrEggCup2021"] = {
-    name: "The Mr Egg Memorial Egg Cup 2021",
+
+cupData["mrEggCup2023"] = {
+    name: "The Mr Egg Memorial Egg Cup 2023",
     details: [
         "The predictor cup runs in tandem with the predictor league.",
-        "The 9 players are divided in to 3 groups.  We can do a draw in whatsapp.",
-        "One specific match is chosen (by Mike) to be the designated cup match for that week.",
-        "To win your cup match, you must beat your rival's prediction score for that match.",
-        "Bankers are irrelevant for cup match results.",
+        "The 12 players are divided in to 3 groups.",
+        "Three specific matches are chosen (by Phil) to be the designated cup matches for that week.",
+        "To win your cup match, you must beat your rival's prediction score for those matches.",
+        "Bankers count towards your cup score.",
         "Win = 3 points, Draw = 1 point.",
-        "Incorrect Result = 0 goals, Correct Result = 1 goal, Correct GD = 2 goals, Correct Score = 3 goals.",
+        "1 point is 1 goal scored against your opponent",
         "Groups are sorted by points, goal difference then goals scored.",
         "Away cup goals are NOT considered more valuable than home cup goals during group rankings or multi-legged playoffs.",
-        "All players play the other two in their group twice.  This will take 6 match weeks with a rotating 6 of 9 players competing in the cup.",
+        "All players play the other three in their group once.  This will take 3 match weeks.",
         "The winners of the 3 groups and the best 2nd place player will enter the semi final draw.",
-        "An extra playoff match week may be required to determine the best 2nd placed player.",
-        "The semi final draw happens on Whatsapp.",
-        "Semi finals and the final can have infinite replays in the case of a draw.",
-        "The fact that a match is a designated cup match against a rival player should be made clear to both players in good time on the predictions screen, or agreed on whatsapp.",
-        "With no playoffs and no replays this cup will last 8 weeks.",
+        "If players cannot be separated by points, GD and GF, total game week points will be taken in to consideration",
     ],
+    semis: null,
+    /*
     semis: {
         left: {
             home: {
@@ -240,12 +239,14 @@ cupData["mrEggCup2021"] = {
         winner: "Phil",
         
     },
+    */
     
-    koPhaseWeeks: koPhase,
-    groups: groups,
-    groupPhaseWeeks: leaguePhase,
+    koPhaseWeeks: ekoPhase,
+    groups: egroups,
+    groupPhaseWeeks: eleaguePhase,
 };
-*/
+
+// Chips cup follows
 
 const koPhase: Array<CupWeek> = [];
 koPhase.push({
@@ -255,7 +256,7 @@ koPhase.push({
     awayTeam: null,
     score: null,
     matches: [
-        getCupMatch("Ed", null, "Dave", null, ""),
+        getCupMatch("Ed", "winner", "Dave", "out", "Ed is the champion of chips!"),
     ]
 });
 koPhase.push({
