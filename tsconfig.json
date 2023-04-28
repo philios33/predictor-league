@@ -16,8 +16,7 @@
     "noEmit": false,
     "jsx": "react",
     "typeRoots" : ["node_modules/@types", "src/types"],
-    "allowUnreachableCode": true,
-    "useUnknownInCatchVariables": false
+    "allowUnreachableCode": true
   },
   "include": [
     "src",
