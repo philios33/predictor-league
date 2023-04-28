@@ -191,11 +191,11 @@ function App() {
                         </li>
                         
                         <li>
-                            <Link className="btn" to="/cup/mrEggCup2022">Cup</Link>
+                            <Link className="btn" to="/cup/mrEggCup2022">Egg Cup</Link>
                         </li>
                         
                         <li>
-                            <Link className="btn" to="/cup/mrChipsMemorialChipsCup2022">Chips</Link>
+                            <Link className="btn" to="/cup/mrChipsMemorialChipsCup2022">Chips Cup</Link>
                         </li>
                     </ul>
 
