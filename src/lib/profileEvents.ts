@@ -103,7 +103,7 @@ export default class ProfileEvents {
                         return;
                     }
 
-                } catch(e) {
+                } catch(e: any) {
                     console.error(e);
 
                     this.logger?.writeEvent("PROFILE_EVENTS_CYCLE_FAILED", {

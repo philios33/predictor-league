@@ -49,6 +49,9 @@ const egroups: Array<CupGroup> = [{
 const ekoPhase: Array<CupWeek> = [];
 const eleaguePhase: Array<CupWeek> = [];
 
+// TODO Apply the known match results to the appropriate group league table objects, so we get table results
+
+
 /*
 ekoPhase.push({
     week: "19",
@@ -177,8 +180,8 @@ eleaguePhase.push({
 const cupData: BuiltCups = {};
 
 
-cupData["mrEggCup2023"] = {
-    name: "The Mr Egg Memorial Egg Cup 2023",
+cupData["mrEggCup2022"] = {
+    name: "The Mr Egg Memorial Egg Cup 2022/23",
     details: [
         "The predictor cup runs in tandem with the predictor league.",
         "The 12 players are divided in to 3 groups.",

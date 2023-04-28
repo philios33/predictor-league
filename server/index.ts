@@ -352,7 +352,7 @@ const validateJWTToUser = (token?: string): string => {
         if (!decoded.payload.sub) {
             throw new Error("Missing sub");
         }
-        return decoded.payload.sub;
+        return decoded.payload.sub as string;
     } else {
         throw new Error("Not logged in");
     }
