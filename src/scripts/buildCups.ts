@@ -174,6 +174,38 @@ eleaguePhase.push({
     ]
 });
 
+eleaguePhase.push({
+    week: "34",
+    description: "Group match day 2",
+    homeTeam: null,
+    awayTeam: null,
+    score: null,
+    matches: [
+        getCupMatch("Antoine", null, "Lawro", null, "", 2, 7),
+        getCupMatch("Dave", null, "Phil", null, "", 10, 2),
+        getCupMatch("Damo", null, "Jez", null, "", 5, 5),
+        getCupMatch("Ian", null, "Rob", null, "", 12, 0),
+        getCupMatch("Ed", null, "Mike", null, "", 7, 8),
+        getCupMatch("Matt", null, "Rod", null, "", 0, 3),
+    ]
+});
+
+eleaguePhase.push({
+    week: "35",
+    description: "Group match day 3",
+    homeTeam: null,
+    awayTeam: null,
+    score: null,
+    matches: [
+        getCupMatch("Antoine", null, "Phil", null, ""),
+        getCupMatch("Dave", null, "Lawro", null, ""),
+        getCupMatch("Damo", null, "Rob", null, ""),
+        getCupMatch("Ian", null, "Jez", null, ""),
+        getCupMatch("Ed", null, "Rod", null, ""),
+        getCupMatch("Matt", null, "Mike", null, ""),
+    ]
+});
+
 const cupData: BuiltCups = {};
 
 
