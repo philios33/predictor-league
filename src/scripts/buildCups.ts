@@ -158,19 +158,23 @@ eleaguePhase.push({
 
 */
 
+
+
+
+
 eleaguePhase.push({
-    week: "33",
-    description: "Group match day 1",
+    week: "35",
+    description: "Group match day 3",
     homeTeam: null,
     awayTeam: null,
     score: null,
     matches: [
-        getCupMatch("Antoine", null, "Dave", null, "", -3, 0),
-        getCupMatch("Lawro", null, "Phil", null, "", 4, 3),
-        getCupMatch("Damo", null, "Ian", null, "", -2, 5),
-        getCupMatch("Jez", null, "Rob", null, "", 5, 0),
-        getCupMatch("Ed", null, "Matt", null, "", -3, 3),
-        getCupMatch("Mike", null, "Rod", null, "", 7, 0),
+        getCupMatch("Antoine", null, "Phil", null, "", 0, 0),
+        getCupMatch("Dave", null, "Lawro", null, "", -3, 0),
+        getCupMatch("Damo", null, "Rob", null, "", 0, 0),
+        getCupMatch("Ian", null, "Jez", null, "", 0, -3),
+        getCupMatch("Ed", null, "Rod", null, "", 2, 2),
+        getCupMatch("Matt", null, "Mike", null, "", -2, 5),
     ]
 });
 
@@ -191,18 +195,18 @@ eleaguePhase.push({
 });
 
 eleaguePhase.push({
-    week: "35",
-    description: "Group match day 3",
+    week: "33",
+    description: "Group match day 1",
     homeTeam: null,
     awayTeam: null,
     score: null,
     matches: [
-        getCupMatch("Antoine", null, "Phil", null, ""),
-        getCupMatch("Dave", null, "Lawro", null, ""),
-        getCupMatch("Damo", null, "Rob", null, ""),
-        getCupMatch("Ian", null, "Jez", null, ""),
-        getCupMatch("Ed", null, "Rod", null, ""),
-        getCupMatch("Matt", null, "Mike", null, ""),
+        getCupMatch("Antoine", null, "Dave", null, "", -3, 0),
+        getCupMatch("Lawro", null, "Phil", null, "", 4, 3),
+        getCupMatch("Damo", null, "Ian", null, "", -2, 5),
+        getCupMatch("Jez", null, "Rob", null, "", 5, 0),
+        getCupMatch("Ed", null, "Matt", null, "", -3, 3),
+        getCupMatch("Mike", null, "Rod", null, "", 7, 0),
     ]
 });
 
