@@ -30,20 +30,20 @@ const egroups: Array<CupGroup> = [{
     name: "Group A",
     players: ['Antoine','Dave','Lawro','Phil'],
     table: null,
-    playersProgressed: [],
-    playersKnockedOut: [],
+    playersProgressed: ['Lawro','Dave'],
+    playersKnockedOut: ['Antoine','Phil'],
 },{
     name: "Group B",
     players: ['Damo','Ian','Jez','Rob'],
     table: null,
-    playersProgressed: [],
-    playersKnockedOut: [],
+    playersProgressed: ['Ian'],
+    playersKnockedOut: ['Damo','Jez','Rob'],
 },{
     name: "Group C",
     players: ['Ed','Matt','Mike','Rod'],
     table: null,
-    playersProgressed: [],
-    playersKnockedOut: [],
+    playersProgressed: ['Mike'],
+    playersKnockedOut: ['Ed','Matt','Rod'],
 }];
 
 const ekoPhase: Array<CupWeek> = [];
@@ -159,7 +159,17 @@ eleaguePhase.push({
 */
 
 
-
+ekoPhase.push({
+    week: "36",
+    description: "Semi Finals",
+    homeTeam: null,
+    awayTeam: null,
+    score: null,
+    matches: [
+        getCupMatch("Mike", null, "Dave", null, ""),
+        getCupMatch("Ian", null, "Lawro", null, ""),
+    ]
+});
 
 
 eleaguePhase.push({
