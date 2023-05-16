@@ -160,14 +160,25 @@ eleaguePhase.push({
 
 
 ekoPhase.push({
+    week: "37",
+    description: "Final",
+    homeTeam: null,
+    awayTeam: null,
+    score: null,
+    matches: [
+        getCupMatch("Ian", null, "Dave", null, ""),
+    ]
+});
+
+ekoPhase.push({
     week: "36",
     description: "Semi Finals",
     homeTeam: null,
     awayTeam: null,
     score: null,
     matches: [
-        getCupMatch("Mike", null, "Dave", null, ""),
-        getCupMatch("Ian", null, "Lawro", null, ""),
+        getCupMatch("Mike", null, "Dave", null, "", 0, 5),
+        getCupMatch("Ian", null, "Lawro", null, "", 20, 10),
     ]
 });
 
