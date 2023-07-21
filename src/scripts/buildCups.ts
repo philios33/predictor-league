@@ -6,6 +6,9 @@ import { rankLeagueTable } from "../lib/predictor/table";
 
 export {}
 
+const cupData: BuiltCups = {};
+
+/*
 const getCupMatch = (player1Name: string | null, player1Progress: ProgressType, player2Name: string | null, player2Progress: ProgressType, matchText: string, overrideHomeCupGoals: number | null = null, overrideAwayCupGoals: number | null = null): CupMatchGame => {
     return {
         home: player1Name === null ? null : {
@@ -49,6 +52,7 @@ const egroups: Array<CupGroup> = [{
 const ekoPhase: Array<CupWeek> = [];
 const eleaguePhase: Array<CupWeek> = [];
 
+*/
 /*
 ekoPhase.push({
     week: "19",
@@ -158,6 +162,7 @@ eleaguePhase.push({
 
 */
 
+/*
 
 ekoPhase.push({
     week: "37",
@@ -231,7 +236,7 @@ eleaguePhase.push({
     ]
 });
 
-const cupData: BuiltCups = {};
+
 
 
 cupData["mrEggCup2022"] = {
@@ -251,6 +256,7 @@ cupData["mrEggCup2022"] = {
         "If players cannot be separated by points, GD and GF, total game week points will be taken in to consideration",
     ],
     semis: null,
+    */
     /*
     semis: {
         left: {
@@ -297,14 +303,15 @@ cupData["mrEggCup2022"] = {
         
     },
     */
-    
+    /*
     koPhaseWeeks: ekoPhase,
     groups: egroups,
     groupPhaseWeeks: eleaguePhase,
 };
+*/
 
 // Chips cup follows
-
+/*
 const koPhase: Array<CupWeek> = [];
 koPhase.push({
     week: "32",
@@ -624,6 +631,8 @@ for (const cupId in cupData) {
         }
     }
 }
+
+*/
 
 // Write this to cups.json and use it in the specific cup page rendering
 fs.writeFileSync(__dirname + "/../compiled/cups.json", JSON.stringify(cupData, null, 4));
