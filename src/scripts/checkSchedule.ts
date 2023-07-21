@@ -50,7 +50,8 @@ if (fs.existsSync(credentialsFile1)) {
 }
 
 // const spreadsheetId2021 = "1LH94Sk4LcDQe4DfiFNcmfZ-dNG9Wzuqh-4dWp69UEW8";
-const spreadsheetId = "1Tilu5utIZBXXBL2t_cikdO_NsrfbMAQ1zBx5zws9JQA";
+// const spreadsheetId2022 = "1Tilu5utIZBXXBL2t_cikdO_NsrfbMAQ1zBx5zws9JQA";
+const spreadsheetId = "13z-8qvEYNwKUMC8nMVXN4wanSzcZT-e5oKQ3FjB8PSA";
 
 let updatesMade = 0;
 let errorsFound = 0;
@@ -130,7 +131,7 @@ const triggerRebuild = async (message: string) => {
                         const foundMatch = schedule.matches[bbcMatch.homeTeam].against[bbcMatch.awayTeam];
                         if (bbcMatch.eventStatus === "postponed") {
                             // The kickoff time must be a special value if the match is postponed
-                            if (foundMatch.kickOff === "2023-06-06T14:55:00.000Z") {
+                            if (foundMatch.kickOff === "2024-06-06T14:55:00.000Z") {
                                 // Yes this match is still postponed
                                 console.log("This match is still postponed");
                             } else {
@@ -204,7 +205,7 @@ const triggerRebuild = async (message: string) => {
         if (errorsFound > 0) {
             throw new Error("Script completed with " + errorsFound + " errors, please check logs");
         }
-    } catch(e) {
+    } catch(e: any) {
         // Something went wrong
         // Add email notification to Phil
         const uniqueId = new Date().toISOString();

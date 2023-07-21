@@ -5,7 +5,8 @@ import GoogleAuth from "./googleAuth";
 
 
 // const spreadsheetId2021 = "1LH94Sk4LcDQe4DfiFNcmfZ-dNG9Wzuqh-4dWp69UEW8";
-const spreadsheetId = "1Tilu5utIZBXXBL2t_cikdO_NsrfbMAQ1zBx5zws9JQA";
+// const spreadsheetId2022 = "1Tilu5utIZBXXBL2t_cikdO_NsrfbMAQ1zBx5zws9JQA";
+const spreadsheetId = "13z-8qvEYNwKUMC8nMVXN4wanSzcZT-e5oKQ3FjB8PSA";
 
 function getCellRefByMatch (homeTeam: string, awayTeam: string) : string {
     const teamsList = [
@@ -14,18 +15,18 @@ function getCellRefByMatch (homeTeam: string, awayTeam: string) : string {
         "AFC Bournemouth",
         "Brentford",
         "Brighton & Hove Albion",
+        "Burnley",
         "Chelsea",
         "Crystal Palace",
         "Everton",
         "Fulham",
-        "Leeds United",
-        "Leicester City",
         "Liverpool",
+        "Luton Town",
         "Manchester City",
         "Manchester United",
         "Newcastle United",
         "Nottingham Forest",
-        "Southampton",
+        "Sheffield United",
         "Tottenham Hotspur",
         "West Ham United",
         "Wolverhampton Wanderers",

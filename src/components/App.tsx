@@ -186,17 +186,20 @@ function App() {
                         <li>
                             <Link className="btn" to="/results">Results</Link>
                         </li>
+                        {/*
                         <li>
                             <Link className="btn" to="/tables">Tables</Link>
                         </li>
+                        */}
                         {/* 
                         <li>
                             <Link className="btn" to="/cup/mrEggCup2021">Cup</Link>
                         </li>
-                        */}
+                        */}{/*
                         <li>
                             <Link className="btn" to="/cup/mrChipsMemorialChipsCup2022">Chips</Link>
                         </li>
+                        */}
                     </ul>
 
                     <hr />
@@ -244,7 +247,7 @@ function App() {
             </Router>
             
             <footer>
-                &copy; 2022 Philip Nicholls
+                &copy; 2023 Philip Nicholls
                 <br/>
                 Build at {buildDetails.buildTime}
                 <ul>

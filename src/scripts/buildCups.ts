@@ -6,6 +6,7 @@ import { rankLeagueTable } from "../lib/predictor/table";
 
 export {}
 
+/*
 const getCupMatch = (player1Name: string | null, player1Progress: ProgressType, player2Name: string | null, player2Progress: ProgressType, matchText: string): CupMatchGame => {
     return {
         home: player1Name === null ? null : {
@@ -49,6 +50,7 @@ const egroups: Array<CupGroup> = [{
 const ekoPhase: Array<CupWeek> = [];
 const eleaguePhase: Array<CupWeek> = [];
 
+*/
 /*
 ekoPhase.push({
     week: "19",
@@ -158,6 +160,7 @@ eleaguePhase.push({
 
 */
 
+/*
 eleaguePhase.push({
     week: "33",
     description: "Group match day 1",
@@ -173,10 +176,11 @@ eleaguePhase.push({
         getCupMatch("Mike", null, "Rod", null, "7 : 0"),
     ]
 });
+*/
 
 const cupData: BuiltCups = {};
 
-
+/*
 cupData["mrEggCup2023"] = {
     name: "The Mr Egg Memorial Egg Cup 2023",
     details: [
@@ -194,6 +198,7 @@ cupData["mrEggCup2023"] = {
         "If players cannot be separated by points, GD and GF, total game week points will be taken in to consideration",
     ],
     semis: null,
+    */
     /*
     semis: {
         left: {
@@ -241,13 +246,14 @@ cupData["mrEggCup2023"] = {
     },
     */
     
-    koPhaseWeeks: ekoPhase,
-    groups: egroups,
-    groupPhaseWeeks: eleaguePhase,
-};
+//    koPhaseWeeks: ekoPhase,
+//    groups: egroups,
+//    groupPhaseWeeks: eleaguePhase,
+//};
 
 // Chips cup follows
 
+/*
 const koPhase: Array<CupWeek> = [];
 koPhase.push({
     week: "32",
@@ -315,7 +321,7 @@ cupData["mrChipsMemorialChipsCup2022"] = {
     groups: [],
     groupPhaseWeeks: [],
 };
-
+*/
 
 // Now we fill in the nulls by adding the match scores, predictions, and work out the points and match status
 const scores = getCachedMatchScores();

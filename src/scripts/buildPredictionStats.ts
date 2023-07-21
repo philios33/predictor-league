@@ -11,6 +11,8 @@ import { BuiltPredictionStats, PredictionStats, TeamsPredictionStats } from '../
 if ("HOME" in process.env) {
     if (process.env["HOME"] === "/home/phil") {
         process.env["LOCALDEV"] = "yes";
+    } else if (process.env["HOME"] === "/Users/philipnicholls") {
+        process.env["LOCALDEV"] = "yes";
     }
 }
 
@@ -112,7 +114,7 @@ async function getPredictionStats(gauth: GoogleAuth, players: string[]) : Promis
 
         // Grab the data
         if (!("LOCALDEV" in process.env)) {
-            console.log(process.env);
+            // console.log(process.env);
             await sleep(6); // Ensures we only get 10 players data per minute, it should be enough throttle.  20 is too long
         } else {
             console.log("Local dev detected, only 1 second throttle");

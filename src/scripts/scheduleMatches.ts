@@ -9,8 +9,8 @@ export {}
 
 const dryRun: boolean = false;
 const expectedMatches = 10;
-const weekId: string = "38";
-const dates: Array<string> = ["2023-05-28"];
+const weekId: string = "1";
+const dates: Array<string> = ["2023-08-11","2023-08-12","2023-08-13","2023-08-14"];
 
 // Note: This script now uses the cached match schedule, so make sure the cache is built with...
 // Run: npm run buildData
