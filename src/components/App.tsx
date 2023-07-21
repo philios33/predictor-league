@@ -186,20 +186,17 @@ function App() {
                         <li>
                             <Link className="btn" to="/results">Results</Link>
                         </li>
-                        {/*
                         <li>
                             <Link className="btn" to="/tables">Tables</Link>
                         </li>
-                        */}
-                        {/* 
+                        
                         <li>
-                            <Link className="btn" to="/cup/mrEggCup2021">Cup</Link>
+                            <Link className="btn" to="/cup/mrEggCup2022">Egg Cup</Link>
                         </li>
-                        */}{/*
+                        
                         <li>
-                            <Link className="btn" to="/cup/mrChipsMemorialChipsCup2022">Chips</Link>
+                            <Link className="btn" to="/cup/mrChipsMemorialChipsCup2022">Chips Cup</Link>
                         </li>
-                        */}
                     </ul>
 
                     <hr />
@@ -247,7 +244,7 @@ function App() {
             </Router>
             
             <footer>
-                &copy; 2023 Philip Nicholls
+                &copy; 2022 Philip Nicholls
                 <br/>
                 Build at {buildDetails.buildTime}
                 <ul>
