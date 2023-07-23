@@ -165,39 +165,35 @@ export default function loadWebAuthN(app: Express, logger: Logger, gauth: Google
         }
     });
 
-    const loginChallenges: Record<string, string> = {};
 
-    app.get("/webauthn/generateLoginOptions/:randomId", async (req: Request, res: Response) => {
+    app.get("/webauthn/generateLoginOptions/:userId", async (req: Request, res: Response) => {
         try {
+            const user = req.params.userId;
+
             logger.writeEvent("STARTING_WEBAUTHN_LOGIN_OPTIONS", {
-                
+                user,
             });
 
-            // By making it anonymous, we allow authenticators to respond with any stored credential possible
-            // BUT we need the client to provide a randomId to map the challenge value to
-            const randomId = req.params.randomId;
-            if (randomId in loginChallenges) {
-                throw new Error("Not random enough");
+            if (plnames.indexOf(user) === -1) {
+                throw new Error("Unknown user handle: " + user);
             }
 
-            // const user = req.params.userId;
-
-            // const devices = await fetchUserWebAuthNDevices(gauth, user);
+            const devices = await fetchUserWebAuthNDevices(gauth, user);
 
             const opts: GenerateAuthenticationOptionsOpts = {
                 timeout: 60000,
-                /* allowCredentials: devices.map(dev => ({
+                allowCredentials: devices.map(dev => ({
                     id: dev.credentialID,
                     type: 'public-key',
                     transports: dev.transports,
-                })), */
+                })),
                 userVerification: 'required',
                 rpID,
             };
             
             const options = generateAuthenticationOptions(opts);
             
-            loginChallenges[randomId] = options.challenge;
+            await updateUserWebAuthNChallenge(gauth, user, options.challenge);
             
             res.send(options);
 
@@ -213,31 +209,26 @@ export default function loadWebAuthN(app: Express, logger: Logger, gauth: Google
         }
     });
 
-    app.post("/webauthn/verifyLogin/:randomId", async (req: Request, res: Response) => {
+    app.post("/webauthn/verifyLogin/:userId", async (req: Request, res: Response) => {
         try {
+            const user = req.params.userId;
+
             logger.writeEvent("STARTING_WEBAUTHN_LOGIN_VERIFY", {
-                
+                user,
             });
 
-            // const user = req.params.userId;
-            const body: AuthenticationResponseJSON = req.body;
-
-            const randomId = req.params.randomId;
-            if (!(randomId in loginChallenges)) {
-                throw new Error("Unknown login challenge id");
-            }
-            const expectedChallenge = loginChallenges[randomId];
-
-            // We MUST be able to obtain the user id here from the submitted body, otherwise we can't lookup the public key
-            const user = body.response.userHandle;
-            if (!user) {
-                throw new Error("Authenticator did not supply userHandle with its response");
-            }
-            
             if (plnames.indexOf(user) === -1) {
                 throw new Error("Unknown user handle: " + user);
             }
 
+            // const user = req.params.userId;
+            const body: AuthenticationResponseJSON = req.body;
+
+            const expectedChallenge = await fetchUserWebAuthNChallenge(gauth, user);
+            if (expectedChallenge === null) {
+                throw new Error("No challenge set for user yet");
+            }
+            
             const devices = await fetchUserWebAuthNDevices(gauth, user);
 
             let dbAuthenticator;
@@ -286,7 +277,7 @@ export default function loadWebAuthN(app: Express, logger: Logger, gauth: Google
                 throw new Error("Not verified properly");
             }
 
-            delete loginChallenges[randomId];
+            await updateUserWebAuthNChallenge(gauth, user, "");
 
             // Now we can safely sign a user token here
             const tokenDetails = signJWTForUser(user, 60 * 60 * 24);

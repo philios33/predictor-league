@@ -5,6 +5,8 @@ import { Redirect } from 'react-router-dom';
 import { config } from '../../config';
 import WebAuthNLoginButton from '../WebAuthNLoginButton';
 import { setLogin } from '../../lib/util';
+import { PlayerSelector } from '../PlayerSelector';
+import { drawPlayerImage } from '../../lib/faces';
 
 function Login() {
 
@@ -96,6 +98,15 @@ function Login() {
         }
     }
 
+    const onSelectedPlayer = (player: string) => {
+        setFormState((oldState) => {
+            return {
+                ...oldState,
+                username: player,
+            }
+        })
+    }
+
     /*
     if (redirectTo !== null) {
         return <div>
@@ -107,15 +118,35 @@ function Login() {
     return (
         <div className="login">
             <div className="content">
-                <WebAuthNLoginButton />
-                <div>
-                    <label htmlFor="username">Username</label>
-                    <input id="username" value={formState.username} placeholder="e.g. Phil" onChange={(e) => handleForm(e, "username")}></input>
-                </div>
-                <div>
-                    <label htmlFor="password">Password</label>
-                    <input id="password" value={formState.password} type="password" onChange={(e) => handleForm(e, "password")}></input>
-                </div>
+
+                <h3>Player select</h3>
+
+                {formState.username === "" ? (
+                    <>
+                        <PlayerSelector onChangePlayer={(p) => onSelectedPlayer(p)} />
+                    </>
+                ) : (
+                    <div>
+                        <h4>
+                            {formState.username}
+                            {formState.password === "" && (
+                                <div className="logoutLink" onClick={() => setFormState({username:"", password:""})}>Change player</div>
+                            )}
+                        </h4>
+
+                        
+
+                        <div className="playerSquare selected">
+                            {drawPlayerImage(formState.username)}
+                        </div>
+                        
+                    </div>
+                )}
+                
+                {formState.password === "" && formState.username !== "" && (
+                    <WebAuthNLoginButton user={formState.username} />
+                )}
+                
                 <div>
                     { isLoading ? (
                         <>Loading...</>
@@ -123,10 +154,9 @@ function Login() {
                         errorMessage ? (
                             <>
                                 <p>{errorMessage}</p>
-                                <input type="submit" value="Retry" onClick={(e) => doLogin(e, formState)}></input>
                             </>
                         ) : (
-                            <input type="submit" value="Login" onClick={(e) => doLogin(e, formState)}></input>
+                            <></>
                         )
                     )}
                 </div>

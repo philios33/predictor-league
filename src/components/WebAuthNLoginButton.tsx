@@ -3,14 +3,15 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { setLogin } from '../lib/util';
 
-export default function WebAuthNLoginButton() {
+type Props = {
+    user: string
+}
+export default function WebAuthNLoginButton(props: Props) {
 
-    const [randomId, setRandomId] = useState("");
     const [isCompatible, setIsCompatible] = useState(false);
     const [isDisabled, setIsDisabled] = useState(false);
 
     useEffect(() => {
-        setRandomId((Math.random() * 99999999).toString());
         // Is this a compatible device?
         const result = browserSupportsWebAuthn();
         setIsCompatible(result);
@@ -28,7 +29,7 @@ export default function WebAuthNLoginButton() {
             setIsDisabled(true);
 
             const resp = await axios({
-                url: '/webauthn/generateLoginOptions/' + randomId,
+                url: '/webauthn/generateLoginOptions/' + props.user,
                 validateStatus: () => true,
                 timeout: 5000,
             });
@@ -44,7 +45,7 @@ export default function WebAuthNLoginButton() {
 
             const result = await axios({
                 method: 'POST',
-                url: '/webauthn/verifyLogin/' + randomId,
+                url: '/webauthn/verifyLogin/' + props.user,
                 data: JSON.stringify(asseResp),
                 headers: {
                     "content-type": "application/json",
@@ -76,12 +77,10 @@ export default function WebAuthNLoginButton() {
     }
 
     if (!isCompatible) {
-        return <></>;
+        return <div>Sorry, your device isn't compatible with FIDO2 passwordless login.</div>
     }
 
     return <div>
         <button className="btn" onClick={() => startLogin()} disabled={isDisabled}>Login using device</button>
-        <br />
-        <hr />
     </div>
 }
