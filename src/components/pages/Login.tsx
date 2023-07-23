@@ -119,7 +119,13 @@ function Login() {
         <div className="login">
             <div className="content">
 
+                <WebAuthNLoginButton />
+
+                <p>Or, get a link from Phil on WhatsApp</p>
+
+                {/*
                 <h3>Player select</h3>
+
 
                 {formState.username === "" ? (
                     <>
@@ -142,11 +148,14 @@ function Login() {
                         
                     </div>
                 )}
-                
-                {formState.password === "" && formState.username !== "" && (
-                    <WebAuthNLoginButton user={formState.username} />
+                */}
+
+                {formState.username !== "" && (
+                    <div className="playerSquare selected">
+                        {drawPlayerImage(formState.username)}
+                    </div>
                 )}
-                
+
                 <div>
                     { isLoading ? (
                         <>Loading...</>

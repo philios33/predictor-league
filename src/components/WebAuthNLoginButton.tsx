@@ -4,14 +4,18 @@ import React, { useEffect, useState } from 'react';
 import { setLogin } from '../lib/util';
 
 type Props = {
-    user: string
+    // user: string
 }
 export default function WebAuthNLoginButton(props: Props) {
 
+    const [randomId, setRandomId] = useState("");
     const [isCompatible, setIsCompatible] = useState(false);
     const [isDisabled, setIsDisabled] = useState(false);
 
     useEffect(() => {
+
+        setRandomId((Math.random() * 99999999).toString());
+
         // Is this a compatible device?
         const result = browserSupportsWebAuthn();
         setIsCompatible(result);
@@ -29,7 +33,7 @@ export default function WebAuthNLoginButton(props: Props) {
             setIsDisabled(true);
 
             const resp = await axios({
-                url: '/webauthn/generateLoginOptions/' + props.user,
+                url: '/webauthn/generateLoginOptions/' + randomId,
                 validateStatus: () => true,
                 timeout: 5000,
             });
@@ -45,7 +49,7 @@ export default function WebAuthNLoginButton(props: Props) {
 
             const result = await axios({
                 method: 'POST',
-                url: '/webauthn/verifyLogin/' + props.user,
+                url: '/webauthn/verifyLogin/' + randomId,
                 data: JSON.stringify(asseResp),
                 headers: {
                     "content-type": "application/json",
