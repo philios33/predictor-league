@@ -72,7 +72,7 @@ async function sleep(secs: number) {
     const realTable: CumulativeTeamPoints = {};
     for (const playerName of players) {
         // Grab the predictions data
-        if (!("LOCALDEV" in process.env)) {
+        if (!("LOCALDEV" in process.env) || process.env.LOCALDEV !== "yes") {
             await sleep(6); // Ensures we only get 10 players data per minute, it should be enough throttle.  20 is too long
         } else {
             console.log("Local dev detected, only 1 second throttle");

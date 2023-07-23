@@ -113,7 +113,7 @@ async function getPredictionStats(gauth: GoogleAuth, players: string[]) : Promis
         const predictionStats: TeamsPredictionStats = {};
 
         // Grab the data
-        if (!("LOCALDEV" in process.env)) {
+        if (!("LOCALDEV" in process.env) || process.env.LOCALDEV !== "yes") {
             // console.log(process.env);
             await sleep(6); // Ensures we only get 10 players data per minute, it should be enough throttle.  20 is too long
         } else {
