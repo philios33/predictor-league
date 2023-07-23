@@ -4,18 +4,20 @@ import { getCachedAvatarHistory } from './predictor/cachedAvatars';
 
 
 const defaultFaces: any = {
-    'Phil': require('../assets/faces/circles/phil.png'),
-    'Rob': require('../assets/faces/circles/rob.png'),
-    'Rod': require('../assets/faces/circles/rod.png'),
-    'Jez': require('../assets/faces/circles/jez.png'),
-    'Mike': require('../assets/faces/circles/mike.png'),
-    'Lawro': require('../assets/faces/circles/lawro.png'),
-    'Damo': require('../assets/faces/circles/damo.png'),
-    'Dave': require('../assets/faces/circles/dave.png'),
-    'Ian': require('../assets/faces/circles/ian.png'),
-    'Ed': require('../assets/faces/circles/ed.png'),
-    'Antoine': require('../assets/faces/circles/antoine.png'),
-    'Matt': require('../assets/faces/circles/matt.png'),
+    'Phil': require('../assets/faces/defaults/phil.jpeg'),
+    'Rob': require('../assets/faces/defaults/rob.jpeg'),
+    'Rod': require('../assets/faces/defaults/rod.jpeg'),
+    'Jez': require('../assets/faces/defaults/jez.png'),
+    'Mike': require('../assets/faces/defaults/mike.jpeg'),
+    'Lawro': require('../assets/faces/defaults/lawro.jpeg'),
+    'Damo': require('../assets/faces/defaults/damo.png'),
+    'Dave': require('../assets/faces/defaults/dave.jpeg'),
+    'Ian': require('../assets/faces/defaults/ian.jpeg'),
+    'Ed': require('../assets/faces/defaults/ed.jpeg'),
+    'Antoine': require('../assets/faces/defaults/antoine.png'),
+    'Matt': require('../assets/faces/defaults/matt.jpeg'),
+    'Miki': require('../assets/faces/defaults/miki.jpeg'),
+    'Ellman': require('../assets/faces/defaults/ellman.jpeg'),
 }
 const getDefaultFaceImage = (playerName: string): any => {
     // console.log("Image is", newspapperFaces[playerName]);

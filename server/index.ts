@@ -5,7 +5,6 @@ import express from 'express';
 import http from 'http';
 import cors from 'cors';
 import compression from 'compression';
-import jwt from 'jsonwebtoken';
 import {v4 as uuid} from 'uuid';
 import multer from 'multer';
 
@@ -21,6 +20,8 @@ import Notifications from "../src/lib/notifications";
 import { fetchUserNotificationSubscription, updateUserNotificationSubscription } from '../src/lib/subscription';
 import ProfileEvents from '../src/lib/profileEvents';
 import { getPieChartSVG } from './piechart';
+import loadWebAuthN from './webAuthN';
+import { signJWTForUser, validateJWTToUser } from './auth';
 
 export {}
 
@@ -35,9 +36,6 @@ const gauth = getGoogleAuth();
 const notificationSender = new Notifications(logger, gauth, spreadsheetId);
 const profileEvents = new ProfileEvents(logger, gauth, spreadsheetId);
 
-
-const signingSecretFile = __dirname + "/../keys/signing.key";
-const SECRET_SIGNING_KEY = fs.readFileSync(signingSecretFile);
 
 const DIST_DIR = path.join(__dirname, "..", "dist");
 const SERVER_DIST_DIR = path.join(__dirname, "..", "serverDist");
@@ -110,7 +108,7 @@ app.post("/service/subscribe", async function(req, res) {
         logger.writeEvent("PUSH_SUBSCRIPTION_RECEIVED", {user});
         await updateUserNotificationSubscription(gauth, user, req.body.subscription);
         res.send("OK");
-    } catch(e) {
+    } catch(e: any) {
         logger.writeEvent("WEBSITE_ERROR", {
             location: "/service/subscribe",
             error: e.message
@@ -141,7 +139,7 @@ app.post("/service/sendTestNofication", async function(req, res) {
         logger.writeEvent("TEST_NOTIFICATION", {triggeredBy: user});
 
         res.send(JSON.stringify({ok:true}));
-    } catch(e) {
+    } catch(e: any) {
         logger.writeEvent("WEBSITE_ERROR", {
             location: "/service/sendTestNofication",
             error: e.message
@@ -163,7 +161,7 @@ app.get("/service/subscription", async function(req, res) {
         res.send({
             subscription: sub,
         });
-    } catch(e) {
+    } catch(e: any) {
         logger.writeEvent("WEBSITE_ERROR", {
             location: "/service/subscription",
             error: e.message
@@ -196,7 +194,7 @@ app.get("/service/profile", async function(req, res) {
         res.send({
             profile: profile,
         });
-    } catch(e) {
+    } catch(e: any) {
         console.error(e);
         res.status(500);        
         res.send({
@@ -266,7 +264,7 @@ app.post("/service/avatar", upload.single("avatarImage"), async function(req, re
         res.send({
             ok: true,
         });
-    } catch(e) {
+    } catch(e: any) {
         logger.writeEvent("WEBSITE_ERROR", {
             location: "/service/avatar",
             error: e.message
@@ -279,6 +277,9 @@ app.post("/service/avatar", upload.single("avatarImage"), async function(req, re
     }
 });
 
+// Web Auth N stuff here
+
+loadWebAuthN(app, logger, gauth);
 
 // Other services
 
@@ -310,16 +311,8 @@ app.post("/service/loginService", async (req, res) => {
 
         await validatePlayerSecret(gauth, name, secret);
 
-        // Sign a token that can be used with the other services
-        const token = jwt.sign({
-            // sec: secret, // No need to put the secret inside of the token, since we can validate the token to assume the user is authorized to edit.
-        }, SECRET_SIGNING_KEY, {
-            algorithm: 'HS256',
-            expiresIn: '1y',
-            audience: 'predictor',
-            issuer: 'predictor',
-            subject: name,
-        });
+        // Sign a token that can be used with the other services (1 week)
+        const tokenDetails = signJWTForUser(name, 60 * 60 * 24 * 7);
 
         logger.writeEvent("LOGIN_SUCCESS", {
             ip: req.headers['x-real-ip'],
@@ -327,9 +320,11 @@ app.post("/service/loginService", async (req, res) => {
         });
 
         res.send({
-            token
+            token: tokenDetails.token,
+            expiry: tokenDetails.expiry,
+            username: name,
         });
-    } catch(e) {
+    } catch(e: any) {
         logger.writeEvent("LOGIN_FAIL", {
             ip: req.headers['x-real-ip'],
             message: e.message,
@@ -343,21 +338,7 @@ app.post("/service/loginService", async (req, res) => {
     }
 });
 
-const validateJWTToUser = (token?: string): string => {
-    if (token) {
-        const decoded = jwt.verify(token, SECRET_SIGNING_KEY, {
-            algorithms: ['HS256'],
-            audience: 'predictor',
-            complete: true,
-        }) as jwt.Jwt;
-        if (!decoded.payload.sub) {
-            throw new Error("Missing sub");
-        }
-        return decoded.payload.sub as string;
-    } else {
-        throw new Error("Not logged in");
-    }
-}
+
 
 // These two do the reading and writing to the spreadsheet
 app.get("/service/getThisWeek/:id", async (req, res) => {
@@ -386,7 +367,7 @@ app.get("/service/getThisWeek/:id", async (req, res) => {
         });
 
         res.send(data);
-    } catch(e) {
+    } catch(e: any) {
 
         logger.writeEvent("WEBSITE_ERROR", {
             location: req.url,
@@ -426,7 +407,7 @@ app.post("/service/postPrediction/:weekId", async (req, res) => {
         const data = await savePrediction(gauth, weekId, user, req.body.homeTeam, req.body.awayTeam, req.body.homeGoals, req.body.awayGoals, req.body.isBanker);
 
         res.send(data);
-    } catch(e) {
+    } catch(e: any) {
         logger.writeEvent("WEBSITE_ERROR", {
             location: req.url,
             ip: req.headers['x-real-ip'],
@@ -475,8 +456,8 @@ const getIndexFileWithMeta = (title: string, description: string, imagePath: nul
 }
 
 const sendIndexPage = (req: express.Request, res: express.Response) => {
-    let title = "Predictor 22-23";
-    let description = "Predictor League 22-23";
+    let title = "Predictor 23-24";
+    let description = "Predictor League 23-24";
     let image: null | string = null;
     let imageWidth: null | string = null;
     let imageHeight: null | string = null;
@@ -534,6 +515,7 @@ const sendIndexPage = (req: express.Request, res: express.Response) => {
         }
         */
     }
+    /*
     if (url === "/cup/mrEggCup2021") {
         title = "Mr Egg Memorial Egg Cup 2021";
         description = "Who will be the champion of egg?";
@@ -548,6 +530,7 @@ const sendIndexPage = (req: express.Request, res: express.Response) => {
         imageWidth = "640";
         imageHeight = "480";
     }
+    */
 
     const out = getIndexFileWithMeta(title, description, image, imageWidth, imageHeight);
     res.send(out);

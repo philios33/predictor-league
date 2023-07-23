@@ -6,6 +6,7 @@ import { getLogo24 } from '../../lib/logo';
 import { getPlayerNames } from '../../lib/players';
 import { Player, BuiltResults, PointsRow, PlayerPrediction } from '../../lib/types';
 import PremierLeagueTable from '../PremierLeagueTable';
+import { getLogin } from '../../lib/util';
 
 
 const results: BuiltResults = compiledResults as unknown as BuiltResults;
@@ -91,10 +92,10 @@ function Results() {
 
     const [user, setUser] = useState(null as null | string);
     useEffect(() => {
-        const login = localStorage.getItem("login");
+
+        const login = getLogin();
         if (login !== null) {
-            const decoded = JSON.parse(login);
-            setUser(decoded.username);
+            setUser(login.username);
         } else {
             setUser(null);
         }

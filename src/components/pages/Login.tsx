@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { Redirect } from 'react-router-dom';
 import { config } from '../../config';
+import WebAuthNLoginButton from '../WebAuthNLoginButton';
+import { setLogin } from '../../lib/util';
 
 function Login() {
 
@@ -77,17 +79,18 @@ function Login() {
             });
 
             // 200
-            localStorage.setItem("login", JSON.stringify({
-                username: formState.username,
+            setLogin({
+                username: result.data.username,
                 token: result.data.token,
-            }));
+                expiry: new Date(result.data.expiry),
+            });
 
             // This forces a refresh and so reloads the login widget properly
             window.location.href="/predictions";
 
             // setRedirect("/predictions");
 
-        } catch(e) {
+        } catch(e: any) {
             setLoading(false);
             setError(e.message);
         }
@@ -104,6 +107,7 @@ function Login() {
     return (
         <div className="login">
             <div className="content">
+                <WebAuthNLoginButton />
                 <div>
                     <label htmlFor="username">Username</label>
                     <input id="username" value={formState.username} placeholder="e.g. Phil" onChange={(e) => handleForm(e, "username")}></input>

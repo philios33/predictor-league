@@ -31,7 +31,7 @@ function AvatarWidget() {
             try {
                 const profile = await getProfile(login.token);
                 setProfile(profile);
-            } catch(e) {
+            } catch(e: any) {
                 setProfile(e.message);
             }
         }

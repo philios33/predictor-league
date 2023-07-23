@@ -1,14 +1,41 @@
 import { FinalScore, HiddenPrediction, LeagueTables, MatchResultType, PointsRow, Prediction, Top4LeagueTables } from "./types";
 
+type LoginToken = {
+    token: string
+    username: string
+    expiry: Date
+}
 
+type LoginTokenStored = {
+    token: string
+    username: string
+    expiry: string
+}
 
-export const getLogin = () : {token: string, username: string} | null => {
+export const setLogin = (lt: LoginToken) => {
+    const storeAs: LoginTokenStored = {
+        ...lt,
+        expiry: lt.expiry.toISOString(),
+    }
+    localStorage.setItem("login", JSON.stringify(storeAs));
+}
+
+export const getLogin = () : LoginToken | null => {
     const login = localStorage.getItem("login");
     if (login !== null) {
-        const decoded = JSON.parse(login);
-        return {
-            token: decoded.token,
-            username: decoded.username,
+        const decoded: LoginTokenStored = JSON.parse(login);
+        const expiryDate = new Date(decoded.expiry);
+        const now = new Date();
+        if (now > expiryDate) {
+            // Login has expired
+            localStorage.removeItem("login");
+            return null;
+        } else {
+            return {
+                token: decoded.token,
+                username: decoded.username,
+                expiry: new Date(decoded.expiry),
+            }
         }
     } else {
         return null;
@@ -86,12 +113,12 @@ export const calculatePoints = (prediction: null | Prediction | HiddenPrediction
 
     const resultType = calculateResultType(prediction, finalScore);
     const scoreType = calculateFinalScoreType(finalScore);
-    let season = "22-23";
+    let season = "23-24";
 
     if (resultType === "noPrediction") {
         // Didn't even both to predict
         points.missed ++;
-        if (season === "22-23") {
+        if (season === "22-23" || season === "23-24") {
             if (missedSoFar > 0) {
                 points.regularPoints = -1;
             }

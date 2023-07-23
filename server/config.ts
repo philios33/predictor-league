@@ -11,6 +11,9 @@ type Config = {
         public: string,
         private: string,
     } | null
+
+    relyingPartyId: string,
+    authOrigin: string,
 }
 
 const config: Config = {
@@ -19,7 +22,9 @@ const config: Config = {
         user: null,
         password: null,
     },
-    vapid: null
+    vapid: null,
+    relyingPartyId: "",
+    authOrigin: "",
 }
 
 if (process.env.MAIL_HOST) {
@@ -41,6 +46,22 @@ if (process.env.VAPID_PUBLIC && process.env.VAPID_PRIVATE) {
         private: process.env.VAPID_PRIVATE,
     }
     console.log("Using VAP IDs for Web Push API");
+}
+
+if (process.env.RP_ID) {
+    config.relyingPartyId = process.env.RP_ID;
+}
+if (process.env.AUTH_ORIGIN) {
+    config.authOrigin = process.env.AUTH_ORIGIN;
+}
+
+if (config.relyingPartyId === "") {
+    console.log("Missing RP_ID");
+    process.exit(1);
+}
+if (config.authOrigin === "") {
+    console.log("Missing AUTH_ORIGIN");
+    process.exit(1);
 }
 
 // console.log("Process ENV", process.env);

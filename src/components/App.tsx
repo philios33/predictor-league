@@ -38,6 +38,8 @@ import goalSoundSource from '../assets/sounds/goal.mp3';
 import idiotSoundSource from '../assets/sounds/idiot.mp3';
 import monkeyTennisSoundSource from '../assets/sounds/monkey-tennis.mp3';
 import Profile from './pages/Profile';
+import WebAuthNLoginButton from './WebAuthNLoginButton';
+import WebAuthNRegisterButton from './WebAuthNRegisterButton';
 const goalSound = new Howl({ src: [goalSoundSource] });
 const idiotSound = new Howl({ src: [idiotSoundSource] });
 const monkeyTennisSound = new Howl({ src: [monkeyTennisSoundSource] });
@@ -53,7 +55,7 @@ function App() {
         // Once it is ready, give it the login token IF we are logged in
         navigator.serviceWorker.ready.then( registration => {
             if (registration.active && login !== null) {
-                console.log("Posted the login token to the ready service worker");
+                // console.log("Posted the login token to the ready service worker");
                 registration.active?.postMessage({
                     action: 'LOGIN_TOKEN',
                     login: login,
@@ -70,7 +72,7 @@ function App() {
 
     const addPWAListener = () => {
         window.addEventListener('beforeinstallprompt', (e: any) => {
-            console.log("BEFORE INSTALL PROMPT FIRED", e);
+            // console.log("BEFORE INSTALL PROMPT FIRED", e);
             e.preventDefault();
             setDeferredPrompt(e);
             showTheHomeScreenModal();
@@ -80,7 +82,7 @@ function App() {
             setShowAddToHomeScreenModal(false);
             setDeferredPrompt(null);
             goalSound.play();
-            console.log('PWA was installed');
+            // console.log('PWA was installed');
         });
     }
 
@@ -137,7 +139,7 @@ function App() {
             // Wait for the user to respond to the prompt
             const { outcome } = deferredPrompt.userChoice;
             // Optionally, send analytics event with outcome of user choice
-            console.log(`User response to the install prompt: ${outcome}`);
+            // console.log(`User response to the install prompt: ${outcome}`);
             // We've used the prompt, and can't use it again, throw it away
             setDeferredPrompt(null);
         }
@@ -160,9 +162,12 @@ function App() {
     return (
         <div className="App">
             <header>
-                <img src={logoSmall} srcSet={logoFull + " 1000w," + logo500 + " 500w"} alt="Predictor 22-23" title="Predictor 22-23"/>
+                <h1>Predictor 23-24</h1>
+                {/*<img src={logoSmall} srcSet={logoFull + " 1000w," + logo500 + " 500w"} alt="Predictor 22-23" title="Predictor 22-23"/>*/}
                 {/*<h1>Predictor 22-23</h1>*/}
-                {login !== null && <p>Logged in as: <strong>{login.username}</strong> <div className="logoutLink" onClick={() => logout()}>Logout</div></p>}
+                {login !== null && <div>
+                    <p>Logged in as: <strong>{login.username}</strong> <div className="logoutLink" onClick={() => logout()}>Logout</div></p>
+                </div>}
             </header>
 
             {refreshRequired && (
@@ -177,12 +182,21 @@ function App() {
                         <li>
                             <Link className="btn" to="/">Home</Link>
                         </li>
-                        <li>
-                            <Link className="btn" to="/profile">Profile</Link>
-                        </li>
-                        <li>
-                            <Link className="btn" to="/predictions">Predictions</Link>
-                        </li>
+                        {login === null ? (
+                            <li>
+                                <Link className="btn" to="/login">Login</Link>
+                            </li>
+                        ) : (
+                            <>
+                                <li>
+                                    <Link className="btn" to="/profile">Profile</Link>
+                                </li>
+                                <li>
+                                    <Link className="btn" to="/predictions">Predictions</Link>
+                                </li>
+                            </>
+                        )}
+                        
                         <li>
                             <Link className="btn" to="/results">Results</Link>
                         </li>
@@ -246,7 +260,7 @@ function App() {
             </Router>
             
             <footer>
-                &copy; 2022 Philip Nicholls
+                &copy; 2023 Philip Nicholls
                 <br/>
                 Build at {buildDetails.buildTime}
                 <ul>

@@ -11,8 +11,13 @@ import { applyTeamStats, getLeagueTableFromCumPoints } from "./buildResults";
 if ("HOME" in process.env) {
     if (process.env["HOME"] === "/home/phil") {
         process.env["LOCALDEV"] = "yes";
+    } else if (process.env["HOME"] === "/Users/philipnicholls") {
+        process.env["LOCALDEV"] = "yes";
     }
 }
+
+
+
 
 const results = getCachedResults();
 
