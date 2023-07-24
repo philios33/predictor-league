@@ -23,9 +23,8 @@ import logoSmall from '../assets/logo_small.jpg';
 import logo500 from '../assets/logo_500w.png';
 import logoFull from '../assets/logo.png';
 */
-import logoSmall from '../assets/logo_2022_300.jpg';
-import logo500 from '../assets/logo_2022_500.jpg';
-import logoFull from '../assets/logo_2022_1000.jpg';
+import logoSmall from '../assets/jones_300w.jpeg';
+import logoFull from '../assets/jones_666w.jpeg';
 
 import alanImage from '../assets/partridge_192.jpg';
 
@@ -162,9 +161,10 @@ function App() {
     return (
         <div className="App">
             <header>
-                <h1>Predictor 23-24</h1>
+                {/*<h1>Predictor 23-24</h1>*/}
                 {/*<img src={logoSmall} srcSet={logoFull + " 1000w," + logo500 + " 500w"} alt="Predictor 22-23" title="Predictor 22-23"/>*/}
                 {/*<h1>Predictor 22-23</h1>*/}
+                {<img src={logoSmall} srcSet={logoFull + " 666w"} alt="Predictor 23-24" title="Predictor 23-24"/>}
                 {login !== null && <div>
                     <p>Logged in as: <strong>{login.username}</strong> <div className="logoutLink" onClick={() => logout()}>Logout</div></p>
                 </div>}
