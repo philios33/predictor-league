@@ -39,6 +39,7 @@ import monkeyTennisSoundSource from '../assets/sounds/monkey-tennis.mp3';
 import Profile from './pages/Profile';
 import WebAuthNLoginButton from './WebAuthNLoginButton';
 import WebAuthNRegisterButton from './WebAuthNRegisterButton';
+import { drawPlayerImage } from '../lib/faces';
 const goalSound = new Howl({ src: [goalSoundSource] });
 const idiotSound = new Howl({ src: [idiotSoundSource] });
 const monkeyTennisSound = new Howl({ src: [monkeyTennisSoundSource] });
@@ -157,6 +158,7 @@ function App() {
     }
 
     const login = getLogin();
+    const now = new Date();
 
     return (
         <div className="App">
@@ -165,9 +167,9 @@ function App() {
                 {/*<img src={logoSmall} srcSet={logoFull + " 1000w," + logo500 + " 500w"} alt="Predictor 22-23" title="Predictor 22-23"/>*/}
                 {/*<h1>Predictor 22-23</h1>*/}
                 {<img src={logoSmall} srcSet={logoFull + " 666w"} alt="Predictor 23-24" title="Predictor 23-24"/>}
-                {login !== null && <div>
+                {/*login !== null && <div>
                     <p>Logged in as: <strong>{login.username}</strong> <div className="logoutLink" onClick={() => logout()}>Logout</div></p>
-                </div>}
+                </div>*/}
             </header>
 
             {refreshRequired && (
@@ -213,6 +215,15 @@ function App() {
                             <Link className="btn" to="/cup/mrChipsMemorialChipsCup2022">Chips Cup</Link>
                         </li>
                         */}
+
+                        {login !== null && (
+                            <li>
+                                <div className="loggedInIcon">
+                                    { drawPlayerImage(login.username, now) }
+                                </div>
+                                <button className="btn" style={{fontSize: "16px", textDecoration: "underline"}} onClick={() => logout()}>Logout</button>
+                            </li>
+                        )}
                     </ul>
 
                     <hr />

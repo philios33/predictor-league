@@ -147,6 +147,19 @@
 
 }
 
+.loggedInIcon {
+  display: inline-block;
+  width: 30px;
+  
+  img.faceImage {
+    width: 30px;
+    vertical-align: bottom;
+    display: inline-block;
+    top: 6px;
+    position: relative;
+  }
+}
+
 .refreshRequired {
   width: 250px;
   background-color: yellow;
