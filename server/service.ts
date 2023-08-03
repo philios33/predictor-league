@@ -221,33 +221,28 @@ const showLocalNotification = (data: any, swRegistration: ServiceWorkerRegistrat
     swRegistration.showNotification(data.title, options);
 }
 
-const openNotificationURL = (event: NotificationEvent, url: string) => {
-    // Copied directly from https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerGlobalScope/notificationclick_event
-    event.waitUntil(
-        self.clients
-            .matchAll({
-                type: "window",
-            })
-            .then((clientList) => {
-                for (const client of clientList) {
-                    if (client.url === url && "focus" in client) return client.focus();
-                }
-                if (self.clients.openWindow) return self.clients.openWindow(url);
-            })
-    );
-}
 
 self.addEventListener('notificationclick', function(event) {
     event.notification.close();
-
-    switch (event.action) {
-        case 'open_url':
-            openNotificationURL(event, event.notification.data.url);
-            break;
-        // case 'any_other_action':
-        //    clients.openWindow("https://www.example.com");
-        //    break;
-    }
+    // This looks to see if the current is already open and
+    // focuses if it is
+    const rootUrl = new URL('/predictions').href;
+    event.waitUntil(
+        self.clients.matchAll({
+            type: "window"
+        })
+        .then(function(clientList) {
+            for (var i = 0; i < clientList.length; i++) {
+                var client = clientList[i];
+                if (client.url === rootUrl && 'focus' in client) {
+                    return client.focus();
+                }
+            }
+            if (self.clients.openWindow) {
+                return self.clients.openWindow(rootUrl);
+            }
+        })
+    );
 });
 
 
