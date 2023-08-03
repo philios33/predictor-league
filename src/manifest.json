@@ -3,7 +3,7 @@
     "short_name": "Predictor League",
     "scope": "https://predictor.30yardsniper.co.uk/",
     "start_url": "https://predictor.30yardsniper.co.uk/predictions",
-    "display": "minimal-ui",
+    "display": "fullscreen",
     "background_color": "#fff",
     "description": "The premier league predictor league run by 30 Yard Sniper.",
     "categories": ["predictor", "premier league", "30 yard sniper"],
