@@ -67,7 +67,7 @@ export default function loadWebAuthN(app: Express, logger: Logger, gauth: Google
                 /**
                  * Support the two most common algorithms: ES256, and RS256
                  */
-                // supportedAlgorithmIDs: [-7, -257], // Just support all algorithms
+                supportedAlgorithmIDs: [-7, -257], // Note: Robin's phone (OPPO) seems to require this line to be set
             };
 
             // console.log("USING OPTS", JSON.stringify(opts, null, 4));
