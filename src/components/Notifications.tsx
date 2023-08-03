@@ -183,15 +183,22 @@ export default function Notifications() {
         // notificationSubBroadcast.close();
     }
 
-    const requestNotificationPermission = async () => {
-        const permission = await window.Notification.requestPermission();
-        // value of permission can be 'granted', 'default', 'denied'
-        // granted: user has accepted the request
-        // default: user has dismissed the notification permission popup by clicking on x
-        // denied: user has denied the request.
-        if (permission !== 'granted') {
-            throw new Error('Permission not granted for Notification');
-        }
+    const requestNotificationPermission = (callback: (error: Error | null, result: null) => void) => {
+        window.Notification.requestPermission((permission) => {
+            try {
+                // value of permission can be 'granted', 'default', 'denied'
+                // granted: user has accepted the request
+                // default: user has dismissed the notification permission popup by clicking on x
+                // denied: user has denied the request.
+                if (permission !== 'granted') {
+                    throw new Error('Permission not granted for Notification');
+                }
+                callback(null, null);
+            } catch(e) {
+                callback(e as Error, null);
+            }
+        });
+        
     }
 
     const setup = async () => {
@@ -207,15 +214,21 @@ export default function Notifications() {
                 return;
             }
 
-            await requestNotificationPermission(); 
+            requestNotificationPermission((err) => {
+                if (err) {
+                    alert(err.message);
+                } else {
+                    if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+                        navigator.serviceWorker.controller.postMessage({
+                            action: 'CREATE_PUSH_SUB',
+                        });
+                    } else {
+                        alert("No service worker installed, please refresh and try again");
+                    }
+                }
+            }); 
             
-            if (navigator.serviceWorker && navigator.serviceWorker.controller) {
-                navigator.serviceWorker.controller.postMessage({
-                    action: 'CREATE_PUSH_SUB',
-                });
-            } else {
-                throw new Error("No service worker installed, please refresh and try again");
-            }
+            
         } catch(e) {
             alert(e.message);
         }
