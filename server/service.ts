@@ -221,19 +221,25 @@ const showLocalNotification = (data: any, swRegistration: ServiceWorkerRegistrat
     swRegistration.showNotification(data.title, options);
 }
 
-const openNotificationURL = (e: NotificationEvent, url: string) => {
-    // Close the notification popout
-    e.notification.close();
-    // Get all the Window clients
-    e.waitUntil(self.clients.matchAll({ type: 'window' }).then(clientsArr => {
-        // If a Window tab matching the targeted URL already exists, focus that;
-        const hadWindowToFocus = clientsArr.some(windowClient => windowClient.url === url ? (windowClient.focus(), true) : false);
-        // Otherwise, open a new tab to the applicable URL and focus it.
-        if (!hadWindowToFocus) self.clients.openWindow(url).then(windowClient => windowClient ? windowClient.focus() : null);
-    }));
+const openNotificationURL = (event: NotificationEvent, url: string) => {
+    // Copied directly from https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerGlobalScope/notificationclick_event
+    event.waitUntil(
+        self.clients
+            .matchAll({
+                type: "window",
+            })
+            .then((clientList) => {
+                for (const client of clientList) {
+                    if (client.url === url && "focus" in client) return client.focus();
+                }
+                if (self.clients.openWindow) return self.clients.openWindow(url);
+            })
+    );
 }
 
 self.addEventListener('notificationclick', function(event) {
+    event.notification.close();
+
     switch (event.action) {
         case 'open_url':
             openNotificationURL(event, event.notification.data.url);
@@ -242,7 +248,7 @@ self.addEventListener('notificationclick', function(event) {
         //    clients.openWindow("https://www.example.com");
         //    break;
     }
-}, false);
+});
 
 
 const handleRemovePushSub = async () => {

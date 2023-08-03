@@ -27,7 +27,7 @@ const sub = {
 const data = {
     title: "Some title",
     body: "This is a test",
-    // icon: "",
+    icon: "https://predictor.30yardsniper.co.uk/assets/partridge_192.jpg",
     // image: "",
     url: "https://predictor.30yardsniper.co.uk/predictions",
     actions: [{action: "open_url", title: "Enter predictions"}]
