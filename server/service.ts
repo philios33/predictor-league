@@ -226,7 +226,7 @@ self.addEventListener('notificationclick', function(event) {
     event.notification.close();
     // This looks to see if the current is already open and
     // focuses if it is
-    const rootUrl = new URL('/predictions').href;
+    const rootUrl = new URL('/predictions', 'https://predictor.30yardsniper.co.uk').href;
     event.waitUntil(
         self.clients.matchAll({
             type: "window"
@@ -239,7 +239,7 @@ self.addEventListener('notificationclick', function(event) {
                 }
             }
             if (self.clients.openWindow) {
-                return self.clients.openWindow(rootUrl);
+                return self.clients.openWindow("/");
             }
         })
     );
