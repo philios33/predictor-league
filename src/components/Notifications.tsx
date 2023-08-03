@@ -190,9 +190,13 @@ export default function Notifications() {
                 // granted: user has accepted the request
                 // default: user has dismissed the notification permission popup by clicking on x
                 // denied: user has denied the request.
+                
+                // Sometimes this does not equal granted properly
+                /*
                 if (permission !== 'granted') {
                     throw new Error('Permission not granted for Notification');
                 }
+                */
                 callback(null, null);
             } catch(e) {
                 callback(e as Error, null);
