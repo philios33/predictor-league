@@ -356,6 +356,12 @@ p.pieText {
     .results {
         padding: 0px;
         font-size: 16px;
+
+        .competitors {
+            .faceImage {
+                width: 166px;
+            }
+        }
     }
 
     table.predictions {
