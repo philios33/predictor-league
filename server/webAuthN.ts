@@ -67,7 +67,19 @@ export default function loadWebAuthN(app: Express, logger: Logger, gauth: Google
                 /**
                  * Support the two most common algorithms: ES256, and RS256
                  */
-                supportedAlgorithmIDs: [-7, -257], // Note: Robin's phone (OPPO) seems to require this line to be set
+                // https://www.iana.org/assignments/cose/cose.xhtml
+                supportedAlgorithmIDs: [
+                    -7, // ECDSA w/ SHA-256
+                    -8, // EdDSA
+                    -35, // ECDSA w/ SHA-384
+                    -36, // ECDSA w/ SHA-512
+                    -37, // RSASSA-PSS w/ SHA-256
+                    -38, // RSASSA-PSS w/ SHA-384
+                    -39, // RSASSA-PSS w/ SHA-512
+                    -257, // RSASSA-PKCS1-v1_5 using SHA-256
+                    -258, // RSASSA-PKCS1-v1_5 using SHA-384
+                    -259, // RSASSA-PKCS1-v1_5 using SHA-512
+                ], // Note: Adding all of these due to Robin's bug (Originally just -7 and -257)
             };
 
             // console.log("USING OPTS", JSON.stringify(opts, null, 4));
