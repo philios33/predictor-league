@@ -75,7 +75,11 @@ export default function WebAuthNLoginButton(props: Props) {
 
         } catch(e: any) {
             console.error(e);
-            alert("FAILED: " + e.message);
+            let text = e.message;
+            if (typeof e.code === "object" && typeof e.code.message === "string") {
+                text = e.code.message;
+            }
+            alert("FAILED: " + text);
             setIsDisabled(false);
         }
     }
