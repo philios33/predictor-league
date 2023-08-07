@@ -203,6 +203,9 @@ export default function loadWebAuthN(app: Express, logger: Logger, gauth: Google
                     type: 'public-key',
                     transports: dev.transports,
                 }));
+                if (allowCredentials.length === 0) {
+                    throw new Error("No known credentials for: " + user);
+                }
             }
 
             const opts: GenerateAuthenticationOptionsOpts = {
@@ -215,8 +218,11 @@ export default function loadWebAuthN(app: Express, logger: Logger, gauth: Google
             
             const options = generateAuthenticationOptions(opts);
             
-            // await updateUserWebAuthNChallenge(gauth, user, options.challenge);
-            loginChallenges[randomId] = options.challenge;
+            if (user) {
+                await updateUserWebAuthNChallenge(gauth, user, options.challenge);
+            } else {
+                loginChallenges[randomId] = options.challenge;
+            }
             
             res.send(options);
 
@@ -235,40 +241,46 @@ export default function loadWebAuthN(app: Express, logger: Logger, gauth: Google
 
     app.post("/webauthn/verifyLogin/:randomId", async (req: Request, res: Response) => {
         try {
-            // const user = req.params.userId;
+            let user = req.query.userId as string | undefined;
 
             logger.writeEvent("STARTING_WEBAUTHN_LOGIN_VERIFY", {
-                // user,
+                user,
             });
 
             const randomId = req.params.randomId;
 
-            /*
-            if (plnames.indexOf(user) === -1) {
-                throw new Error("Unknown user handle: " + user);
-            }
-            */
-
-            // const user = req.params.userId;
             const body: AuthenticationResponseJSON = req.body;
 
-            /*
-            const expectedChallenge = await fetchUserWebAuthNChallenge(gauth, user);
+            let expectedChallenge: null | string = null;
+            if (user) {
+                if (plnames.indexOf(user) === -1) {
+                    throw new Error("Unknown user handle: " + user);
+                }
+                expectedChallenge = await fetchUserWebAuthNChallenge(gauth, user);
+            } else {
+                if (!(randomId in loginChallenges)) {
+                    throw new Error("No challenge set for randomId yet");
+                }
+                expectedChallenge = loginChallenges[randomId];
+            }
+
             if (expectedChallenge === null) {
-                throw new Error("No challenge set for user yet");
+                throw new Error("No challenge found for user or in challenges memory");
             }
-            */
-
-            if (!(randomId in loginChallenges)) {
-                throw new Error("No challenge set for randomId yet");
+            
+            if (body.response.userHandle) {
+                if (user) {
+                    // These MUST match, otherwise something is very wrong
+                    if (user !== body.response.userHandle) {
+                        throw new Error("User trying to verify as " + user + " but keypair userHandle is asserted to be " + body.response.userHandle);
+                    }
+                } else {
+                    user = body.response.userHandle;
+                }
             }
 
-            const expectedChallenge = loginChallenges[randomId];
-
-            // We MUST be able to work out the user id at this point from the submitted body
-            const user = body.response.userHandle;
             if (typeof user === "undefined") {
-                throw new Error("Missing userHandle in auth credentials packet");
+                throw new Error("Unknown user from keypair userHandle or user query param");
             }
             
             const devices = await fetchUserWebAuthNDevices(gauth, user);
@@ -319,8 +331,11 @@ export default function loadWebAuthN(app: Express, logger: Logger, gauth: Google
                 throw new Error("Not verified properly");
             }
 
-            // await updateUserWebAuthNChallenge(gauth, user, "");
-            delete loginChallenges[randomId];
+            if (req.query.userId) {
+                await updateUserWebAuthNChallenge(gauth, user, "");
+            } else {
+                delete loginChallenges[randomId];
+            }
 
             // Now we can safely sign a user token here
             const tokenDetails = signJWTForUser(user, 60 * 60 * 24);

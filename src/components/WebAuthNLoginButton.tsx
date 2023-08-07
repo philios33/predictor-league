@@ -53,6 +53,9 @@ export default function WebAuthNLoginButton(props: Props) {
             const result = await axios({
                 method: 'POST',
                 url: '/webauthn/verifyLogin/' + randomId,
+                params: {
+                    userId: props.userId,
+                },
                 data: JSON.stringify(asseResp),
                 headers: {
                     "content-type": "application/json",
