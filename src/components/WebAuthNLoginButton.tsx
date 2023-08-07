@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { setLogin } from '../lib/util';
 
 type Props = {
-    // user: string
+    userId?: string
 }
 export default function WebAuthNLoginButton(props: Props) {
 
@@ -34,6 +34,9 @@ export default function WebAuthNLoginButton(props: Props) {
 
             const resp = await axios({
                 url: '/webauthn/generateLoginOptions/' + randomId,
+                params: {
+                    userId: props.userId,
+                },
                 validateStatus: () => true,
                 timeout: 5000,
             });
@@ -89,6 +92,6 @@ export default function WebAuthNLoginButton(props: Props) {
     }
 
     return <div>
-        <button className="btn" onClick={() => startLogin()} disabled={isDisabled}>Login using device</button>
+        <button className="btn" onClick={() => startLogin()} disabled={isDisabled}>Login {props.userId && "as " + props.userId} using device</button>
     </div>
 }

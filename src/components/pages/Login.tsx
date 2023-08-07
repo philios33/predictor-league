@@ -10,24 +10,18 @@ import { drawPlayerImage } from '../../lib/faces';
 
 function Login() {
 
-    const { origUser, origPass } = useParams() as {origUser: string, origPass: string};
+    const { origUser, origPass } = useParams() as {origUser?: string, origPass?: string};
 
     useEffect(() => {
-        if (origUser || origPass) {
-            setFormState(oldState => {
-                const newState = {...oldState};
-                if (origUser) {
-                    newState.username = origUser;
-                }
-                if (origPass) {
-                    newState.password = origPass;
-                }
-                setTimeout(() => {
-                    doLogin(null, newState);
-                }, 500);
-                return newState;
-            });
-            
+        if (typeof origUser === "string" && typeof origPass === "string") {
+            const newState = {
+                username: origUser,
+                password: origPass,
+            };
+            setFormState(newState);
+            setTimeout(() => {
+                doLogin(null);
+            }, 500);
         }
     }, []);
 
@@ -40,6 +34,7 @@ function Login() {
         password: "",
     } as FormState);
 
+    /*
     const handleForm = (e: any, type: "username" | "password") => {
         e.preventDefault();
         const value = e.target.value;
@@ -49,13 +44,14 @@ function Login() {
             return newState;
         })
     }
+    */
 
     const [isLoading, setLoading] = useState(false);
     const [errorMessage, setError] = useState(null as null | string);
 
     // const [redirectTo, setRedirect] = useState(null as null | string);
 
-    const doLogin = async (e : null | React.MouseEvent<HTMLInputElement, MouseEvent> = null, formState: FormState) => {
+    const doLogin = async (e : null | React.MouseEvent<HTMLInputElement, MouseEvent> = null) => {
         if (e !== null) {
             e.preventDefault();
         }
@@ -119,7 +115,7 @@ function Login() {
         <div className="login">
             <div className="content">
 
-                <WebAuthNLoginButton />
+                <WebAuthNLoginButton userId={origUser} />
 
                 <p>Or, get a link from Phil on WhatsApp</p>
 

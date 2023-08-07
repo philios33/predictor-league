@@ -2,7 +2,7 @@ import { Logger } from "../src/lib/logger";
 import { Express, Request, Response } from 'express';
 import { signJWTForUser, validateJWTToUser } from "./auth";
 import { GenerateAuthenticationOptionsOpts, GenerateRegistrationOptionsOpts, VerifiedAuthenticationResponse, VerifiedRegistrationResponse, VerifyAuthenticationResponseOpts, VerifyRegistrationResponseOpts, generateAuthenticationOptions, generateRegistrationOptions, verifyAuthenticationResponse, verifyRegistrationResponse } from "@simplewebauthn/server";
-import { AuthenticationResponseJSON, AuthenticatorDevice, RegistrationResponseJSON } from "@simplewebauthn/typescript-types";
+import { AuthenticationResponseJSON, AuthenticatorDevice, PublicKeyCredentialDescriptorFuture, RegistrationResponseJSON } from "@simplewebauthn/typescript-types";
 import { fetchUserWebAuthNChallenge, fetchUserWebAuthNDevices, updateUserWebAuthNChallenge, updateUserWebAuthNDevices } from "../src/lib/webauthn";
 import GoogleAuth from "../src/lib/googleAuth";
 import { isoUint8Array } from '@simplewebauthn/server/helpers';
@@ -62,7 +62,7 @@ export default function loadWebAuthN(app: Express, logger: Logger, gauth: Google
                     transports: dev.transports,
                 })),
                 authenticatorSelection: {
-                    residentKey: 'required', // This forces discoverable credentials so that login can occur without knowing username
+                    residentKey: 'preferred', // This tries to force discoverable credentials so that login can occur without knowing username
                 },
                 /**
                  * Support the two most common algorithms: ES256, and RS256
@@ -182,31 +182,33 @@ export default function loadWebAuthN(app: Express, logger: Logger, gauth: Google
 
     app.get("/webauthn/generateLoginOptions/:randomId", async (req: Request, res: Response) => {
         try {
-            // const user = req.params.userId;
+            const user = req.query.userId as string | undefined;
 
             logger.writeEvent("STARTING_WEBAUTHN_LOGIN_OPTIONS", {
-                
+                userId: req.query.userId,
             });
 
             const randomId = req.params.randomId;
 
-            /*
-            if (plnames.indexOf(user) === -1) {
-                throw new Error("Unknown user handle: " + user);
-            }
-            */
+            let allowCredentials: Array<PublicKeyCredentialDescriptorFuture> = [];
 
-            // const devices = await fetchUserWebAuthNDevices(gauth, user);
+            if (user) {
+                if (plnames.indexOf(user) === -1) {
+                    throw new Error("Unknown user handle: " + user);
+                }
 
-            const opts: GenerateAuthenticationOptionsOpts = {
-                timeout: 60000,
-                /*
-                allowCredentials: devices.map(dev => ({
+                const devices = await fetchUserWebAuthNDevices(gauth, user);
+                allowCredentials = devices.map(dev => ({
                     id: dev.credentialID,
                     type: 'public-key',
                     transports: dev.transports,
-                })),
-                */
+                }));
+            }
+
+            const opts: GenerateAuthenticationOptionsOpts = {
+                timeout: 60000,
+                
+                allowCredentials,
                 userVerification: 'required',
                 rpID,
             };
@@ -222,6 +224,7 @@ export default function loadWebAuthN(app: Express, logger: Logger, gauth: Google
             console.error(e);
 
             logger.writeEvent("FAILED_WEBAUTHN_LOGIN_OPTIONS", {
+                userId: req.query.userId,
                 error: e.message,
             });
 

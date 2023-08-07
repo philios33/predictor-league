@@ -236,6 +236,9 @@ function App() {
                         <Route path="/login/:origUser/:origPass">
                             <Login />
                         </Route>
+                        <Route path="/login/:origUser">
+                            <Login />
+                        </Route>
                         <Route path="/login">
                             <Login />
                         </Route>
