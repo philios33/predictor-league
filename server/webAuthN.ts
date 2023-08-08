@@ -159,10 +159,16 @@ export default function loadWebAuthN(app: Express, logger: Logger, gauth: Google
                     // Ignored as existing device
                     throw new Error("Device already exists");
                 }
+            } else {
+                throw new Error("Falsey verification was returned")
             }
 
             // Clear challenge
             await updateUserWebAuthNChallenge(gauth, user, "");
+
+            logger.writeEvent("SUCCESSFUL_WEBAUTHN_REG_VERIFY", {
+                user
+            });
             
             res.send({ verified });
         } catch(e: any) {
@@ -337,8 +343,12 @@ export default function loadWebAuthN(app: Express, logger: Logger, gauth: Google
                 delete loginChallenges[randomId];
             }
 
+            logger.writeEvent("SUCCESSFUL_WEBAUTHN_LOGIN_VERIFY", {
+                user,
+            });
+
             // Now we can safely sign a user token here
-            const tokenDetails = signJWTForUser(user, 60 * 60 * 24);
+            const tokenDetails = signJWTForUser(logger, user, 60 * 60 * 24);
 
             res.send({
                 token: tokenDetails.token,

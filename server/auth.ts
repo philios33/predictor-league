@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
+import { Logger } from '../src/lib/logger';
 
 const signingSecretFile = __dirname + "/../keys/signing.key";
 const SECRET_SIGNING_KEY = fs.readFileSync(signingSecretFile);
@@ -20,7 +21,7 @@ export const validateJWTToUser = (token?: string): string => {
     }
 }
 
-export const signJWTForUser = (name: string, expirySeconds: number): {token: string, expiry: Date} => {
+export const signJWTForUser = (logger: Logger, name: string, expirySeconds: number): {token: string, expiry: Date} => {
     // Sign a token that can be used with the other services
     const expiryDate = new Date();
     expiryDate.setSeconds(expiryDate.getSeconds() + expirySeconds);
@@ -36,6 +37,13 @@ export const signJWTForUser = (name: string, expirySeconds: number): {token: str
         issuer: 'predictor',
         subject: name,
     });
+
+    logger.writeEvent("SIGNED_LOGIN_TOKEN", {
+        userId: name,
+        expirySeconds,
+        expiresAt: expiryDate,
+    });
+    
     return {
         token,
         expiry: expiryDate,

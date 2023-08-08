@@ -312,7 +312,7 @@ app.post("/service/loginService", async (req, res) => {
         await validatePlayerSecret(gauth, name, secret);
 
         // Sign a token that can be used with the other services (1 week)
-        const tokenDetails = signJWTForUser(name, 60 * 60 * 24 * 7);
+        const tokenDetails = signJWTForUser(logger, name, 60 * 60 * 24 * 7);
 
         logger.writeEvent("LOGIN_SUCCESS", {
             ip: req.headers['x-real-ip'],
