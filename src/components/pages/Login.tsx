@@ -115,7 +115,13 @@ function Login() {
         <div className="login">
             <div className="content">
 
-                <WebAuthNLoginButton userId={origUser} />
+                <WebAuthNLoginButton />
+
+                <p>Or, if you are special:
+                    <WebAuthNLoginButton userId="Ellman" />
+                    <WebAuthNLoginButton userId="Rod" />
+                    <WebAuthNLoginButton userId="Damo" />
+                </p>
 
                 <p>Or, get a link from Phil on WhatsApp</p>
 

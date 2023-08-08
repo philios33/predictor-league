@@ -2,6 +2,7 @@ import { browserSupportsWebAuthn, startAuthentication } from '@simplewebauthn/br
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { setLogin } from '../lib/util';
+import { drawPlayerImage } from '../lib/faces';
 
 type Props = {
     userId?: string
@@ -95,6 +96,12 @@ export default function WebAuthNLoginButton(props: Props) {
     }
 
     return <div>
+        {props.userId && (
+            <div className="loginFace">
+                {drawPlayerImage(props.userId)}
+            </div>
+        )}
+        
         <button className="btn" onClick={() => startLogin()} disabled={isDisabled}>Login {props.userId && "as " + props.userId} using device</button>
     </div>
 }
