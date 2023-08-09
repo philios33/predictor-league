@@ -12,19 +12,6 @@ function Login() {
 
     const { origUser, origPass } = useParams() as {origUser?: string, origPass?: string};
 
-    useEffect(() => {
-        if (typeof origUser === "string" && typeof origPass === "string") {
-            const newState = {
-                username: origUser,
-                password: origPass,
-            };
-            setFormState(newState);
-            setTimeout(() => {
-                doLogin(null);
-            }, 500);
-        }
-    }, []);
-
     type FormState = {
         username: string
         password: string
@@ -33,6 +20,24 @@ function Login() {
         username: "",
         password: "",
     } as FormState);
+
+    useEffect(() => {
+        if (typeof origUser === "string" && typeof origPass === "string") {
+            const newState = {
+                username: origUser,
+                password: origPass,
+            };
+            setFormState(newState);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (formState.username !== "" && formState.password !== "") {
+            doLogin(null);
+        }
+    }, [formState]);
+
+    
 
     /*
     const handleForm = (e: any, type: "username" | "password") => {
@@ -58,6 +63,8 @@ function Login() {
 
         setError(null);
         setLoading(true);
+
+        console.log("formState is", formState);
 
         // Make ajax request, store token and redirect to /predictions page
         try {
@@ -118,9 +125,10 @@ function Login() {
                 <WebAuthNLoginButton />
 
                 <p>Or, if you are special:
-                    <WebAuthNLoginButton userId="Ellman" />
-                    <WebAuthNLoginButton userId="Rod" />
                     <WebAuthNLoginButton userId="Damo" />
+                    <WebAuthNLoginButton userId="Ellman" />
+                    <WebAuthNLoginButton userId="Ian" />
+                    <WebAuthNLoginButton userId="Rod" />
                 </p>
 
                 <p>Or, get a link from Phil on WhatsApp</p>
