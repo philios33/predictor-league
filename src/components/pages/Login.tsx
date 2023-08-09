@@ -128,6 +128,7 @@ function Login() {
                     <WebAuthNLoginButton userId="Damo" />
                     <WebAuthNLoginButton userId="Ellman" />
                     <WebAuthNLoginButton userId="Ian" />
+                    <WebAuthNLoginButton userId="Jez" />
                     <WebAuthNLoginButton userId="Rod" />
                 </p>
 
