@@ -71,9 +71,8 @@ function Predictions(props: Props) {
                 } else {
                     const kickOff = new Date(match.kickOff);
                     const daysUntilKickOff = Math.floor((kickOff.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-                    if (daysUntilKickOff < 9) { // UPDATE: Changed to 9 so I can see everything, but previously 7
+                    if (daysUntilKickOff < 7) { // UPCOMING (within 7 days)
                         if (kickOff > now) {
-                            // UPCOMING (within 7 days)
                             // console.log(match.kickOff + " for week " + match.weekId + " is upcoming: " + daysUntilKickOff + " days until kickoff!");
                             weekFreq[match.weekId].upcoming++;
                         } else {
@@ -96,7 +95,7 @@ function Predictions(props: Props) {
         return aOrder - bOrder;
     });
 
-    const upcomingWeeks = sortedWeeks.filter(w => w.upcoming > 0);
+    const upcomingWeeks = sortedWeeks.filter(w => w.upcoming > 0).reverse();
 
     const finishedWeeks = sortedWeeks.filter(w => (w.kickedOff + w.results) === 10);
 
