@@ -45,8 +45,10 @@ const getStandingsTable = (players: Array<Player>, user: null | string, atTimest
 
                 const points = player.points as PointsRow;
 
-                const percCorrect = Math.round(points.correctTotal / (points.correctTotal + points.incorrectTotal) * 100);
-
+                let percCorrect = 0;
+                if ((points.correctTotal + points.incorrectTotal) > 0) {
+                    percCorrect = Math.round(points.correctTotal / (points.correctTotal + points.incorrectTotal) * 100);
+                }
 
                 return <tr key={player.name} className={player.name === user ? "myUser" : ""}>
                     <td>{player.rank}</td>
