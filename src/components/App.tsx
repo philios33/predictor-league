@@ -106,7 +106,7 @@ function App() {
         location.reload();
     }
 
-    const [showAddToHomeScreenModal, setShowAddToHomeScreenModal] = useState(true);
+    const [showAddToHomeScreenModal, setShowAddToHomeScreenModal] = useState(false);
     const [homeScreenInstalled, setHomeScreenInstalled] = useState(false);
 
     const showTheHomeScreenModal = () => {
