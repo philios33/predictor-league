@@ -585,8 +585,14 @@ app.get("*", function (req, res) {
     });
     */
 
-    await notificationSender.startup();
-    await profileEvents.startup();
+    if (process.env["PROCESS_EVENTS"] !== "false") {
+        await notificationSender.startup();
+        await profileEvents.startup();
+        console.log("Processing events");
+    } else {
+        console.warn("NOT processing events");
+    }
+    
     
     server.listen(PORT);
     console.log("Listening on port " + PORT);

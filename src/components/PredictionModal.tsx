@@ -43,7 +43,7 @@ function PredictionModal(props: Props) {
 
   
     return <div className="predictionModal">
-        <div className="shadowScreen">
+        <div className="shadowScreen" onClick={(e) => props.close()}>
 
         </div>
 

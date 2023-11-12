@@ -1,24 +1,20 @@
 TO FIX
 
--2 Setup PWA feature allowing push messages to phone OS.  
-    We know push notifications will never work on iPhones, so not sure how many iPhone users there are.  Probably most people.
-    Better to ping a message to ME that contains the message that I can copy to whatsapp!
-    So, I am continuing with WPA if I can get it to send a notification to me.
-    * Write a socket.io server to server.
-    * Write a working socket.io client that will continuously try to connect and send a message every 1 minute.
-    * Get working on real site on HTTPS
+1. Fix the popup on first view and the mystic meg popup
+2. Fix mobile screen going too wide on some pages
+3. Look in to PWA app install being really slow
+4. Look at stuff to do with token storage with push message service 
+    I'm probably doing it wrong, it should be simpler
 
-    This is now in it's own branch.
-    I decided to keep the socket.io for reporting of agent string so we can see what people are using.
-    I will implement WebPush API by storing a PushSubscription per user (in Sheets DB).
-    I will improve the hidden /notifications page to get it to work for me only.  All notifications will get sent to me first.
-    Then we need to write a message sending system that decides which messages get sent out on a cron.
-    Email and Push messages are possible.
+Features
 
-    * BUT FIRST, write a script that reports when a player hasn't done their predictions for an upcoming match yet.
-    
--1 Add FORM of last 5 matches to the PL table AND to the prediction list
--1 Banker tables: See a players banker performance.
+1. (In any phase of matches) Highlight the winner of the phase by bolding the name 
+1. Add FORM of last 5 matches to the PL table AND (H/A form) to the prediction list
+1. Add previous position in results table and up, down, across arrows. (2nd column) (somehow)
+
+2. A graph to show player points progress over last 2 weeks at top of results page (with nice animations)
+
+3. Banker tables: See a players banker performance.
         Team, Times chosen, Correct, Incorrect, Success Rate, Bonus Points, Penalty Points, Total points
 
 0. Remove keys from the docker image, this is bad practise
@@ -26,12 +22,7 @@ TO FIX
 0. Split up the Results component to make things cleaner
 
 1. Link to Mikes recaps on the results feed
-1. Change title of the predictions page to say the week # (can we do this without SSR?)
-1. Highlight the winner of the week either by bolding the name, or creating a new section.
 1. Add total correct colspan=3 cell
-1. Add previous position in results table and up, down, across arrows. (2nd column)
-
-
 
 
 # Big Features

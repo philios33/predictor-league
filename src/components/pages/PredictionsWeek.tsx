@@ -426,7 +426,7 @@ function PredictionsWeek() {
             stats,
         });
         if (predictionModalRef && predictionModalRef.current) {
-            predictionModalRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            predictionModalRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
     }

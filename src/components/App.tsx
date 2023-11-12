@@ -106,7 +106,7 @@ function App() {
         location.reload();
     }
 
-    const [showAddToHomeScreenModal, setShowAddToHomeScreenModal] = useState(false);
+    const [showAddToHomeScreenModal, setShowAddToHomeScreenModal] = useState(true);
     const [homeScreenInstalled, setHomeScreenInstalled] = useState(false);
 
     const showTheHomeScreenModal = () => {
@@ -284,7 +284,7 @@ function App() {
 
             { showAddToHomeScreenModal && (
                 <div>
-                    <div className="modalBackground">.</div>
+                    <div className="modalBackground" onClick={() => closeForNow()}>.</div>
                     <div className="modal">
                         <button className="close" onClick={() => closeForNow()} >x</button>
                         <p className="Title">Add Predictor to your Home screen?</p>
