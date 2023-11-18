@@ -25,6 +25,18 @@
                 background-color: #aaf;
             }
         }
+
+        &.penalties {
+            li {
+                border: 0px;
+                font-style: italic;
+                color: #444;
+            }
+        }
     }
-    
+}
+
+.penalties {
+    font-style: italic;
+    color: #444;
 }

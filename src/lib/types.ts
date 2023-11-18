@@ -255,6 +255,7 @@ export type LeagueTableRow = {
     name: string
     rank: null | number
     stats: HomeAwayPoints
+    penalties: Array<Penalty>
 }
 
 export type PredictedLeagueTableRow = {
@@ -293,6 +294,7 @@ export type TeamPointsRow = {
 }
 
 export type Penalty = {
+    issued: string
     deduction: number
     reason: string
 }

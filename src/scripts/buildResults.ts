@@ -334,6 +334,7 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
     const startOfWeekStandings: {[key: string]: StartOfWeekStanding} = {};
 
     let foundIncompleteWeekPhase = false;
+    let penalisedEverton = false;
 
     for (const phase of mergedPhases) {
         // Process the matches by merged phase
@@ -387,6 +388,16 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
                     matchesKickedOff++;
                 }
                 fixture.bankerMultiplier = getBankerMultiplier(fixture.weekId, fixture.homeTeam, fixture.awayTeam, startOfWeekStandings[fixture.weekId].leagueTables);
+
+                // Special case for Everton points deduction
+                if (!penalisedEverton && new Date(fixture.kickOff) > new Date("2023-11-12T12:00:00Z")) {
+                    penalisedEverton = true;
+                    cumTeamPoints["Everton"].penalties.push({
+                        issued: "2023-11-13T12:00:00Z",
+                        deduction: 10,
+                        reason: "Everton deducted 10 points following a breach of the Premier League's Profitability and Sustainability Rules"
+                    });
+                }
 
                 if (fixture.finalScore !== null) {
                     matchResults++;
@@ -667,6 +678,9 @@ const sumMaps = (map1: NumericMap, map2: NumericMap) : NumericMap => {
 }
 
 const calculateLeagueTables = (cumTeamPoints: {[key:string]: TeamPointsRow}): LeagueTables => {
+
+    console.log("Everton penalties", cumTeamPoints["Everton"]?.penalties.length || 0);
+
     // Just rank all the teams based on their current team points variable
     const homeOnly = getLeagueTableFromCumPoints(cumTeamPoints, "homeOnly");
     const awayOnly = getLeagueTableFromCumPoints(cumTeamPoints, "awayOnly");
@@ -690,6 +704,7 @@ export const getLeagueTableFromCumPoints = (cumTeamPoints: {[key:string]: TeamPo
             name: team.name,
             rank: null,
             stats: mergeStats(team.home, team.away, team.penalties, type),
+            penalties: type === "all" ? team.penalties : [],
         }
     })
 }

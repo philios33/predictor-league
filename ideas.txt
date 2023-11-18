@@ -1,6 +1,5 @@
 TO FIX
 
-1. Fix the popup on first view and the mystic meg popup
 2. Fix mobile screen going too wide on some pages
 3. Look in to PWA app install being really slow
 4. Look at stuff to do with token storage with push message service 

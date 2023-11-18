@@ -1,7 +1,7 @@
 import moment from 'moment-mini';
 import React, { useEffect, useState } from 'react';
 import { getLogo24 } from '../lib/logo';
-import { LeagueTable, LeagueTables } from "../lib/types";
+import { LeagueTable, LeagueTables, Penalty } from "../lib/types";
 import './PremierLeagueTable.scss';
 
 type Props = {
@@ -28,6 +28,18 @@ function PremierLeagueTable(props: Props) {
 
     const rankings = props.data[tableType];
 
+    const penalisedTeams: Array<string> = [];
+    const penalties: Array<string> = [];
+    for (const teamRow of rankings) {
+        for (const penalty of teamRow.penalties) {
+            if (new Date(penalty.issued) < new Date(props.snapshotAt)) {
+                penalties.push(penalty.reason);
+                penalisedTeams.push(teamRow.name);
+            }
+        }
+    }
+    
+
     return (
         <div className="premierLeagueTable">
             <p className="tableName">{props.name}</p>
@@ -38,6 +50,16 @@ function PremierLeagueTable(props: Props) {
                     <li className={tableType === "homeOnly" ? "selected" : ""}><a className="btn" onClick={(e) => handleType(e, "homeOnly")} href="#">Home Only</a></li>
                     <li className={tableType === "awayOnly" ? "selected" : ""}><a className="btn" onClick={(e) => handleType(e, "awayOnly")} href="#">Away Only</a></li>
                 </ul>
+            )}
+
+            {tableType === "all" && penalties.length > 0 && (
+                <div>
+                    <ul className="penalties">
+                        {penalties.map((penalty) => (
+                            <li>* {penalty}</li>
+                        ))}
+                    </ul>
+                </div>
             )}
             
             <table>
@@ -65,7 +87,7 @@ function PremierLeagueTable(props: Props) {
                             <td>{team.stats.losses}</td>
                             <td>{team.stats.goalsFor}</td>
                             <td>{team.stats.goalsAgainst}</td>
-                            <td>{team.stats.points}</td>
+                            <td>{team.stats.points} {penalisedTeams.includes(team.name) && ("*")}</td>
                         </tr>
                     )}
                 </tbody>
