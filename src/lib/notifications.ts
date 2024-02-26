@@ -336,13 +336,6 @@ export default class Notifications {
                 await pushPredictionNotification(config.vapid.public, config.vapid.private, notification.meta.notificationSub, notification.meta.title, notification.meta.message, notification.meta.ttl);
             }
             
-            // Note: Due to the fact that some people setup notifications in chrome on their iPad/macbook, but then use iPhones as their every day phone, they don't get the notifications properly.
-            // Because of this problem, and until iPhones properly support Web Push Notifications, I should always get an email for any notification!
-            // else {
-                // Fallback to emailing Phil
-                await this.sendEmailNotificationToPhil(notification);
-            // }
-
             // Update the delivered timestamp
             const now = new Date();
             this.setNotificationDelivered(notification, now);
@@ -351,6 +344,11 @@ export default class Notifications {
             // Update the error text
             this.setNotificationFailed(notification, e.message);
         }
+
+        // Note: Due to the fact that some people setup notifications in chrome on their iPad/macbook, but then use iPhones as their every day phone, they don't get the notifications properly.
+        // Because of this problem, and until iPhones properly support Web Push Notifications, I should always get an email for any notification!
+        // Always email Phil
+        await this.sendEmailNotificationToPhil(notification);
     }
 
     async setCellValue(range: string, value: string) {

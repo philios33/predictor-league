@@ -52,15 +52,7 @@ function PremierLeagueTable(props: Props) {
                 </ul>
             )}
 
-            {tableType === "all" && penalties.length > 0 && (
-                <div>
-                    <ul className="penalties">
-                        {penalties.map((penalty) => (
-                            <li>* {penalty}</li>
-                        ))}
-                    </ul>
-                </div>
-            )}
+            
             
             <table>
                 <thead>
@@ -92,6 +84,15 @@ function PremierLeagueTable(props: Props) {
                     )}
                 </tbody>
             </table>
+            {tableType === "all" && penalties.length > 0 && (
+                <div>
+                    <ul className="penalties">
+                        {penalties.map((penalty) => (
+                            <li>* {penalty}</li>
+                        ))}
+                    </ul>
+                </div>
+            )}
             <p>Standings at: {renderDateTime(props.snapshotAt)}</p>
         </div>
     );

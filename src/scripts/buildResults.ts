@@ -334,7 +334,8 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
     const startOfWeekStandings: {[key: string]: StartOfWeekStanding} = {};
 
     let foundIncompleteWeekPhase = false;
-    let penalisedEverton = false;
+    let penalisedEverton1 = false;
+    let penalisedEverton2 = false;
 
     for (const phase of mergedPhases) {
         // Process the matches by merged phase
@@ -390,12 +391,20 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
                 fixture.bankerMultiplier = getBankerMultiplier(fixture.weekId, fixture.homeTeam, fixture.awayTeam, startOfWeekStandings[fixture.weekId].leagueTables);
 
                 // Special case for Everton points deduction
-                if (!penalisedEverton && new Date(fixture.kickOff) > new Date("2023-11-12T12:00:00Z")) {
-                    penalisedEverton = true;
+                if (!penalisedEverton1 && new Date(fixture.kickOff) > new Date("2023-11-12T12:00:00Z")) {
+                    penalisedEverton1 = true;
                     cumTeamPoints["Everton"].penalties.push({
                         issued: "2023-11-13T12:00:00Z",
                         deduction: 10,
                         reason: "Everton deducted 10 points following a breach of the Premier League's Profitability and Sustainability Rules"
+                    });
+                }
+                if (!penalisedEverton2 && new Date(fixture.kickOff) > new Date("2024-02-25T12:00:00Z")) {
+                    penalisedEverton2 = true;
+                    cumTeamPoints["Everton"].penalties.push({
+                        issued: "2024-02-26T12:00:00Z",
+                        deduction: -4,
+                        reason: "Everton awarded 4 points on appeal"
                     });
                 }
 
