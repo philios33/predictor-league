@@ -202,11 +202,11 @@ function App() {
                         <li>
                             <Link className="btn" to="/results">Results</Link>
                         </li>
-                        {/*
+                        
                         <li>
                             <Link className="btn" to="/tables">Tables</Link>
                         </li>
-                        
+                        {/*
                         <li>
                             <Link className="btn" to="/cup/mrEggCup2022">Egg Cup</Link>
                         </li>
