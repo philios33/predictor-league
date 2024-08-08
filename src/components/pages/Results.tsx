@@ -258,12 +258,12 @@ function Results() {
                             {drawPlayerImage(players[2])}
                             {players[2]}
                         </td>
-                    </tr>
-                    <tr>
                         <td className="faceCell">
                             {drawPlayerImage(players[3])}
                             {players[3]}
                         </td>
+                    </tr>
+                    <tr>
                         <td className="faceCell">
                             {drawPlayerImage(players[4])}
                             {players[4]}
@@ -272,8 +272,6 @@ function Results() {
                             {drawPlayerImage(players[5])}
                             {players[5]}
                         </td>
-                    </tr>
-                    <tr>
                         <td className="faceCell">
                             {drawPlayerImage(players[6])}
                             {players[6]}
@@ -282,12 +280,12 @@ function Results() {
                             {drawPlayerImage(players[7])}
                             {players[7]}
                         </td>
+                    </tr>
+                    <tr>
                         <td className="faceCell">
                             {drawPlayerImage(players[8])}
                             {players[8]}
                         </td>
-                    </tr>
-                    <tr>
                         <td className="faceCell">
                             {drawPlayerImage(players[9])}
                             {players[9]}
@@ -309,6 +307,14 @@ function Results() {
                         <td className="faceCell">
                             {drawPlayerImage(players[13])}
                             {players[13]}
+                        </td>
+                        <td className="faceCell">
+                            {drawPlayerImage(players[14])}
+                            {players[14]}
+                        </td>
+                        <td className="faceCell">
+                            {drawPlayerImage(players[15])}
+                            {players[15]}
                         </td>
                     </tr>
                 </tbody>

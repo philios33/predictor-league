@@ -274,7 +274,7 @@ function App() {
             </Router>
             
             <footer>
-                &copy; 2023 Philip Nicholls
+                &copy; 2024 Philip Nicholls
                 <br/>
                 Build at {buildDetails.buildTime}
                 <ul>
