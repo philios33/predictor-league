@@ -66,7 +66,7 @@ function Predictions(props: Props) {
                 // RESULT
                 weekFreq[match.weekId].results++;
             } else {
-                if (match.kickOff === "2024-06-06T14:55:00.000Z") {
+                if (match.kickOff === "2025-06-06T14:55:00.000Z") {
                     weekFreq[match.weekId].postponed++;
                 } else {
                     const kickOff = new Date(match.kickOff);

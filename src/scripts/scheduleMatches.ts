@@ -7,10 +7,10 @@ import { writeFixture } from '../lib/writer';
 
 export {}
 
-const dryRun: boolean = true;
+const dryRun: boolean = false;
 const expectedMatches = 10;
-const weekId: string = "38";
-const dates: Array<string> = ["2024-05-19"];
+const weekId: string = "3";
+const dates: Array<string> = ["2024-08-31", "2024-09-01"];
 
 // Note: This script now uses the cached match schedule, so make sure the cache is built with...
 // Run: npm run buildData

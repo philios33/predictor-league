@@ -391,6 +391,7 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
                 fixture.bankerMultiplier = getBankerMultiplier(fixture.weekId, fixture.homeTeam, fixture.awayTeam, startOfWeekStandings[fixture.weekId].leagueTables);
 
                 // Special case for Everton points deduction
+                /*
                 if (!penalisedEverton1 && new Date(fixture.kickOff) > new Date("2023-11-12T12:00:00Z")) {
                     penalisedEverton1 = true;
                     cumTeamPoints["Everton"].penalties.push({
@@ -407,6 +408,7 @@ export async function getResults(gauth: GoogleAuth, players: Array<string>): Pro
                         reason: "Everton awarded 4 points on appeal"
                     });
                 }
+                */
 
                 if (fixture.finalScore !== null) {
                     matchResults++;
