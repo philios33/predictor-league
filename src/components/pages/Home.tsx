@@ -14,7 +14,7 @@ function Home() {
                 seamless={true} 
                 allow="fullscreen;" 
                 allowFullScreen={true}>
-                Predictor Season Preview 2023/24
+                Predictor Season Preview 2024/25
             </iframe>
             {/*
             <iframe width="400" height="300" src="https://www.youtube.com/embed/zTQ8fSa-1nc">

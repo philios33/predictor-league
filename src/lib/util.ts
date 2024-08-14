@@ -113,12 +113,12 @@ export const calculatePoints = (prediction: null | Prediction | HiddenPrediction
 
     const resultType = calculateResultType(prediction, finalScore);
     const scoreType = calculateFinalScoreType(finalScore);
-    let season = "23-24";
+    let season = "24-25";
 
     if (resultType === "noPrediction") {
         // Didn't even both to predict
         points.missed ++;
-        if (season === "22-23" || season === "23-24") {
+        if (season === "22-23" || season === "23-24" || season === "24-25") {
             if (missedSoFar > 0) {
                 points.regularPoints = -1;
             }
