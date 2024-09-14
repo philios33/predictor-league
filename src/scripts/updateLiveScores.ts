@@ -8,6 +8,7 @@ import GoogleAuth from "../lib/googleAuth";
 
 import { getCachedResults } from '../lib/predictor/cachedResults';
 import { enqueueNotificationWithoutUniquenessCheck } from "../lib/notificationEnqueue";
+import getFinalScores from "./bbcApi";
 const cachedResults = getCachedResults();
 
 const SheetsApi = sheets('v4');
@@ -100,6 +101,7 @@ function getCellRefByMatch (homeTeam: string, awayTeam: string) : string {
     return awayCol + homeRow.toString();
 }
 
+/*
 const getFinalScores = async () => {
     const tournamentType = "premier-league";
     // const tournamentType = "full-priority-order";
@@ -108,6 +110,8 @@ const getFinalScores = async () => {
     // const url = "https://push.api.bbci.co.uk/batch?t=%2Fdata%2Fbbc-morph-football-scores-match-list-data%2FendDate%2F2021-09-21%2FstartDate%2F2021-09-21%2FtodayDate%2F2021-09-21%2Ftournament%2Ffull-priority-order%2Fversion%2F2.4.6?timeout=5"
     const url = "https://push.api.bbci.co.uk/batch?t=%2Fdata%2Fbbc-morph-football-scores-match-list-data%2FendDate%2F" + todaysDate + "%2FstartDate%2F" + todaysDate + "%2Ftournament%2F" + tournamentType + "%2Fversion%2F2.4.6?timeout=5";
 
+    console.log('URL', url);
+
     const result = await axios({
         url,
         timeout: 5 * 1000,
@@ -115,6 +119,7 @@ const getFinalScores = async () => {
     });
 
     if (result.status === 200) {
+        console.log('Payload', JSON.stringify(result.data, null, 4));
 
         const finalScores = [];
         if ("payload" in result.data && result.data.payload !== null && result.data.payload instanceof Array && result.data.payload.length > 0) {
@@ -148,19 +153,20 @@ const getFinalScores = async () => {
             }
         }
 
-        // console.log("SCORES", JSON.stringify(finalScores, null, 4));
+        console.log("SCORES", JSON.stringify(finalScores, null, 4));
         return finalScores;
     } else {
         throw new Error("Non 200 response: " + result.status + " for url: " + url);
     }
 }
+*/
 
 (async () => {
     try {
 
         if (awaitingScoresFor.length > 0) {
 
-            const scores = await getFinalScores();
+            const scores = await getFinalScores(moment());
 
             // console.log("CURRENT FINAL SCORES", scores);
 
