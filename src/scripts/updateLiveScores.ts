@@ -8,7 +8,7 @@ import GoogleAuth from "../lib/googleAuth";
 
 import { getCachedResults } from '../lib/predictor/cachedResults';
 import { enqueueNotificationWithoutUniquenessCheck } from "../lib/notificationEnqueue";
-import getFinalScores from "./bbcApi";
+import getFixturesResults from "./bbcApi";
 const cachedResults = getCachedResults();
 
 const SheetsApi = sheets('v4');
@@ -166,7 +166,7 @@ const getFinalScores = async () => {
 
         if (awaitingScoresFor.length > 0) {
 
-            const scores = await getFinalScores(moment());
+            const scores = await getFixturesResults(moment(), 'PostEvent');
 
             // console.log("CURRENT FINAL SCORES", scores);
 

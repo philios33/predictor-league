@@ -2,20 +2,22 @@
 import axios from "axios";
 import moment from "moment-timezone";
 
-export type FinalScore = {
+export type FixtureResult = {
     homeTeam: string
     homeScore: number
     awayTeam: string
     awayScore: number
+    dateIso: string
+    statusComment: string
 }
 
-export default async function getFinalScores(date: moment.Moment) : Promise<FinalScore[]> {
+export default async function getFixturesResults(date: moment.Moment, lookupStatus: 'PreEvent' | 'PostEvent') : Promise<FixtureResult[]> {
 
     const todaysDate = date.tz("Europe/London").format("YYYY-MM-DD");
 
     const url = 'https://web-cdn.api.bbci.co.uk/wc-poll-data/container/sport-data-scores-fixtures';
 
-    const finalScores = [];
+    const relevant = [];
 
     const result = await axios({
         url,
@@ -40,17 +42,21 @@ export default async function getFinalScores(date: moment.Moment) : Promise<Fina
             if (eg.displayLabel === 'Premier League') {
                 for (const sg of eg.secondaryGroups) {
                     for (const event of sg.events) {
-                        if (event.status === 'PostEvent') {
+                        if (event.status === lookupStatus) {
                             // console.log('event', JSON.stringify(event, null, 4));
                             const homeTeam = event.home.fullName;
                             const homeScore = event.home.score;
                             const awayTeam = event.away.fullName;
                             const awayScore = event.away.score;
-                            finalScores.push({
+                            const dateIso = event.date.iso;
+                            const statusComment = event.statusComment.value;
+                            relevant.push({
                                 homeTeam,
                                 homeScore,
                                 awayTeam,
                                 awayScore,
+                                dateIso,
+                                statusComment,
                             })
                         }
                     }
@@ -58,8 +64,8 @@ export default async function getFinalScores(date: moment.Moment) : Promise<Fina
             }
         }
 
-        // console.log('FINAL SCORES', finalScores);
-        return finalScores;
+        // console.log('RELEVANT', relevant);
+        return relevant;
     } else {
         throw new Error("Non 200 response: " + result.status + " for url: " + url);
     }
