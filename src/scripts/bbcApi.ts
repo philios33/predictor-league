@@ -37,7 +37,7 @@ export default async function getFinalScores(date: moment.Moment) : Promise<Fina
 
     if (result.status === 200) {
         for (const eg of result.data.eventGroups) {
-            if (eg.displayLabel === 'English Premier League') {
+            if (eg.displayLabel === 'Premier League') {
                 for (const sg of eg.secondaryGroups) {
                     for (const event of sg.events) {
                         if (event.status === 'PostEvent') {
