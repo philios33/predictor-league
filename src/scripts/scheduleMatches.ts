@@ -10,7 +10,7 @@ export {}
 const dryRun: boolean = true;
 const expectedMatches = 10;
 const weekId: string = "38";
-const dates: Array<string> = ["2025-05-25"];
+const dates: Array<string> = ["2025-08-12"];
 
 // Note: This script now uses the cached match schedule, so make sure the cache is built with...
 // Run: npm run buildData
