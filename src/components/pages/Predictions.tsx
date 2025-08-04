@@ -71,7 +71,7 @@ function Predictions(props: Props) {
                 } else {
                     const kickOff = new Date(match.kickOff);
                     const daysUntilKickOff = Math.floor((kickOff.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-                    if (daysUntilKickOff < 7) { // UPCOMING (within 7 days)
+                    if (daysUntilKickOff < 12) { // UPCOMING (within 7 days)
                         if (kickOff > now) {
                             // console.log(match.kickOff + " for week " + match.weekId + " is upcoming: " + daysUntilKickOff + " days until kickoff!");
                             weekFreq[match.weekId].upcoming++;

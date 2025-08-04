@@ -27,6 +27,7 @@ import logoFull from '../assets/logo.png';
 //import logoSmall from '../assets/jones_300w.jpeg';
 //import logoFull from '../assets/jones_666w.jpeg';
 
+import bookert from '../assets/bookert.gif';
 import logoSmall from '../assets/maupay_300.jpg';
 import logoFull from '../assets/maupay_666.jpg';
 
@@ -90,9 +91,15 @@ function App() {
         });
     }
 
+    const [isLoading, setIsLoading] = useState(true);
     const [refreshRequired, setRefreshRequired] = useState(false);
 
     useEffect(() => {
+        // Hide BookerT loading gif after 2.5 seconds
+        setTimeout(() => {
+            setIsLoading(false)
+        }, 2500)
+
         startVersionChecking(() => {
             setRefreshRequired(true);
         });
@@ -166,6 +173,11 @@ function App() {
 
     return (
         <div className="App">
+            {isLoading && (
+                <div className="fullScreenLoader">
+                    <img src={bookert} alt="Booker T" title="Booker T" />
+                </div>
+            )}
             <header>
                 {/*<h1>Predictor 23-24</h1>*/}
                 {/*<img src={logoSmall} srcSet={logoFull + " 1000w," + logo500 + " 500w"} alt="Predictor 22-23" title="Predictor 22-23"/>*/}
