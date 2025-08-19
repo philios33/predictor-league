@@ -10,12 +10,21 @@ function Home() {
             <iframe 
                 width="400" 
                 height="300" 
+                src="https://www.youtube.com/embed/ab5rCqz7OUw" 
+                seamless={true} 
+                allow="fullscreen;" 
+                allowFullScreen={true}>
+                Predictor Season Preview 2025/26
+            </iframe>
+            {/*<iframe 
+                width="400" 
+                height="300" 
                 src="https://www.youtube.com/embed/OTvSGqB_27w" 
                 seamless={true} 
                 allow="fullscreen;" 
                 allowFullScreen={true}>
                 Predictor Season Preview 2024/25
-            </iframe>
+            </iframe>*/}
             {/*
             <iframe width="400" height="300" src="https://www.youtube.com/embed/zTQ8fSa-1nc">
                 Predictor Season Review 2021/22    
