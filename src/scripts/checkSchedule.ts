@@ -25,7 +25,7 @@ const SheetsApi = sheets('v4');
 const schedule = getCachedMatchSchedule();
 
 const inToTheFuture = 10;
-const dryRun = true;
+const dryRun = false;
 
 const now = new Date();
 
