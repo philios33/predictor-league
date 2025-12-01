@@ -17,7 +17,8 @@
     "buildClient": "webpack --mode production --config webpack.prod.ts",
     "buildServer": "webpack --mode production --config webpack.server.ts",
     "buildServiceWorker": "webpack --mode production --config webpack.serviceworker.ts",
-    "buildAll": "npm run buildLogos && npm run buildData && npm run buildResults && npm run buildPredictionStats && npm run buildPersonalTables && npm run buildAvatars && npm run buildCups && npm run buildClient && npm run buildServer && npm run buildServiceWorker",
+    "buildChatGPT": "ts-node ./src/scripts/buildChatGPT.ts",
+    "buildAll": "npm run buildLogos && npm run buildData && npm run buildResults && npm run buildPredictionStats && npm run buildPersonalTables && npm run buildAvatars && npm run buildCups && npm run buildClient && npm run buildServer && npm run buildServiceWorker && npm run buildChatGPT",
     "build": "echo 'Choose your build type'",
     "serve": "node ./serverDist/index.js"
   },

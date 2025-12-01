@@ -89,6 +89,12 @@ app.get("/manifest.json", function (req, res) {
     res.send(fileContents);
 });
 
+app.get("/chatGPT", function (req, res) {
+    let fileContents = fs.readFileSync(path.join(SRC_DIR, "compiled", "chatGPT.json")).toString();
+    res.set("content-type", "application/json");
+    res.send(fileContents);
+});
+
 app.get("/service.js", function (req, res) {
     if (config.vapid === null) {
         res.sendStatus(404);
