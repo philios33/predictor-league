@@ -91,14 +91,16 @@ function App() {
         });
     }
 
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [refreshRequired, setRefreshRequired] = useState(false);
 
     useEffect(() => {
         // Hide BookerT loading gif after 2.5 seconds
+        /*
         setTimeout(() => {
             setIsLoading(false)
         }, 2500)
+        */
 
         startVersionChecking(() => {
             setRefreshRequired(true);
