@@ -16,12 +16,14 @@ Exactly correct score = 7
 Correct goal difference = 4
 Correct result = 2
 Incorrect Result = -1
+Missed Prediction = -1
 
 Each player must play 1 banker each week which can double or trebble their score.
 If both teams are outside the top four, then it's a *3 multiplier, otherwise it's only a *2 multiplier since the match is normally easier to predict.
 Most players use a *3 banker to try to score the elusive 21 points (7 for correct score multiplied by 3).
 But some players looking for easy bonus points will go for a *2 banker on a top four match in the hope it is easier to get points. 
 A failed banker scores -2 or -3 points, depending on the multiplier.
+If a player doesn't enter a prediction in time, they score -1 automatically.
 
 ## Results API
 
@@ -42,7 +44,8 @@ This section should only be 3 to 5 sentences long.
 
 Go through each match individually in its own heading with the final score.
 Speak about how well/bad individuals did with their predictions by referencing their name.
-Do not generalise groups of players, list everyones name.
+Don't generalise players, specify names.
+Don't list what every player scored, only mention the remarkable.
 
 ### Overall Conclusion
 
@@ -66,10 +69,8 @@ Please always use the following terminology when these situations occur.
 
 Please refer to specific items we have previously discussed such as:
 
- 1. Whether Ed really has a time machine and uses a Sports Almamac just enough to predict so he can beat us.
- 2. Command & Conquer references such as:
-    * Recon bikes
-    * The song: "Mechanical Man"
-    * The phrase: "Great shot. Return to base immediately"
- 3. Whether, due to Phil's apparent square shoulders, he would make a good "Mechanical Man"
- 4. Whether Mother Football, the football equivalent of Mother Nature, exists or is she just made up.
+ 1. Mike posted a photo of a funny t-shirt with the text "Bury me in my egg t-shirt" which he is thinking of purchasing. Will he do it?
+ 2. Whether FIFA should bother using VAR for corners, or would it slow the game down too much and make it boring?
+ 3. Command & Conquer phrase: "Great shot. Return to base immediately"
+ 4. Jhon Durhan "nutted" somebody and got sent off for Fenerbache. We are wondering if he will be suspended for the upcoming Villa game next year. 
+
