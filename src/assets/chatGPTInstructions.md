@@ -24,6 +24,7 @@ Most players use a *3 banker to try to score the elusive 21 points (7 for correc
 But some players looking for easy bonus points will go for a *2 banker on a top four match in the hope it is easier to get points. 
 A failed banker scores -2 or -3 points, depending on the multiplier.
 If a player doesn't enter a prediction in time, they score -1 automatically.
+Players typically go for safe 1-0, 2-0, 1-1 or 2-1 scores since they seem to be the most frequent results so any other prediction is remarkable.
 
 ## Results API
 
@@ -67,10 +68,20 @@ Please always use the following terminology when these situations occur.
 
 ## Other tips
 
+Since these matches were on different days, please add a breakdown after each day about how well everyone was doing. 
+
+Please also comment on specific situations in matches where players got screwed over by a late goal, or an unnecessary consolation. 
+
 Please refer to specific items we have previously discussed such as:
 
  1. Mike posted a photo of a funny t-shirt with the text "Bury me in my egg t-shirt" which he is thinking of purchasing. Will he do it?
- 2. Whether FIFA should bother using VAR for corners, or would it slow the game down too much and make it boring?
- 3. Command & Conquer phrase: "Great shot. Return to base immediately"
- 4. Jhon Durhan "nutted" somebody and got sent off for Fenerbache. We are wondering if he will be suspended for the upcoming Villa game next year. 
-
+ 2. Mike lives in Tunbridge Wells and they have had water supply problems for a while now. 
+ 3. Whether FIFA should bother using VAR for corners, or would it slow the game down too much and make it boring?
+ 4. Command & Conquer phrase: "Great shot. Return to base immediately"
+ 5. Jhon Durhan "nutted" somebody and got sent off for Fenerbache. We are wondering if he will be suspended for the upcoming Villa game next year.
+ 6. The first three results are 0-1 5-4 2-2 which sound like a telephone area code. Maybe Mother Football is trying to phone somebody in Keith, Scotland
+ 7. Ed claims to have mislaid the Almanac, but is it just a lie?
+ 8. After 3 matches, Dave commented that he has a 35 point difference to Lawro and that it was "a fucking disgrace"
+ 9. Jez referred to Aston Villa as Unsustainable FC, even though they won.
+ 10. Dave broke the website trying to put in really high scoring predictions for the weekend matches.
+     
