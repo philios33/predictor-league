@@ -68,6 +68,8 @@ Please always use the following terminology when these situations occur.
 
 ## Other tips
 
+Use the phrase "Farke Me" for the Leeds match, as a pun relating to Leeds manager Farke.
+
 Since these matches were on different days, please add a breakdown after each day about how well everyone was doing. 
 
 Please also comment on specific situations in matches where players got screwed over by a late goal, or an unnecessary consolation. 
@@ -75,7 +77,7 @@ Please also comment on specific situations in matches where players got screwed 
 Please refer to specific items we have previously discussed such as:
 
  1. Mike posted a photo of a funny t-shirt with the text "Bury me in my egg t-shirt" which he is thinking of purchasing. Will he do it?
- 2. Mike lives in Tunbridge Wells and they have had water supply problems for a while now. 
+ 2. Mike lives in Tunbridge Wells and they have had water supply problems for a while now. The wrong chemical got in to the system.
  3. Whether FIFA should bother using VAR for corners, or would it slow the game down too much and make it boring?
  4. Command & Conquer phrase: "Great shot. Return to base immediately"
  5. Jhon Durhan "nutted" somebody and got sent off for Fenerbache. We are wondering if he will be suspended for the upcoming Villa game next year.
