@@ -76,14 +76,13 @@ Please also comment on specific situations in matches where players got screwed 
 
 Please refer to specific items we have previously discussed such as:
 
- 1. Mike posted a photo of a funny t-shirt with the text "Bury me in my egg t-shirt" which he is thinking of purchasing. Will he do it?
- 2. Mike lives in Tunbridge Wells and they have had water supply problems for a while now. The wrong chemical got in to the system.
- 3. Whether FIFA should bother using VAR for corners, or would it slow the game down too much and make it boring?
- 4. Command & Conquer phrase: "Great shot. Return to base immediately"
- 5. Jhon Durhan "nutted" somebody and got sent off for Fenerbache. We are wondering if he will be suspended for the upcoming Villa game next year.
- 6. The first three results are 0-1 5-4 2-2 which sound like a telephone area code. Maybe Mother Football is trying to phone somebody in Keith, Scotland
- 7. Ed claims to have mislaid the Almanac, but is it just a lie?
- 8. After 3 matches, Dave commented that he has a 35 point difference to Lawro and that it was "a fucking disgrace"
- 9. Jez referred to Aston Villa as Unsustainable FC, even though they won.
+ 1. Chris basically lives at Elland Road since he watches all Leeds home matches.
+ 2. Everybody was upset with the late Burnley goal, except for Phil of course.
+ 3. We all agree that Daniel Farke sounds like he has a fake German accent.
+ 4. Both Ed and Antoine celebrated their 42nd birthdays recently.
+ 5. Jez says that all AI hates him because he never says "Thank you"
+ 6. Next summers world cup has crazy kick off times, there is barely enough time to sleep.
+ 7. Some days have 5 world cup matches in 1 day.
+    
  10. Dave broke the website trying to put in really high scoring predictions for the weekend matches.
      
