@@ -4,7 +4,7 @@ import astonVilla from '../compiled/logos-24/aston-villa.png';
 import bournemouth from '../compiled/logos-24/bournemouth.png';
 import brentford from '../compiled/logos-24/brentford.png';
 import brighton from '../compiled/logos-24/brighton.png';
-import burnley from '../compiled/logos-24/burnley.png';
+//import burnley from '../compiled/logos-24/burnley.png';
 import chelsea from '../compiled/logos-24/chelsea.png';
 import coventry from '../compiled/logos-24/coventry.png';
 import crystalPalace from '../compiled/logos-24/crystal-palace.png';
@@ -20,8 +20,8 @@ import newcastle from '../compiled/logos-24/newcastle.png';
 import nottinghamForest from '../compiled/logos-24/nottingham-forest.png';
 import sunderland from '../compiled/logos-24/sunderland.png';
 import tottenham from '../compiled/logos-24/tottenham.png';
-import westHam from '../compiled/logos-24/west-ham.png';
-import wolves from '../compiled/logos-24/wolves.png';
+//import westHam from '../compiled/logos-24/west-ham.png';
+//import wolves from '../compiled/logos-24/wolves.png';
 
 
 export function getLogo24(team: string): any {
@@ -32,7 +32,7 @@ export function getLogo24(team: string): any {
         "AFC Bournemouth": bournemouth,
         "Brentford": brentford,
         "Brighton & Hove Albion": brighton,
-        "Burnley": burnley,
+       // "Burnley": burnley,
         "Chelsea": chelsea,
         "Coventry City": coventry,
         "Crystal Palace": crystalPalace,
@@ -48,8 +48,8 @@ export function getLogo24(team: string): any {
         "Nottingham Forest": nottinghamForest,
         "Sunderland": sunderland,
         "Tottenham Hotspur": tottenham,
-        "West Ham United": westHam,
-        "Wolverhampton Wanderers": wolves,
+       // "West Ham United": westHam,
+       // "Wolverhampton Wanderers": wolves,
     }
     if (team in logos) {
         return logos[team];
@@ -64,7 +64,7 @@ import astonVilla2 from '../compiled/logos-48/aston-villa.png';
 import bournemouth2 from '../compiled/logos-48/bournemouth.png';
 import brentford2 from '../compiled/logos-48/brentford.png';
 import brighton2 from '../compiled/logos-48/brighton.png';
-import burnley2 from '../compiled/logos-48/burnley.png';
+//import burnley2 from '../compiled/logos-48/burnley.png';
 import chelsea2 from '../compiled/logos-48/chelsea.png';
 import coventry2 from '../compiled/logos-48/coventry.png';
 import crystalPalace2 from '../compiled/logos-48/crystal-palace.png';
@@ -80,8 +80,8 @@ import newcastle2 from '../compiled/logos-48/newcastle.png';
 import nottinghamForest2 from '../compiled/logos-48/nottingham-forest.png';
 import sunderland2 from '../compiled/logos-48/sunderland.png';
 import tottenham2 from '../compiled/logos-48/tottenham.png';
-import westHam2 from '../compiled/logos-48/west-ham.png';
-import wolves2 from '../compiled/logos-48/wolves.png';
+//import westHam2 from '../compiled/logos-48/west-ham.png';
+//import wolves2 from '../compiled/logos-48/wolves.png';
 
 
 export function getLogo48(team: string): any {
@@ -92,7 +92,7 @@ export function getLogo48(team: string): any {
         "AFC Bournemouth": bournemouth2,
         "Brentford": brentford2,
         "Brighton & Hove Albion": brighton2,
-        "Burnley": burnley2,
+        //"Burnley": burnley2,
         "Chelsea": chelsea2,
         "Coventry City": coventry2,
         "Crystal Palace": crystalPalace2,
@@ -108,8 +108,8 @@ export function getLogo48(team: string): any {
         "Nottingham Forest": nottinghamForest2,
         "Sunderland": sunderland2,
         "Tottenham Hotspur": tottenham2,
-        "West Ham United": westHam2,
-        "Wolverhampton Wanderers": wolves2,
+        //"West Ham United": westHam2,
+        //"Wolverhampton Wanderers": wolves2,
     }
     if (team in logos) {
         return logos[team];
