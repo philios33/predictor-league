@@ -221,9 +221,9 @@ function App() {
                             <Link className="btn" to="/results">Results</Link>
                         </li>
                         
-                        <li>
+                        {/*<li>
                             <Link className="btn" to="/tables">Tables</Link>
-                        </li>
+                        </li>*/}
                         {/*
                         <li>
                             <Link className="btn" to="/cup/mrEggCup2022">Egg Cup</Link>
@@ -292,7 +292,7 @@ function App() {
             </Router>
             
             <footer>
-                &copy; 2025 Philip Nicholls
+                &copy; 2026 Philip Nicholls
                 <br/>
                 Build at {buildDetails.buildTime}
                 <ul>

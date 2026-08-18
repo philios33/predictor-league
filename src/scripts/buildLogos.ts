@@ -10,12 +10,14 @@ const pngFiles = [
     'bournemouth', 
     'brentford', 
     'brighton',
-    'burnley', 
-    'chelsea', 
+    //'burnley', 
+    'chelsea',
+    'coventry',
     'crystal-palace', 
     'everton',
     'fulham',  
-    //'ipswich',
+    'hull',
+    'ipswich',
     //'leicester',
     'leeds',
     'liverpool',
@@ -28,8 +30,8 @@ const pngFiles = [
     //'southampton',
     'sunderland',
     'tottenham', 
-    'west-ham', 
-    'wolves'
+    //'west-ham', 
+    //'wolves'
 ];
 
 (async () => {

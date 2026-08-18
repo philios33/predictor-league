@@ -6,9 +6,12 @@ import brentford from '../compiled/logos-24/brentford.png';
 import brighton from '../compiled/logos-24/brighton.png';
 import burnley from '../compiled/logos-24/burnley.png';
 import chelsea from '../compiled/logos-24/chelsea.png';
+import coventry from '../compiled/logos-24/coventry.png';
 import crystalPalace from '../compiled/logos-24/crystal-palace.png';
 import everton from '../compiled/logos-24/everton.png';
 import fulham from '../compiled/logos-24/fulham.png';
+import hull from '../compiled/logos-24/hull.png';
+import ipswich from '../compiled/logos-24/ipswich.png';
 import leeds from '../compiled/logos-24/leeds.png';
 import liverpool from '../compiled/logos-24/liverpool.png';
 import manchesterCity from '../compiled/logos-24/manchester-city.png';
@@ -31,9 +34,12 @@ export function getLogo24(team: string): any {
         "Brighton & Hove Albion": brighton,
         "Burnley": burnley,
         "Chelsea": chelsea,
+        "Coventry City": coventry,
         "Crystal Palace": crystalPalace,
         "Everton": everton,
         "Fulham": fulham,
+        "Hull City": hull,
+        "Ipswich Town": ipswich,
         "Leeds United": leeds,
         "Liverpool": liverpool,
         "Manchester City": manchesterCity,
@@ -60,9 +66,12 @@ import brentford2 from '../compiled/logos-48/brentford.png';
 import brighton2 from '../compiled/logos-48/brighton.png';
 import burnley2 from '../compiled/logos-48/burnley.png';
 import chelsea2 from '../compiled/logos-48/chelsea.png';
+import coventry2 from '../compiled/logos-48/coventry.png';
 import crystalPalace2 from '../compiled/logos-48/crystal-palace.png';
 import everton2 from '../compiled/logos-48/everton.png';
 import fulham2 from '../compiled/logos-48/fulham.png';
+import hull2 from '../compiled/logos-48/hull.png';
+import ipswich2 from '../compiled/logos-48/ipswich.png';
 import leeds2 from '../compiled/logos-48/leeds.png';
 import liverpool2 from '../compiled/logos-48/liverpool.png';
 import manchesterCity2 from '../compiled/logos-48/manchester-city.png';
@@ -85,9 +94,12 @@ export function getLogo48(team: string): any {
         "Brighton & Hove Albion": brighton2,
         "Burnley": burnley2,
         "Chelsea": chelsea2,
+        "Coventry City": coventry2,
         "Crystal Palace": crystalPalace2,
         "Everton": everton2,
         "Fulham": fulham2,
+        "Hull City": hull2,
+        "Ipswich Town": ipswich2,
         "Leeds United": leeds2,
         "Liverpool": liverpool2,
         "Manchester City": manchesterCity2,

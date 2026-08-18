@@ -419,11 +419,14 @@ function getCellRefByMatch (homeTeam: string, awayTeam: string) : string {
         "AFC Bournemouth",
         "Brentford",
         "Brighton & Hove Albion",
-        "Burnley",
+        // "Burnley",
         "Chelsea",
+        "Coventry City",
         "Crystal Palace",
         "Everton",
         "Fulham",
+        "Hull City",
+        "Ipswich Town",
         "Leeds United",
         "Liverpool",
         "Manchester City",
@@ -432,8 +435,8 @@ function getCellRefByMatch (homeTeam: string, awayTeam: string) : string {
         "Nottingham Forest",
         "Sunderland",
         "Tottenham Hotspur",
-        "West Ham United",
-        "Wolverhampton Wanderers",
+        //"West Ham United",
+        //"Wolverhampton Wanderers",
     ];
 
     const homeTeamIndex = teamsList.indexOf(homeTeam);

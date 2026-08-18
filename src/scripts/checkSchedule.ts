@@ -54,7 +54,8 @@ if (fs.existsSync(credentialsFile1)) {
 // const spreadsheetId2022 = "1Tilu5utIZBXXBL2t_cikdO_NsrfbMAQ1zBx5zws9JQA";
 // const spreadsheetId2023 = "13z-8qvEYNwKUMC8nMVXN4wanSzcZT-e5oKQ3FjB8PSA";
 // const spreadsheetId2024 = "1qInfh-sCxBbSMjBAxVdUZqkQ_Iz3DnsNe0IEo4Nhq74";
-const spreadsheetId = "1SsDfa6YwlFK0xm7vbO94AIoHGvDCzQSlAjUP6Y75DLI";
+// const spreadsheetId2025 = "1SsDfa6YwlFK0xm7vbO94AIoHGvDCzQSlAjUP6Y75DLI";
+const spreadsheetId = "1soRW3_6U8DZIBSoOIZbuKcxUjG3Z5D5IfIcM4Nyc3fg";
 
 let updatesMade = 0;
 let errorsFound = 0;
@@ -137,7 +138,7 @@ const triggerRebuild = async (message: string) => {
                         const foundMatch = schedule.matches[bbcMatch.homeTeam].against[bbcMatch.awayTeam];
                         if (bbcMatch.statusComment.toLowerCase() === "postponed") {
                             // The kickoff time must be a special value if the match is postponed
-                            if (foundMatch.kickOff === "2026-06-06T14:55:00.000Z") {
+                            if (foundMatch.kickOff === "2027-06-06T14:55:00.000Z") {
                                 // Yes this match is still postponed
                                 console.log("This match is still postponed");
                             } else {

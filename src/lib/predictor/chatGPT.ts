@@ -39,7 +39,11 @@ export async function getChatGPTLatestGameWeek() {
     const latestPhase = results.mergedPhases.reverse().find(phase => !phase.isIncomplete && phase.isStarted && !phase.isOngoing);
     
     if (!latestPhase) {
-        throw new Error('Not found latest phase');
+        return {
+            fixtures: [],
+            standings: [],
+            previousStandings: [],
+        }
     }
     const fixtures = []
     for (const fg of latestPhase?.fixtureGroups || []) {
