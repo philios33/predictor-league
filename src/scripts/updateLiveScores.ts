@@ -68,7 +68,7 @@ function getCellRefByMatch (homeTeam: string, awayTeam: string) : string {
     const teamsList = [
         "Arsenal",
         "Aston Villa",
-        "Bournemouth",
+        "AFC Bournemouth",
         "Brentford",
         "Brighton & Hove Albion",
         //"Burnley",
