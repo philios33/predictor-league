@@ -464,8 +464,8 @@ const getIndexFileWithMeta = (title: string, description: string, imagePath: nul
 }
 
 const sendIndexPage = (req: express.Request, res: express.Response) => {
-    let title = "Predictor 25-26";
-    let description = "Predictor League 25-26";
+    let title = "Predictor 26-27";
+    let description = "Predictor League 26-27";
     let image: null | string = null;
     let imageWidth: null | string = null;
     let imageHeight: null | string = null;
