@@ -113,16 +113,18 @@ export const calculatePoints = (prediction: null | Prediction | HiddenPrediction
 
     const resultType = calculateResultType(prediction, finalScore);
     const scoreType = calculateFinalScoreType(finalScore);
-    let season = "25-26";
+    let season = "26-27";
 
     if (resultType === "noPrediction") {
         // Didn't even both to predict
         points.missed ++;
-        if (season === "22-23" || season === "23-24" || season === "24-25" || season === "25-26") {
+        // Not really sure what this is meant to be targetting.
+        // This has been a rule for many years now
+        // if (season === "22-23" || season === "23-24" || season === "24-25" || season === "25-26") {
             if (missedSoFar > 0) {
                 points.regularPoints = -1;
             }
-        }
+        // }
 
         points.totalPoints = points.regularPoints
         return points;
