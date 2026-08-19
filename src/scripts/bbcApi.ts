@@ -11,6 +11,25 @@ export type FixtureResult = {
     statusComment: string
 }
 
+function fixTeamNames(results: FixtureResult[]) {
+    // Due to inconsistencies in the BBC API, we need to fix some team names
+    // AFC Bournemouth is now known as just "Bournemouth" in the BBC API
+    // This confuses the whole system.  We are keeping the name as "AFC Bournemouth"
+    const mappings: Record<string, string> = {
+        'Bournemouth': 'AFC Bournemouth'
+    }
+    for (const result of results) {
+        if (result.homeTeam in mappings) {
+            // Replace
+            result.homeTeam = mappings[result.homeTeam]
+        }
+        if (result.awayTeam in mappings) {
+            // Replace
+            result.awayTeam = mappings[result.awayTeam]
+        }
+    }
+}
+
 export default async function getFixturesResults(date: moment.Moment, lookupStatus: 'PreEvent' | 'PostEvent') : Promise<FixtureResult[]> {
 
     const todaysDate = date.tz("Europe/London").format("YYYY-MM-DD");
@@ -63,6 +82,8 @@ export default async function getFixturesResults(date: moment.Moment, lookupStat
                 }
             }
         }
+
+        fixTeamNames(relevant);
 
         // console.log('RELEVANT', relevant);
         return relevant;
