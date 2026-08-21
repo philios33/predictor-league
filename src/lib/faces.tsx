@@ -20,6 +20,7 @@ const defaultFaces: any = {
     'Ellman': require('../assets/faces/defaults/ellman.jpeg'),
     'Chris': require('../assets/faces/defaults/chris.jpeg'),
     'Anne-Marie': require('../assets/faces/defaults/amd.jpeg'),
+    'Jim': require('../assets/faces/defaults/james.jpeg'),
 }
 const getDefaultFaceImage = (playerName: string): any => {
     // console.log("Image is", newspapperFaces[playerName]);
