@@ -312,6 +312,10 @@ function Results() {
                             {drawPlayerImage(players[14])}
                             {players[14]}
                         </td>
+                        <td className="faceCell">
+                            {drawPlayerImage(players[15])}
+                            {players[15]}
+                        </td>
                     </tr>
                 </tbody>
             </table>
