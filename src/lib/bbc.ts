@@ -8,6 +8,24 @@ type Match = {
     eventStatus: string
 }
 
+function fixTeamNames(results: Match[]) {
+    // Due to inconsistencies in the BBC API, we need to fix some team names
+    // AFC Bournemouth is now known as just "Bournemouth" in the BBC API
+    // This confuses the whole system.  We are keeping the name as "AFC Bournemouth"
+    const mappings: Record<string, string> = {
+        'Bournemouth': 'AFC Bournemouth'
+    }
+    for (const result of results) {
+        if (result.homeTeam in mappings) {
+            // Replace
+            result.homeTeam = mappings[result.homeTeam]
+        }
+        if (result.awayTeam in mappings) {
+            // Replace
+            result.awayTeam = mappings[result.awayTeam]
+        }
+    }
+}
 
 const fetchPLMatches = async (dayText: string) : Promise<Array<any>> => {
     // const url = "https://push.api.bbci.co.uk/batch?t=%2Fdata%2Fbbc-morph-football-scores-match-list-data%2FendDate%2F" + dayText + "%2FstartDate%2F" + dayText + "%2Ftournament%2Fpremier-league%2Fversion%2F2.4.6?timeout=5";
@@ -73,6 +91,8 @@ const fetchPLMatches = async (dayText: string) : Promise<Array<any>> => {
     console.log("RESULT", JSON.stringify(matches, null, 4));
     process.exit(1);
     */
+
+    fixTeamNames(matches)
 
     return matches;
 }
